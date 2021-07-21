@@ -23,9 +23,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 회원가입_요청(String email, String password) {
-        AccountRequest accountRequest = new AccountRequest();
-        accountRequest.setEmail(email);
-        accountRequest.setPassword(password);
+        AccountRequest accountRequest = AccountRequest.builder()
+                .email(email)
+                .password(password)
+                .build();
+
         ExtractableResponse<Response> postResponse = post("/accounts", accountRequest);
         return postResponse;
     }
