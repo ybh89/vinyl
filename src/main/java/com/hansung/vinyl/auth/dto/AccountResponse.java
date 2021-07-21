@@ -2,7 +2,9 @@ package com.hansung.vinyl.auth.dto;
 
 import com.hansung.vinyl.auth.domain.Account;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Data
 public class AccountResponse {
     private Long id;
