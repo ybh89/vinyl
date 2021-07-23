@@ -2,14 +2,16 @@ package com.hansung.vinyl.auth.application;
 
 import com.hansung.vinyl.auth.domain.Account;
 import com.hansung.vinyl.auth.domain.AccountRepository;
+import com.hansung.vinyl.auth.domain.LoginMember;
 import com.hansung.vinyl.auth.domain.User;
 import com.hansung.vinyl.auth.dto.AccountRequest;
 import com.hansung.vinyl.auth.dto.AccountResponse;
+import com.hansung.vinyl.auth.exception.JwtValidateException;
+import com.hansung.vinyl.auth.infrastructure.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtProvider jwtProvider;
 
     public AccountResponse join(AccountRequest accountRequest) {
         validateEmail(accountRequest.getEmail());
@@ -77,5 +80,15 @@ public class AccountService implements UserDetailsService {
         if (accountRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("해당 아이디로 가입된 계정이 이미 존재합니다.");
         }
+    }
+
+    public LoginMember findMemberByToken(String credentials) {
+        if (!jwtProvider.validateToken(credentials)) {
+            throw new JwtValidateException();
+        }
+
+        String email = jwtProvider.getPayload(credentials);
+        Account account = findAccountByEmail(email);
+        return new LoginMember(account.getId(), account.getEmail());
     }
 }

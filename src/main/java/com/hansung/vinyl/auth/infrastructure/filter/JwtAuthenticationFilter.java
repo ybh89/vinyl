@@ -1,4 +1,4 @@
-package com.hansung.vinyl.auth.security.filter;
+package com.hansung.vinyl.auth.infrastructure.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hansung.vinyl.auth.dto.LoginRequest;
@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {

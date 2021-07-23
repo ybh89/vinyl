@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -21,6 +22,9 @@ import static org.mockito.BDDMockito.given;
 public class AccountServiceTest {
     @Mock
     private AccountRepository accountRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private AccountService accountService;
@@ -37,6 +41,7 @@ public class AccountServiceTest {
                         .email(accountRequest.getEmail())
                         .password(accountRequest.getPassword())
                         .build());
+        given(passwordEncoder.encode(anyString())).willReturn(accountRequest.getPassword());
 
         //when
         AccountResponse accountResponse = accountService.join(accountRequest);
