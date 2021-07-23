@@ -2,6 +2,7 @@ package com.hansung.vinyl.auth.application;
 
 import com.hansung.vinyl.auth.domain.Account;
 import com.hansung.vinyl.auth.domain.AccountRepository;
+import com.hansung.vinyl.auth.domain.AuthorityRepository;
 import com.hansung.vinyl.auth.dto.AccountRequest;
 import com.hansung.vinyl.auth.dto.AccountResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -12,16 +13,20 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class AccountServiceTest {
     @Mock
     private AccountRepository accountRepository;
+
+    @Mock
+    private AuthorityRepository authorityRepository;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -34,14 +39,15 @@ public class AccountServiceTest {
     public void 회원가입_확인() throws Exception {
         //given
         AccountRequest accountRequest = 회원가입_요청_생성("test@test.com", "test-password@123");
+        Account account = Account.builder()
+                .id(1L)
+                .email(accountRequest.getEmail())
+                .password(accountRequest.getPassword())
+                .build();
         given(accountRepository.existsByEmail(anyString())).willReturn(false);
-        given(accountRepository.save(any(Account.class)))
-                .willReturn(Account.builder()
-                        .id(1L)
-                        .email(accountRequest.getEmail())
-                        .password(accountRequest.getPassword())
-                        .build());
+        given(accountRepository.save(any())).willReturn(account);
         given(passwordEncoder.encode(anyString())).willReturn(accountRequest.getPassword());
+        given(authorityRepository.findAllById(anyList())).willReturn(Arrays.asList());
 
         //when
         AccountResponse accountResponse = accountService.join(accountRequest);
@@ -65,9 +71,6 @@ public class AccountServiceTest {
     }
 
     private AccountRequest 회원가입_요청_생성(String email, String password) {
-        return AccountRequest.builder()
-                .email(email)
-                .password(password)
-                .build();
+        return new AccountRequest(email, password, Arrays.asList());
     }
 }

@@ -1,9 +1,6 @@
 package com.hansung.vinyl.auth.application;
 
-import com.hansung.vinyl.auth.domain.Account;
-import com.hansung.vinyl.auth.domain.AccountRepository;
-import com.hansung.vinyl.auth.domain.LoginMember;
-import com.hansung.vinyl.auth.domain.User;
+import com.hansung.vinyl.auth.domain.*;
 import com.hansung.vinyl.auth.dto.AccountRequest;
 import com.hansung.vinyl.auth.dto.AccountResponse;
 import com.hansung.vinyl.auth.exception.JwtValidateException;
@@ -25,18 +22,20 @@ import java.util.stream.Collectors;
 @Service
 public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
+    private final AuthorityRepository authorityRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
     public AccountResponse join(AccountRequest accountRequest) {
         validateEmail(accountRequest.getEmail());
+        List<Authority> authorities = authorityRepository.findAllById(accountRequest.getRoleIds());
         Account account = Account.builder()
                 .email(accountRequest.getEmail())
                 .password(passwordEncoder.encode(accountRequest.getPassword()))
+                .authorities(authorities)
                 .build();
 
         Account savedAccount = accountRepository.save(account);
-
         return AccountResponse.of(savedAccount);
     }
 
@@ -76,12 +75,6 @@ public class AccountService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다. email=" + username));
     }
 
-    private void validateEmail(String email) {
-        if (accountRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("해당 아이디로 가입된 계정이 이미 존재합니다.");
-        }
-    }
-
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtProvider.validateToken(credentials)) {
             throw new JwtValidateException();
@@ -90,5 +83,21 @@ public class AccountService implements UserDetailsService {
         String email = jwtProvider.getPayload(credentials);
         Account account = findAccountByEmail(email);
         return new LoginMember(account.getId(), account.getEmail());
+    }
+
+    public void delete(Long accountId) {
+        Account account = findAccountById(accountId);
+        account.delete();
+    }
+
+    private Account findAccountById(Long accountId) {
+        return accountRepository.findById(accountId)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다. id=" + accountId));
+    }
+
+    private void validateEmail(String email) {
+        if (accountRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("해당 아이디로 가입된 계정이 이미 존재합니다.");
+        }
     }
 }

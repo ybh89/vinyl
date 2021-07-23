@@ -33,4 +33,10 @@ public class AccountController {
         AccountResponse accountResponse = accountService.findById(accountId);
         return ResponseEntity.ok(accountResponse);
     }
+
+    @PutMapping("/{accountId}")
+    public ResponseEntity delete(@PathVariable Long accountId) {
+        accountService.delete(accountId);
+        return ResponseEntity.noContent().build();
+    }
 }
