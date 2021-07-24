@@ -1,5 +1,7 @@
 package com.hansung.vinyl.auth.domain;
 
+import com.hansung.vinyl.account.domain.Account;
+import com.hansung.vinyl.authority.domain.Authority;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +29,7 @@ public class AccountTest {
                 .build();
 
         //then
-        assertThat(account.getAccountAuthorities().get(0).getAuthority()).isEqualTo(authority);
+        assertThat(account.getAccountAuthorities().get(0).getAuthorityId()).isEqualTo(1L);
     }
 
     private Authority 권한_생성(Long id, String name) {

@@ -1,7 +1,12 @@
 package com.hansung.vinyl.auth.acceptance;
 
 import com.hansung.vinyl.AcceptanceTest;
-import com.hansung.vinyl.auth.dto.*;
+import com.hansung.vinyl.account.dto.AccountAuthorityRequest;
+import com.hansung.vinyl.account.dto.AccountRequest;
+import com.hansung.vinyl.account.dto.AccountResponse;
+import com.hansung.vinyl.authority.dto.AuthorityRequest;
+import com.hansung.vinyl.authority.dto.AuthorityResponse;
+import com.hansung.vinyl.security.dto.LoginRequest;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
@@ -66,7 +71,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 "UPDATE-TEST", Arrays.asList("/**"));
         권한_수정됨(putResponse);
 
-        /*// 계정 권한 변경
+        // 계정 권한 변경
         ExtractableResponse<Response> newResponse = 권한_생성_요청("ROLE_NEW", "NEW", Arrays.asList("/accounts/**"));
         권한_생성됨(newResponse);
         ExtractableResponse<Response> changeResponse = 계정_권한_변경_요청(accountPostResponse,
@@ -75,7 +80,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         // 권한 삭제
         ExtractableResponse<Response> deleteResponse = 권한_삭제_요청(postResponse, 토큰);
-        권한_삭제됨(deleteResponse);*/
+        권한_삭제됨(deleteResponse);
     }
 
     private void 계정_권한_변경됨(ExtractableResponse<Response> changeResponse) {
