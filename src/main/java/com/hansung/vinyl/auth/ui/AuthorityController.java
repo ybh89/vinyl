@@ -19,12 +19,25 @@ public class AuthorityController {
     @PostMapping
     public ResponseEntity<AuthorityResponse> create(@RequestBody AuthorityRequest authorityRequest) {
         AuthorityResponse authorityResponse = authorityService.create(authorityRequest);
-        return ResponseEntity.created(URI.create("/authorities/" + authorityResponse.getId())).build();
+        return ResponseEntity.created(URI.create("/authorities/" + authorityResponse.getId())).body(authorityResponse);
     }
 
     @GetMapping
     public ResponseEntity<List<AuthorityResponse>> list() {
         List<AuthorityResponse> authorityResponses = authorityService.list();
         return ResponseEntity.ok(authorityResponses);
+    }
+
+    @PutMapping("/{authorityId}")
+    public ResponseEntity<AuthorityResponse> update(@PathVariable Long authorityId,
+                                                    @RequestBody AuthorityRequest authorityRequest) {
+        AuthorityResponse authorityResponse = authorityService.update(authorityId, authorityRequest);
+        return ResponseEntity.ok(authorityResponse);
+    }
+
+    @DeleteMapping("/{authorityId}")
+    public ResponseEntity delete(@PathVariable Long authorityId) {
+        authorityService.delete(authorityId);
+        return ResponseEntity.noContent().build();
     }
 }

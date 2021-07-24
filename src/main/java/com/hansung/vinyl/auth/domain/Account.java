@@ -21,7 +21,7 @@ public class Account {
     private String email;
     private String password;
     private boolean isDeleted;
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
     private List<AccountAuthority> accountAuthorities = new ArrayList<>();
 
     @Builder

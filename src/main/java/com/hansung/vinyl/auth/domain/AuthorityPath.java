@@ -29,4 +29,8 @@ public class AuthorityPath {
         this.authority = authority;
         this.path = path;
     }
+
+    public void setAuthority(Authority authority) {
+        this.authority = authority;
+    }
 }

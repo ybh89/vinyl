@@ -1,6 +1,7 @@
 package com.hansung.vinyl.auth.application;
 
 import com.hansung.vinyl.auth.domain.*;
+import com.hansung.vinyl.auth.dto.AccountAuthorityRequest;
 import com.hansung.vinyl.auth.dto.AccountRequest;
 import com.hansung.vinyl.auth.dto.AccountResponse;
 import com.hansung.vinyl.auth.exception.JwtValidateException;
@@ -28,7 +29,7 @@ public class AccountService implements UserDetailsService {
 
     public AccountResponse join(AccountRequest accountRequest) {
         validateEmail(accountRequest.getEmail());
-        List<Authority> authorities = authorityRepository.findAllById(accountRequest.getRoleIds());
+        List<Authority> authorities = authorityRepository.findAllById(accountRequest.getAuthorityIds());
         Account account = Account.builder()
                 .email(accountRequest.getEmail())
                 .password(passwordEncoder.encode(accountRequest.getPassword()))
@@ -99,5 +100,10 @@ public class AccountService implements UserDetailsService {
         if (accountRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("해당 아이디로 가입된 계정이 이미 존재합니다.");
         }
+    }
+
+    public AccountResponse updateAuthorities(Long accountId, AccountAuthorityRequest accountAuthorityRequest) {
+
+        return null;
     }
 }

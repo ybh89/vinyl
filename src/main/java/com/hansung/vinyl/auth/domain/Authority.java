@@ -24,8 +24,7 @@ public class Authority {
     @Column(unique = true)
     private String name;
     private String desc;
-    @OneToMany(mappedBy = "authority",
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "authority", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AuthorityPath> authorityPaths = new ArrayList<>();
 
     @Builder
@@ -47,6 +46,21 @@ public class Authority {
         return authorityPaths.stream()
                 .map(AuthorityPath::getPath)
                 .collect(Collectors.toList());
+    }
+
+    public void addAuthorityPath(AuthorityPath authorityPath) {
+        if (!authorityPaths.contains(authorityPath)) {
+            authorityPaths.add(authorityPath);
+        }
+        authorityPath.setAuthority(this);
+    }
+
+    public void update(Authority authority) {
+        this.name = authority.name;
+        this.desc = authority.desc;
+        this.authorityPaths.clear();
+        authority.authorityPaths.stream()
+                .forEach(this::addAuthorityPath);
     }
 
     @Override
