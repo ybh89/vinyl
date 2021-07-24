@@ -22,12 +22,14 @@ public class AuthorityPath {
     private Authority authority;
     @Embedded
     private Path path;
+    private int seq;
 
     @Builder
-    public AuthorityPath(Long id, Authority authority, Path path) {
+    public AuthorityPath(Long id, Authority authority, Path path, int seq) {
         this.id = id;
         this.authority = authority;
         this.path = path;
+        this.seq = seq;
     }
 
     public void setAuthority(Authority authority) {

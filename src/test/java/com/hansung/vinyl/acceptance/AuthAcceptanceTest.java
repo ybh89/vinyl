@@ -1,4 +1,4 @@
-package com.hansung.vinyl.auth.acceptance;
+package com.hansung.vinyl.acceptance;
 
 import com.hansung.vinyl.AcceptanceTest;
 import com.hansung.vinyl.account.dto.AccountAuthorityRequest;

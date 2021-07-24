@@ -33,12 +33,7 @@ public class Authority {
         this.name = name;
         this.desc = desc;
         if (Objects.nonNull(paths)) {
-            this.authorityPaths = paths.stream()
-                    .map(path -> AuthorityPath.builder()
-                            .authority(this)
-                            .path(path)
-                            .build())
-                    .collect(Collectors.toList());
+            this.authorityPaths = createAuthorityPaths(paths);
         }
     }
 
@@ -48,19 +43,31 @@ public class Authority {
                 .collect(Collectors.toList());
     }
 
-    public void addAuthorityPath(AuthorityPath authorityPath) {
+    public void update(Authority authority) {
+        this.name = authority.name;
+        this.desc = authority.desc;
+        this.authorityPaths.clear();
+        authority.authorityPaths.forEach(this::addAuthorityPath);
+    }
+
+    private void addAuthorityPath(AuthorityPath authorityPath) {
         if (!authorityPaths.contains(authorityPath)) {
             authorityPaths.add(authorityPath);
         }
         authorityPath.setAuthority(this);
     }
 
-    public void update(Authority authority) {
-        this.name = authority.name;
-        this.desc = authority.desc;
-        this.authorityPaths.clear();
-        authority.authorityPaths.stream()
-                .forEach(this::addAuthorityPath);
+    private List<AuthorityPath> createAuthorityPaths(List<Path> paths) {
+        return paths.stream()
+                .map(path -> {
+                    int seq = 1;
+                    return AuthorityPath.builder()
+                            .authority(this)
+                            .path(path)
+                            .seq(seq++)
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
