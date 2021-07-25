@@ -7,7 +7,7 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
     username: root
     password: rhkdro90
-    #initialization-mode: always # 데이터 초기 세팅 data.sql
+    initialization-mode: always # 데이터 초기 세팅 data.sql
 
   jpa:
     properties:

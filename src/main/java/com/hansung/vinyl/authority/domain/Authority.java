@@ -3,6 +3,7 @@ package com.hansung.vinyl.authority.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 
 import javax.persistence.*;
 
@@ -34,13 +35,14 @@ public class Authority {
     private List<AuthorityPath> authorityPaths = new ArrayList<>();
 
     @Builder
-    public Authority(Long id, String name, String remark, List<Path> paths) {
+    public Authority(Long id, String name, String remark, List<Path> paths, ApplicationEventPublisher publisher) {
         this.id = id;
         this.name = name;
         this.remark = remark;
         if (Objects.nonNull(paths)) {
             this.authorityPaths = createAuthorityResources(paths);
         }
+        publishEvent(publisher, new AuthorityCommandedEvent());
     }
 
     public List<Path> getPaths() {
@@ -49,11 +51,16 @@ public class Authority {
                 .collect(Collectors.toList());
     }
 
-    public void update(Authority authority) {
+    public void update(Authority authority, ApplicationEventPublisher publisher) {
         this.name = authority.name;
         this.remark = authority.remark;
         this.authorityPaths.clear();
         authority.authorityPaths.forEach(this::addAuthorityPath);
+        publishEvent(publisher, new AuthorityCommandedEvent());
+    }
+
+    public void publishEvent(ApplicationEventPublisher publisher, Object event) {
+        publisher.publishEvent(event);
     }
 
     private void addAuthorityPath(AuthorityPath authorityPath) {
@@ -66,13 +73,11 @@ public class Authority {
     private List<AuthorityPath> createAuthorityResources(List<Path> paths) {
         AtomicInteger seq = new AtomicInteger(1);
         return paths.stream()
-                .map(path -> {
-                    return AuthorityPath.builder()
+                .map(path ->  AuthorityPath.builder()
                             .authority(this)
                             .path(path)
                             .seq(seq.getAndIncrement())
-                            .build();
-                })
+                            .build())
                 .collect(Collectors.toList());
     }
 

@@ -4,8 +4,8 @@ import com.hansung.vinyl.authority.domain.*;
 import com.hansung.vinyl.authority.dto.AuthorityRequest;
 import com.hansung.vinyl.authority.dto.AuthorityResponse;
 import com.hansung.vinyl.common.exception.NoSuchDataException;
-import com.hansung.vinyl.security.infrastructure.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -23,12 +23,11 @@ public class AuthorityService {
     private final AuthorityRepository authorityRepository;
     private final AccountAuthorityRepository accountAuthorityRepository;
     private final AuthorityPathRepository authorityPathRepository;
-    private final UrlFilterInvocationSecurityMetadataSource metadataSource;
+    private final ApplicationEventPublisher publisher;
 
     public AuthorityResponse create(AuthorityRequest authorityRequest) {
         Authority authority = createAuthority(authorityRequest);
         Authority savedAuthority = authorityRepository.save(authority);
-        metadataSource.reload();
         return AuthorityResponse.of(savedAuthority);
     }
 
@@ -43,8 +42,7 @@ public class AuthorityService {
     public AuthorityResponse update(Long authorityId, AuthorityRequest authorityRequest) {
         Authority authority = findAuthorityById(authorityId);
         Authority updateAuthority = createAuthority(authorityRequest);
-        authority.update(updateAuthority);
-        metadataSource.reload();
+        authority.update(updateAuthority, publisher);
         return AuthorityResponse.of(authority);
     }
 
@@ -52,8 +50,9 @@ public class AuthorityService {
         if (accountAuthorityRepository.existsByAuthorityId(authorityId)) {
             throw new IllegalArgumentException("권한에 매핑된 계정이 존재합니다.");
         }
-        authorityRepository.deleteById(authorityId);
-        metadataSource.reload();
+        Authority authority = findAuthorityById(authorityId);
+        authority.publishEvent(publisher, new AuthorityCommandedEvent());
+        authorityRepository.delete(authority);
     }
 
     private Authority findAuthorityById(Long authorityId) {
@@ -71,6 +70,7 @@ public class AuthorityService {
                 .name(authorityRequest.getName())
                 .remark(authorityRequest.getRemark())
                 .paths(paths)
+                .publisher(publisher)
                 .build();
         return authority;
     }

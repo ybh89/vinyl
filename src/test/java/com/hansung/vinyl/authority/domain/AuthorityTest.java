@@ -2,6 +2,7 @@ package com.hansung.vinyl.authority.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +32,7 @@ public class AuthorityTest {
         Authority authority2 = 권한_생성(2L, "test2", "test2", Arrays.asList(new Path("/**")));
 
         //when
-        authority1.update(authority2);
+        authority1.update(authority2, new AnnotationConfigApplicationContext());
 
         //then
         assertThat(authority1.getName()).isEqualTo("test2");
@@ -39,11 +40,11 @@ public class AuthorityTest {
         assertThat(authority1.getPaths()).containsExactly(new Path("/**"));
     }
 
-    private Authority 권한_생성(Long id, String name, String desc, List<Path> paths) {
+    private Authority 권한_생성(Long id, String name, String remark, List<Path> paths) {
         return Authority.builder()
                 .id(id)
                 .name(name)
-                .desc(desc)
+                .remark(remark)
                 .paths(paths)
                 .build();
     }
