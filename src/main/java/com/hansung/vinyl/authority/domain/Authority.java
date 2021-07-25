@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -16,24 +17,29 @@ import static lombok.AccessLevel.PROTECTED;
 
 @NoArgsConstructor(access = PROTECTED)
 @Getter
+@Table(uniqueConstraints={ @UniqueConstraint(name = "uk_authority_name", columnNames = "name") })
 @Entity
 public class Authority {
     @GeneratedValue(strategy = IDENTITY)
     @Id
     private Long id;
-    @Column(unique = true)
+
+    @Column(nullable = false, length = 50)
     private String name;
-    private String desc;
+
+    @Column(length = 100)
+    private String remark;
+
     @OneToMany(mappedBy = "authority", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AuthorityPath> authorityPaths = new ArrayList<>();
 
     @Builder
-    public Authority(Long id, String name, String desc, List<Path> paths) {
+    public Authority(Long id, String name, String remark, List<Path> paths) {
         this.id = id;
         this.name = name;
-        this.desc = desc;
+        this.remark = remark;
         if (Objects.nonNull(paths)) {
-            this.authorityPaths = createAuthorityPaths(paths);
+            this.authorityPaths = createAuthorityResources(paths);
         }
     }
 
@@ -45,7 +51,7 @@ public class Authority {
 
     public void update(Authority authority) {
         this.name = authority.name;
-        this.desc = authority.desc;
+        this.remark = authority.remark;
         this.authorityPaths.clear();
         authority.authorityPaths.forEach(this::addAuthorityPath);
     }
@@ -57,14 +63,14 @@ public class Authority {
         authorityPath.setAuthority(this);
     }
 
-    private List<AuthorityPath> createAuthorityPaths(List<Path> paths) {
+    private List<AuthorityPath> createAuthorityResources(List<Path> paths) {
+        AtomicInteger seq = new AtomicInteger(1);
         return paths.stream()
                 .map(path -> {
-                    int seq = 1;
                     return AuthorityPath.builder()
                             .authority(this)
                             .path(path)
-                            .seq(seq++)
+                            .seq(seq.getAndIncrement())
                             .build();
                 })
                 .collect(Collectors.toList());

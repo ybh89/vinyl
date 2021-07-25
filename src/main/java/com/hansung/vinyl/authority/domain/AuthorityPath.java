@@ -11,17 +11,20 @@ import static lombok.AccessLevel.*;
 
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@Table(uniqueConstraints={ @UniqueConstraint(columnNames = { "authority_id", "path" }) })
+@Table(uniqueConstraints={ @UniqueConstraint(name = "uk_authority_path", columnNames = { "authority_id", "path" }) })
 @Entity
 public class AuthorityPath {
     @GeneratedValue(strategy = IDENTITY)
     @Id
     private Long id;
-    @JoinColumn(name = "authority_id")
+
+    @JoinColumn(name = "authority_id", foreignKey = @ForeignKey(name = "fk_path_authority"))
     @ManyToOne
     private Authority authority;
+
     @Embedded
     private Path path;
+
     private int seq;
 
     @Builder

@@ -12,17 +12,18 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@Table(uniqueConstraints={ @UniqueConstraint(columnNames = { "account_id", "authority_id" }) })
+@Table(uniqueConstraints={ @UniqueConstraint(name = "uk_account_authority", columnNames = { "account_id", "authority_id" }) })
 @Entity
 public class AccountAuthority {
     @GeneratedValue(strategy = IDENTITY)
     @Id
     private Long id;
 
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "account_id", foreignKey = @ForeignKey(name = "fk_authority_account"))
     @ManyToOne
     private Account account;
 
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_account_authority"))
     @Column(name = "authority_id")
     private Long authorityId;
 

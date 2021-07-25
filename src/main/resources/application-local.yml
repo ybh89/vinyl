@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: auth-service
+
+  datasource:
+    url: jdbc:mariadb://127.0.0.1:3306/vinyldb?characterEncoding=UTF-8
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: root
+    password: rhkdro90
+    #initialization-mode: always # 데이터 초기 세팅 data.sql
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: create
+
+#  flyway:
+#    baselineOnMigrate: true # 스키마 히스토리 테이블 초기화
+
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: trace
+
+security:
+  jwt:
+    token:
+      secret-key: jwt_secret_key
+      expire-length: 86400000

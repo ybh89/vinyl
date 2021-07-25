@@ -13,14 +13,21 @@ import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Table(uniqueConstraints={ @UniqueConstraint(name = "uk_account_email", columnNames = "email") })
 @Entity
 public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
+
+    @Column(nullable = false, updatable = false, length = 50)
     private String email;
+
+    @Column(nullable = false, length = 150)
     private String password;
-    private boolean isDeleted;
+
+    private boolean deleted;
+
     @OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
     private List<AccountAuthority> accountAuthorities = new ArrayList<>();
 
@@ -33,7 +40,7 @@ public class Account {
     }
 
     public void delete() {
-        isDeleted = true;
+        deleted = true;
     }
 
     private List<AccountAuthority> createAccountAuthorities(List<Authority> authorities) {

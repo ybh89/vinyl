@@ -22,6 +22,6 @@ public class AuthorityResponse {
         List<String> paths = authority.getPaths().stream()
                 .map(Path::value)
                 .collect(Collectors.toList());
-        return new AuthorityResponse(authority.getId(), authority.getName(), authority.getDesc(), paths);
+        return new AuthorityResponse(authority.getId(), authority.getName(), authority.getRemark(), paths);
     }
 }

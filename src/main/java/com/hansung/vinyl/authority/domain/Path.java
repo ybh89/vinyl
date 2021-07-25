@@ -4,7 +4,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
 import java.util.Objects;
 
 import static lombok.AccessLevel.PROTECTED;
@@ -12,7 +11,7 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 @Embeddable
 public class Path {
-    @Column
+    @Column(nullable = false, length = 100)
     private String path;
 
     public Path(String path) {

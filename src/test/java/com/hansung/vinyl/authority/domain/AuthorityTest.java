@@ -35,7 +35,7 @@ public class AuthorityTest {
 
         //then
         assertThat(authority1.getName()).isEqualTo("test2");
-        assertThat(authority1.getDesc()).isEqualTo("test2");
+        assertThat(authority1.getRemark()).isEqualTo("test2");
         assertThat(authority1.getPaths()).containsExactly(new Path("/**"));
     }
 

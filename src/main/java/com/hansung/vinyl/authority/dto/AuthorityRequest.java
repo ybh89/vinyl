@@ -12,6 +12,6 @@ import java.util.List;
 @Data
 public class AuthorityRequest {
     private String name;
-    private String desc;
+    private String remark;
     private List<String> paths = new ArrayList<>();
 }
