@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -36,7 +37,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         Authentication authentication = jwtProvider.getAuthentication(credentials);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("authentication1 = " + authentication1);
+        System.out.println("getName = " + authentication1.getName());
+        System.out.println("getAuthorities = " + authentication1.getAuthorities());
 
         filterChain.doFilter(request, response);
     }

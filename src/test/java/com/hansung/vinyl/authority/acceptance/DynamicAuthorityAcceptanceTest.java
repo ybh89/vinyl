@@ -19,8 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.hansung.vinyl.account.acceptance.AccountAcceptanceTest.계정_등록_되어있음;
-import static com.hansung.vinyl.account.acceptance.AccountAcceptanceTest.로그인_되어있음;
+import static com.hansung.vinyl.account.acceptance.AccountAcceptanceTest.*;
 import static com.hansung.vinyl.authority.acceptance.AuthorityAcceptanceTest.*;
 import static org.springframework.http.HttpStatus.*;
 
@@ -63,8 +62,11 @@ public class DynamicAuthorityAcceptanceTest extends AcceptanceTest {
         계정_권한_변경됨(사용자, Arrays.asList(사용자권한.as(AuthorityResponse.class).getId()), 관리자_토큰);
 
         String 매니저_토큰 = 로그인_되어있음(MGR_EMAIL, MGR_PASSWORD);
+
         ExtractableResponse<Response> response = 권한_목록_조회_요청(매니저_토큰);
         권한_목록_조회_실패됨(response);
+
+        계정_목록_조회됨(매니저_토큰);
     }
 
     private void 권한_목록_조회_실패됨(ExtractableResponse<Response> response) {

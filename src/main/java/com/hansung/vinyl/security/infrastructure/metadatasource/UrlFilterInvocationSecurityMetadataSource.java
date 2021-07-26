@@ -2,7 +2,6 @@ package com.hansung.vinyl.security.infrastructure.metadatasource;
 
 import com.hansung.vinyl.authority.application.AuthorityService;
 import com.hansung.vinyl.authority.domain.AuthorityCommandedEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
@@ -28,12 +27,13 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
         HttpServletRequest request = ((FilterInvocation) object).getRequest();
         if (Objects.nonNull(requestMap)) {
             Set<Map.Entry<RequestMatcher, List<ConfigAttribute>>> entries = requestMap.entrySet();
-            List<ConfigAttribute> configAttributes = entries.stream()
+            return entries.stream()
                     .filter(entry -> entry.getKey().matches(request))
-                    .findFirst()
-                    .map(Map.Entry::getValue)
-                    .orElse(null);
-            return configAttributes;
+                    .map(entry -> entry.getValue())
+                    .reduce((list1, list2) -> {
+                        list1.addAll(list2);
+                        return list1;
+                    }).orElse(null);
         }
         return null;
     }
