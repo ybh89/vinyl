@@ -28,7 +28,8 @@ public class Account {
 
     private boolean deleted;
 
-    @OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+            orphanRemoval = true, fetch = FetchType.EAGER)
     private List<AccountAuthority> accountAuthorities = new ArrayList<>();
 
     @Builder

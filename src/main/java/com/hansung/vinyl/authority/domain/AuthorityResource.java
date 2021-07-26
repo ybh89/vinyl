@@ -11,9 +11,9 @@ import static lombok.AccessLevel.*;
 
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@Table(uniqueConstraints={ @UniqueConstraint(name = "uk_authority_path", columnNames = { "authority_id", "path" }) })
+@Table(uniqueConstraints={ @UniqueConstraint(name = "uk_authority_path", columnNames = { "authority_id", "path", "http_method" }) })
 @Entity
-public class AuthorityPath {
+public class AuthorityResource {
     @GeneratedValue(strategy = IDENTITY)
     @Id
     private Long id;
@@ -23,15 +23,15 @@ public class AuthorityPath {
     private Authority authority;
 
     @Embedded
-    private Path path;
+    private Resource resource;
 
     private int seq;
 
     @Builder
-    public AuthorityPath(Long id, Authority authority, Path path, int seq) {
+    public AuthorityResource(Long id, Authority authority, Resource resource, int seq) {
         this.id = id;
         this.authority = authority;
-        this.path = path;
+        this.resource = resource;
         this.seq = seq;
     }
 

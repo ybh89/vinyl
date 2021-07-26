@@ -1,7 +1,7 @@
 package com.hansung.vinyl.security.infrastructure.handler;
 
 import com.hansung.vinyl.account.domain.User;
-import com.hansung.vinyl.account.infrastructure.JwtProvider;
+import com.hansung.vinyl.security.infrastructure.filter.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;

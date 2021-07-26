@@ -13,5 +13,5 @@ import java.util.List;
 public class AuthorityRequest {
     private String name;
     private String remark;
-    private List<String> paths = new ArrayList<>();
+    private List<ResourceRequest> resources = new ArrayList<>();
 }

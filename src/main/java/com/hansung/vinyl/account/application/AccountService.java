@@ -4,7 +4,7 @@ import com.hansung.vinyl.account.domain.*;
 import com.hansung.vinyl.account.dto.AccountAuthorityRequest;
 import com.hansung.vinyl.account.dto.AccountRequest;
 import com.hansung.vinyl.account.dto.AccountResponse;
-import com.hansung.vinyl.account.infrastructure.JwtProvider;
+import com.hansung.vinyl.security.infrastructure.filter.JwtProvider;
 import com.hansung.vinyl.authority.domain.Authority;
 import com.hansung.vinyl.authority.domain.AuthorityRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -26,7 +28,6 @@ public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
     private final AuthorityRepository authorityRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtProvider jwtProvider;
 
     public AccountResponse join(AccountRequest accountRequest) {
         validateEmail(accountRequest.getEmail());
@@ -61,6 +62,21 @@ public class AccountService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Account account = findAccountByEmail(username);
+        return loadUser(account);
+    }
+
+    @Transactional(readOnly = true)
+    public UserDetails loadUserById(Long accountId) {
+        Account account = findAccountById(accountId);
+        return loadUser(account);
+    }
+
+    private UserDetails loadUser(Account account) {
+        List<Long> authorityIds = account.getAccountAuthorities().stream()
+                .map(accountAuthority -> accountAuthority.getAuthorityId())
+                .collect(Collectors.toList());
+        List<Authority> authorities = authorityRepository.findAllById(authorityIds);
+
         return User.builder()
                 .accountId(account.getId())
                 .username(account.getEmail())
@@ -69,7 +85,7 @@ public class AccountService implements UserDetailsService {
                 .isAccountNonExpired(true)
                 .isAccountNonLocked(true)
                 .isCredentialsNonExpired(true)
-                .authorities(new ArrayList<>())
+                .authorities(authorities)
                 .build();
     }
 
@@ -78,7 +94,7 @@ public class AccountService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다. email=" + username));
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    /*public LoginMember findMemberByToken(String credentials) {
         if (!jwtProvider.validateToken(credentials)) {
             throw new JwtValidateException();
         }
@@ -86,7 +102,7 @@ public class AccountService implements UserDetailsService {
         String email = jwtProvider.getPayload(credentials);
         Account account = findAccountByEmail(email);
         return new LoginMember(account.getId(), account.getEmail());
-    }
+    }*/
 
     public void delete(Long accountId) {
         Account account = findAccountById(accountId);
@@ -105,6 +121,9 @@ public class AccountService implements UserDetailsService {
     }
 
     private List<Authority> findAuthoritiesById(List<Long> ids) {
+        if (Objects.isNull(ids)) {
+            return Arrays.asList();
+        }
         return authorityRepository.findAllById(ids);
     }
 

@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class AuthorityService {
     private final AuthorityRepository authorityRepository;
     private final AccountAuthorityRepository accountAuthorityRepository;
-    private final AuthorityPathRepository authorityPathRepository;
+    private final AuthorityResourceRepository authorityResourceRepository;
     private final ApplicationEventPublisher publisher;
 
     public AuthorityResponse create(AuthorityRequest authorityRequest) {
@@ -51,7 +51,7 @@ public class AuthorityService {
             throw new IllegalArgumentException("권한에 매핑된 계정이 존재합니다.");
         }
         Authority authority = findAuthorityById(authorityId);
-        authority.publishEvent(publisher, new AuthorityCommandedEvent());
+        authority.publishEvent(publisher, new AuthorityCommandedEvent(authority, "delete"));
         authorityRepository.delete(authority);
     }
 
@@ -62,32 +62,33 @@ public class AuthorityService {
     }
 
     private Authority createAuthority(AuthorityRequest authorityRequest) {
-        List<Path> paths = authorityRequest.getPaths().stream()
-                .map(Path::new)
+        List<Resource> resources = authorityRequest.getResources().stream()
+                .map(resourceRequest -> new Resource(resourceRequest.getPath(), resourceRequest.getHttpMethod()))
                 .collect(Collectors.toList());
 
         Authority authority = Authority.builder()
                 .name(authorityRequest.getName())
                 .remark(authorityRequest.getRemark())
-                .paths(paths)
+                .resources(resources)
                 .publisher(publisher)
                 .build();
         return authority;
     }
 
+    @Transactional(readOnly = true)
     public LinkedHashMap<RequestMatcher, List<ConfigAttribute>> findAuthorityPathMap() {
         LinkedHashMap<RequestMatcher, List<ConfigAttribute>> result = new LinkedHashMap<>();
-        List<AuthorityPath> authorityPaths = authorityPathRepository.findAll();
-        Map<Path, List<AuthorityPath>> pathAuthorityMap = authorityPaths.stream()
-                .collect(Collectors.groupingBy(AuthorityPath::getPath));
+        List<AuthorityResource> authorityResources = authorityResourceRepository.findAll();
+        Map<Resource, List<AuthorityResource>> pathAuthorityMap = authorityResources.stream()
+                .collect(Collectors.groupingBy(AuthorityResource::getResource));
 
-        for (Path path : pathAuthorityMap.keySet()) {
+        for (Resource resource : pathAuthorityMap.keySet()) {
             List<ConfigAttribute> configAttributes = new ArrayList<>();
-            List<AuthorityPath> authorities = pathAuthorityMap.get(path);
-            authorities.sort(Comparator.comparingInt(AuthorityPath::getSeq));// seq 오름차순 정렬
-            authorities.forEach(authorityPath ->
-                    configAttributes.add(new SecurityConfig(authorityPath.getAuthority().getName())));
-            result.put(new AntPathRequestMatcher(path.value()), configAttributes);
+            List<AuthorityResource> authorities = pathAuthorityMap.get(resource);
+            authorities.sort(Comparator.comparingInt(AuthorityResource::getSeq));// seq 오름차순 정렬
+            authorities.forEach(authorityResource ->
+                    configAttributes.add(new SecurityConfig(authorityResource.getAuthority().getName())));
+            result.put(new AntPathRequestMatcher(resource.getPath(), resource.getHttpMethod().name()), configAttributes);
         }
         return result;
     }

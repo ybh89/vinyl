@@ -1,7 +1,7 @@
 package com.hansung.vinyl.authority.dto;
 
 import com.hansung.vinyl.authority.domain.Authority;
-import com.hansung.vinyl.authority.domain.Path;
+import com.hansung.vinyl.authority.domain.Resource;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,12 +16,12 @@ public class AuthorityResponse {
     private Long id;
     private String name;
     private String desc;
-    private List<String> paths;
+    private List<ResourceResponse> resourceResponses;
 
     public static AuthorityResponse of(Authority authority) {
-        List<String> paths = authority.getPaths().stream()
-                .map(Path::value)
+        List<ResourceResponse> resourceResponses = authority.getResources().stream()
+                .map(ResourceResponse::of)
                 .collect(Collectors.toList());
-        return new AuthorityResponse(authority.getId(), authority.getName(), authority.getRemark(), paths);
+        return new AuthorityResponse(authority.getId(), authority.getName(), authority.getRemark(), resourceResponses);
     }
 }

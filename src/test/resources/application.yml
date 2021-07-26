@@ -1,0 +1,23 @@
+spring:
+  profiles:
+    active: test
+
+  datasource:
+    initialization-mode: never
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: create
+
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: trace
+
+security:
+  jwt:
+    token:
+      secret-key: jwt_secret_key
+      expire-length: 86400000

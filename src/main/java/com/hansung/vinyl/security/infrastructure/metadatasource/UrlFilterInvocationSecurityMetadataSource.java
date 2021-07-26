@@ -7,6 +7,7 @@ import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -27,11 +28,12 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
         HttpServletRequest request = ((FilterInvocation) object).getRequest();
         if (Objects.nonNull(requestMap)) {
             Set<Map.Entry<RequestMatcher, List<ConfigAttribute>>> entries = requestMap.entrySet();
-            return entries.stream()
+            List<ConfigAttribute> configAttributes = entries.stream()
                     .filter(entry -> entry.getKey().matches(request))
                     .findFirst()
                     .map(Map.Entry::getValue)
                     .orElse(null);
+            return configAttributes;
         }
         return null;
     }
@@ -48,9 +50,8 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
         return FilterInvocation.class.isAssignableFrom(clazz);
     }
 
-    @EventListener
+    @TransactionalEventListener
     public void reload(AuthorityCommandedEvent event) {
-        System.out.println("reload event!!");
         requestMap.clear();
         requestMap = authorityService.findAuthorityPathMap();
     }
