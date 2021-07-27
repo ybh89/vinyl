@@ -28,6 +28,9 @@ public class Account {
 
     private boolean deleted;
 
+    @Column(length = 150)
+    private String refreshToken;
+
     @OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             orphanRemoval = true, fetch = FetchType.EAGER)
     private List<AccountAuthority> accountAuthorities = new ArrayList<>();
@@ -56,5 +59,9 @@ public class Account {
     public void changeAuthorities(List<Authority> authorities) {
         accountAuthorities.clear();
         accountAuthorities.addAll(createAccountAuthorities(authorities));
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }

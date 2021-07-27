@@ -1,5 +1,6 @@
 package com.hansung.vinyl.common.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,6 +27,16 @@ public class VinylControllerExceptionAdvisor {
         Error error = Error.builder()
                 .httpStatus(UNAUTHORIZED)
                 .message(exception.getMessage())
+                .build();
+        return ResponseEntity.status(UNAUTHORIZED).body(error);
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<Error> handleExpiredJwtException(ExpiredJwtException exception) {
+        Error error = Error.builder()
+                .httpStatus(UNAUTHORIZED)
+                .message("만료된 JWT 토큰입니다.")
+                .exception(exception)
                 .build();
         return ResponseEntity.status(UNAUTHORIZED).body(error);
     }

@@ -133,4 +133,9 @@ public class AccountService implements UserDetailsService {
         account.changeAuthorities(authorities);
         return AccountResponse.of(account);
     }
+
+    public void updateRefreshToken(Long accountId, String refreshToken) {
+        Account account = findAccountById(accountId);
+        account.updateRefreshToken(refreshToken);
+    }
 }

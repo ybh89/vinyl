@@ -25,4 +25,5 @@ security:
   jwt:
     token:
       secret-key: jwt_secret_key
-      expire-length: 86400000
+      access-expiration: 3600000 # 1시간
+      refresh-expiration: 1209600000 # 2주

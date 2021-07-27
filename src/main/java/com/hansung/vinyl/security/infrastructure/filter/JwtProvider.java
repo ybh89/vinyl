@@ -2,18 +2,13 @@ package com.hansung.vinyl.security.infrastructure.filter;
 
 import com.hansung.vinyl.account.application.AccountService;
 import com.hansung.vinyl.account.domain.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Arrays;
 import java.util.Date;
 
 @RequiredArgsConstructor
@@ -23,13 +18,15 @@ public class JwtProvider {
 
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
-    @Value("${security.jwt.token.expire-length}")
-    private long validityInMilliseconds;
+    @Value("${security.jwt.token.access-expiration}")
+    private long accessValidityInMilliseconds;
+    @Value("${security.jwt.token.refresh-expiration}")
+    private long refreshValidityInMilliseconds;
 
-    public String createAccessToken(String payload) {
+    private String createToken(String payload, long expiration) {
         Claims claims = Jwts.claims().setSubject(payload);
         Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        Date validity = new Date(now.getTime() + expiration);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -37,6 +34,17 @@ public class JwtProvider {
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+    }
+
+    public String createAccessToken(String payload) {
+        return createToken(payload, accessValidityInMilliseconds);
+    }
+
+    public String createRefreshToken(String payload) {
+        String refreshToken = createToken(payload, refreshValidityInMilliseconds);
+        accountService.updateRefreshToken(Long.valueOf(payload), refreshToken);
+
+        return refreshToken;
     }
 
     public String getPayload(String token) {
@@ -57,6 +65,16 @@ public class JwtProvider {
             return false;
         }
     }
+
+    /*public Jws<Claims> validateToken(String token) {
+        try {
+            Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token);
+        } catch (ExpiredJwtException exception) {
+
+        }
+    }*/
 
     private Claims parseClaims(String token) {
         return Jwts.parser()

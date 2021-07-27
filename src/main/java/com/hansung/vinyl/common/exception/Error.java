@@ -9,13 +9,15 @@ public class Error {
     private String objectName;
     private String message;
     private HttpStatus httpStatus;
+    private Exception exception;
 
     @Builder
-    public Error(String field, String rejectedValue, String objectName, String message, HttpStatus httpStatus) {
+    public Error(String field, String rejectedValue, String objectName, String message, HttpStatus httpStatus, Exception exception) {
         this.field = field;
         this.rejectedValue = rejectedValue;
         this.objectName = objectName;
         this.message = message;
         this.httpStatus = httpStatus;
+        this.exception = exception;
     }
 }

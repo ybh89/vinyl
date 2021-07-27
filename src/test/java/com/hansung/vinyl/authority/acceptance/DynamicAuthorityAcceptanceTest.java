@@ -64,13 +64,30 @@ public class DynamicAuthorityAcceptanceTest extends AcceptanceTest {
 
         String 매니저_토큰 = 로그인_되어있음(MGR_EMAIL, MGR_PASSWORD);
 
+        //매니저 권한 테스트
         ExtractableResponse<Response> response = 권한_목록_조회_요청(매니저_토큰);
         권한_목록_조회_실패됨(response);
         계정_목록_조회됨(매니저_토큰);
 
+        //매니저 권한 변경 테스트
         ResourceRequest 권한_목록_조회_권한 = new ResourceRequest("/authorities", GET);
         매니저권한자원.add(권한_목록_조회_권한);
         권한_수정_되어있음(매니저권한, 관리자_토큰, "ROLE_MANAGER", "updated", 매니저권한자원);
+        ExtractableResponse<Response> response2 = 권한_목록_조회_요청(매니저_토큰);
+        권한_목록_조회됨(response2);
+
+        //사용자 권한으로 변경
+        계정_권한_변경됨(매니저, Arrays.asList(사용자권한.as(AuthorityResponse.class).getId()), 관리자_토큰);
+        ExtractableResponse<Response> accountsResponse = 계정_목록_조회_요청(매니저_토큰);
+        계정_목록_조회_실패됨(accountsResponse);
+    }
+
+    private void 계정_목록_조회_실패됨(ExtractableResponse<Response> accountsResponse) {
+        assertHttpStatus(accountsResponse, FORBIDDEN);
+    }
+
+    private void 권한_목록_조회됨(ExtractableResponse<Response> response2) {
+        assertHttpStatus(response2, OK);
     }
 
     private void 권한_목록_조회_실패됨(ExtractableResponse<Response> response) {

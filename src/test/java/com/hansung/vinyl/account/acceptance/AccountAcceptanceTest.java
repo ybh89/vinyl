@@ -74,7 +74,7 @@ public class AccountAcceptanceTest extends AcceptanceTest {
         assertHttpStatus(getListResponse, OK);
     }
 
-    private static ExtractableResponse<Response> 계정_목록_조회_요청(String token) {
+    public static ExtractableResponse<Response> 계정_목록_조회_요청(String token) {
         return get("/accounts", token);
     }
 

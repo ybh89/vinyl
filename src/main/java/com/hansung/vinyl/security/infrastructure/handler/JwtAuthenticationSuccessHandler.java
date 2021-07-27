@@ -19,7 +19,9 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
         User user = (User) authentication.getPrincipal();
-        String jwtAccessToken = jwtProvider.createAccessToken(String.valueOf(user.getAccountId()));
-        response.addHeader("access-token", jwtAccessToken);
+        String accessToken = jwtProvider.createAccessToken(String.valueOf(user.getAccountId()));
+        String refreshToken = jwtProvider.createRefreshToken(String.valueOf(user.getAccountId()));
+        response.addHeader("access-token", accessToken);
+        response.addHeader("refresh-token", refreshToken);
     }
 }

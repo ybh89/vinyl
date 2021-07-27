@@ -26,14 +26,12 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
         HttpServletRequest request = ((FilterInvocation) object).getRequest();
         if (Objects.nonNull(requestMap)) {
-            Set<Map.Entry<RequestMatcher, List<ConfigAttribute>>> entries = requestMap.entrySet();
-            return entries.stream()
+            Set<ConfigAttribute> result = new HashSet<>();
+            requestMap.entrySet().stream()
                     .filter(entry -> entry.getKey().matches(request))
                     .map(entry -> entry.getValue())
-                    .reduce((list1, list2) -> {
-                        list1.addAll(list2);
-                        return list1;
-                    }).orElse(null);
+                    .forEach(configAttributes -> result.addAll(configAttributes));
+            return result;
         }
         return null;
     }
