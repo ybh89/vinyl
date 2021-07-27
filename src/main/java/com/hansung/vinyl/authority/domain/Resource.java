@@ -2,6 +2,7 @@ package com.hansung.vinyl.authority.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -38,5 +39,13 @@ public class Resource {
     @Override
     public int hashCode() {
         return Objects.hash(path, httpMethod);
+    }
+
+    @Override
+    public String toString() {
+        return "Resource{" +
+                "path='" + path + '\'' +
+                ", httpMethod=" + httpMethod +
+                '}';
     }
 }

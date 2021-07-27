@@ -20,9 +20,10 @@ public class AuthorityTest {
 
         //when
         List<Resource> resources = authority.getResources();
+        System.out.println(resources);
 
         //then
-        assertThat(resources).containsExactly(new Resource("/*", POST), new Resource("/**", GET));
+        assertThat(resources).containsExactly(new Resource("/*", POST), new Resource("/*", GET));
     }
 
     @DisplayName("권한 변경")

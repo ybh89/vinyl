@@ -32,7 +32,8 @@ public class Authority implements GrantedAuthority {
     @Column(length = 100)
     private String remark;
 
-    @OneToMany(mappedBy = "authority", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "authority", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+            orphanRemoval = true)
     private List<AuthorityResource> authorityResources = new ArrayList<>();
 
     @Builder
@@ -55,22 +56,24 @@ public class Authority implements GrantedAuthority {
     public void update(Authority authority, ApplicationEventPublisher publisher) {
         this.name = authority.name;
         this.remark = authority.remark;
-        this.authorityResources.clear();
-        authority.authorityResources.forEach(this::addAuthorityResource);
+        changeResources(authority.getAuthorityResources());
         publishEvent(publisher, new AuthorityCommandedEvent(this, "update"));
+    }
+
+    public void clearAuthorityResources() {
+        authorityResources.clear();
+    }
+
+    public void changeResources(List<AuthorityResource> authorityResources) {
+        this.authorityResources.clear();
+        authorityResources.forEach(authorityResource -> authorityResource.setAuthority(this));
+        this.authorityResources.addAll(authorityResources);
     }
 
     public void publishEvent(ApplicationEventPublisher publisher, Object event) {
         if (Objects.nonNull(publisher)) {
             publisher.publishEvent(event);
         }
-    }
-
-    private void addAuthorityResource(AuthorityResource authorityResource) {
-        if (!authorityResources.contains(authorityResource)) {
-            authorityResources.add(authorityResource);
-        }
-        authorityResource.setAuthority(this);
     }
 
     private List<AuthorityResource> createAuthorityResources(List<Resource> resources) {

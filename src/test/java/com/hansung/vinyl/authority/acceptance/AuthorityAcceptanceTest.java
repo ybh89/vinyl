@@ -9,6 +9,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.Arrays;
 import java.util.List;
@@ -54,6 +55,13 @@ public class AuthorityAcceptanceTest extends AcceptanceTest {
         권한_삭제됨(deleteResponse);*/
     }
 
+    public static ExtractableResponse<Response> 권한_수정_되어있음(ExtractableResponse<Response> postResponse, String token,
+                                                           String name, String desc, List<ResourceRequest> resourceRequests) {
+        ExtractableResponse<Response> response = 권한_수정_요청(postResponse, token, name, desc, resourceRequests);
+        권한_수정됨(response);
+        return response;
+    }
+
     public static ExtractableResponse<Response> 권한_등록_되어있음(String name, String desc,
                                                            List<ResourceRequest> resourceRequests, String token) {
         ExtractableResponse<Response> response = 권한_생성_요청(name, desc, resourceRequests, token);
@@ -94,12 +102,12 @@ public class AuthorityAcceptanceTest extends AcceptanceTest {
         return delete(postResponse.header("Location"), 토큰);
     }
 
-    private void 권한_수정됨(ExtractableResponse<Response> putResponse) {
+    private static void 권한_수정됨(ExtractableResponse<Response> putResponse) {
         assertHttpStatus(putResponse, OK);
     }
 
-    private ExtractableResponse<Response> 권한_수정_요청(ExtractableResponse<Response> postResponse, String token,
-                                                   String name, String desc, List<ResourceRequest> resourceRequests) {
+    private static ExtractableResponse<Response> 권한_수정_요청(ExtractableResponse<Response> postResponse, String token,
+                                                          String name, String desc, List<ResourceRequest> resourceRequests) {
         AuthorityRequest authorityRequest = new AuthorityRequest(name, desc, resourceRequests);
         ExtractableResponse<Response> putResponse = put(postResponse.header("Location"), authorityRequest, token);
         return putResponse;

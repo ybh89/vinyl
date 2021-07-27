@@ -3,6 +3,7 @@ package com.hansung.vinyl.authority.application;
 import com.hansung.vinyl.authority.domain.*;
 import com.hansung.vinyl.authority.dto.AuthorityRequest;
 import com.hansung.vinyl.authority.dto.AuthorityResponse;
+import com.hansung.vinyl.common.exception.DuplicateDataException;
 import com.hansung.vinyl.common.exception.NoSuchDataException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -40,10 +41,27 @@ public class AuthorityService {
     }
 
     public AuthorityResponse update(Long authorityId, AuthorityRequest authorityRequest) {
+        validateSameName(authorityId, authorityRequest);
+
         Authority authority = findAuthorityById(authorityId);
         Authority updateAuthority = createAuthority(authorityRequest);
+        authority.clearAuthorityResources();
+        authorityResourceRepository.flush();
+
         authority.update(updateAuthority, publisher);
         return AuthorityResponse.of(authority);
+    }
+
+    private List<Resource> createResources(AuthorityRequest authorityRequest) {
+        return authorityRequest.getResources().stream()
+                .map(resourceRequest -> new Resource(resourceRequest.getPath(), resourceRequest.getHttpMethod()))
+                .collect(Collectors.toList());
+    }
+
+    private void validateSameName(Long authorityId, AuthorityRequest authorityRequest) {
+        if (authorityRepository.existsByIdNotAndNameEquals(authorityId, authorityRequest.getName())) {
+            throw new DuplicateDataException("name", authorityRequest.getName(), getClass().getName());
+        }
     }
 
     public void delete(Long authorityId) {
@@ -62,14 +80,10 @@ public class AuthorityService {
     }
 
     private Authority createAuthority(AuthorityRequest authorityRequest) {
-        List<Resource> resources = authorityRequest.getResources().stream()
-                .map(resourceRequest -> new Resource(resourceRequest.getPath(), resourceRequest.getHttpMethod()))
-                .collect(Collectors.toList());
-
         Authority authority = Authority.builder()
                 .name(authorityRequest.getName())
                 .remark(authorityRequest.getRemark())
-                .resources(resources)
+                .resources(createResources(authorityRequest))
                 .publisher(publisher)
                 .build();
         return authority;

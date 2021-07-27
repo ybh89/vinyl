@@ -21,6 +21,7 @@ import java.util.List;
 
 import static com.hansung.vinyl.account.acceptance.AccountAcceptanceTest.*;
 import static com.hansung.vinyl.authority.acceptance.AuthorityAcceptanceTest.*;
+import static com.hansung.vinyl.authority.domain.HttpMethod.*;
 import static org.springframework.http.HttpStatus.*;
 
 @DisplayName("동적 인가 시스템 관리")
@@ -65,8 +66,11 @@ public class DynamicAuthorityAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 권한_목록_조회_요청(매니저_토큰);
         권한_목록_조회_실패됨(response);
-
         계정_목록_조회됨(매니저_토큰);
+
+        ResourceRequest 권한_목록_조회_권한 = new ResourceRequest("/authorities", GET);
+        매니저권한자원.add(권한_목록_조회_권한);
+        권한_수정_되어있음(매니저권한, 관리자_토큰, "ROLE_MANAGER", "updated", 매니저권한자원);
     }
 
     private void 권한_목록_조회_실패됨(ExtractableResponse<Response> response) {
