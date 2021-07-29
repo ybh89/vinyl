@@ -4,7 +4,6 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
     username: root
     password: rhkdro90
-    initialization-mode: always # 데이터 초기 세팅 data.sql
 
   jpa:
     properties:
@@ -25,5 +24,14 @@ security:
   jwt:
     token:
       secret-key: jwt_secret_key
-      access-expiration: 3600000 # 1시간
+      access-expiration: 10000 #3600000 # 1시간
       refresh-expiration: 1209600000 # 2주
+
+vinyl:
+  init-data:
+    super:
+      role: ROLE_SUPER
+      email: super@vinyl.com
+      password: $2a$10$LYB3JRPboWY45HVnKJEWzugFXhi1Uqw37GODw71Fue3Uh42BrZmWy
+      path: /**
+    roles: ROLE_ADMIN,ROLE_MANAGER,ROLE_USER,ROLE_ANONYMOUS

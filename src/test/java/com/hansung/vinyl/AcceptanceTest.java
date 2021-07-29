@@ -65,6 +65,19 @@ public class AcceptanceTest {
         return put(path, params, null);
     }
 
+    public static ExtractableResponse<Response> get(String path, String accessToken, String refreshToken) {
+        return given()
+                        .log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .auth().oauth2(accessToken)
+                        .cookie("refresh-token", refreshToken)
+                .when()
+                        .get(path)
+                .then()
+                        .log().all()
+                        .extract();
+    }
+
     public static ExtractableResponse<Response> get(String path, String token) {
         token = setBlankIfNull(token);
         return given()

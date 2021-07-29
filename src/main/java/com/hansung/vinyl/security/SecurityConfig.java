@@ -8,6 +8,7 @@ import com.hansung.vinyl.security.application.UrlPathMapFactoryBean;
 import com.hansung.vinyl.security.domain.PermitAllResourceGroup;
 import com.hansung.vinyl.security.infrastructure.filter.JwtAuthenticationFilter;
 import com.hansung.vinyl.security.infrastructure.filter.PermitAllFilter;
+import com.hansung.vinyl.security.infrastructure.handler.JwtAuthenticationEntryPoint;
 import com.hansung.vinyl.security.infrastructure.handler.JwtAuthenticationFailureHandler;
 import com.hansung.vinyl.security.infrastructure.handler.JwtAuthenticationSuccessHandler;
 import com.hansung.vinyl.security.infrastructure.metadatasource.UrlFilterInvocationSecurityMetadataSource;
@@ -22,7 +23,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -41,12 +44,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.authorizeRequests()
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint())
                 .and()
                 .addFilter(jwtAuthenticationFilter())
                 .addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class)
                 .addFilterBefore(permitAllFilter(), FilterSecurityInterceptor.class)
                 ;
+    }
+
+    @Bean
+    public AuthenticationEntryPoint jwtAuthenticationEntryPoint() {
+        return new JwtAuthenticationEntryPoint();
     }
 
     @Override

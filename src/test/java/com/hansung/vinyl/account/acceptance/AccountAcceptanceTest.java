@@ -26,7 +26,9 @@ public class AccountAcceptanceTest extends AcceptanceTest {
         계정_생성됨(postResponse);
 
         ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD);
-        String 토큰 = 로그인됨(loginResponse);
+        String 토큰 = 로그인됨(loginResponse).get(0);
+
+        ExtractableResponse<Response> loginFailResponse = 로그인_요청("fail@fail.com", "fail-password!123");
 
         // 권한이 있어야 진행 가능
         /*ExtractableResponse<Response> getResponse = 계정_조회_요청(postResponse, 토큰);
@@ -45,10 +47,10 @@ public class AccountAcceptanceTest extends AcceptanceTest {
         return response;
     }
 
-    public static String 로그인_되어있음(String email, String password) {
+    public static List<String> 로그인_되어있음(String email, String password) {
         ExtractableResponse<Response> response = 로그인_요청(email, password);
-        String token = 로그인됨(response);
-        return token;
+        List<String> tokens = 로그인됨(response);
+        return tokens;
     }
 
     public static ExtractableResponse<Response> 계정_목록_조회됨(String token) {
@@ -57,11 +59,12 @@ public class AccountAcceptanceTest extends AcceptanceTest {
         return response;
     }
 
-    private static String 로그인됨(ExtractableResponse<Response> loginResponse) {
+    private static List<String> 로그인됨(ExtractableResponse<Response> loginResponse) {
         assertHttpStatus(loginResponse, OK);
-        String token = loginResponse.header("access-token");
-        assertThat(token).isNotNull();
-        return token;
+        String accessToken = loginResponse.header("access-token");
+        String refreshToken = loginResponse.cookie("refresh-token");
+        assertThat(accessToken).isNotNull();
+        return Arrays.asList(accessToken, refreshToken);
     }
 
     private static ExtractableResponse<Response> 로그인_요청(String email, String password) {
@@ -73,9 +76,11 @@ public class AccountAcceptanceTest extends AcceptanceTest {
     private static void 계정_목록_조회됨(ExtractableResponse<Response> getListResponse) {
         assertHttpStatus(getListResponse, OK);
     }
-
-    public static ExtractableResponse<Response> 계정_목록_조회_요청(String token) {
-        return get("/accounts", token);
+    public static ExtractableResponse<Response> 계정_목록_조회_요청(String accessToken) {
+        return get("/accounts", accessToken);
+    }
+    public static ExtractableResponse<Response> 계정_목록_조회_요청(String accessToken, String refreshToken) {
+        return get("/accounts", accessToken, refreshToken);
     }
 
     private void 계정_조회됨(ExtractableResponse<Response> getResponse) {

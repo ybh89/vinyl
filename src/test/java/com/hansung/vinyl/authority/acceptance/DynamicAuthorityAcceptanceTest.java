@@ -48,7 +48,7 @@ public class DynamicAuthorityAcceptanceTest extends AcceptanceTest {
     @DisplayName("동적 인가 시스템을 관리한다")
     @Test
     public void dynamicAuthorityManager() throws Exception {
-        String 관리자_토큰 = 로그인_되어있음(ADMIN_EMAIL, ADMIN_PASSWORD);
+        String 관리자_토큰 = 로그인_되어있음(ADMIN_EMAIL, ADMIN_PASSWORD).get(0);
 
         List<ResourceRequest> 매니저권한자원 = createResourceRequestWithAllHttpMethod("/accounts/**");
         List<ResourceRequest> 사용자권한자원 = createResourceRequestWithAllHttpMethod("/authorities/**");
@@ -62,7 +62,7 @@ public class DynamicAuthorityAcceptanceTest extends AcceptanceTest {
         계정_권한_변경됨(매니저, Arrays.asList(매니저권한.as(AuthorityResponse.class).getId()), 관리자_토큰);
         계정_권한_변경됨(사용자, Arrays.asList(사용자권한.as(AuthorityResponse.class).getId()), 관리자_토큰);
 
-        String 매니저_토큰 = 로그인_되어있음(MGR_EMAIL, MGR_PASSWORD);
+        String 매니저_토큰 = 로그인_되어있음(MGR_EMAIL, MGR_PASSWORD).get(0);
 
         //매니저 권한 테스트
         ExtractableResponse<Response> response = 권한_목록_조회_요청(매니저_토큰);

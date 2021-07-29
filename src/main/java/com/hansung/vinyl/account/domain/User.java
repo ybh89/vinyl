@@ -10,6 +10,7 @@ public class User implements UserDetails {
     private Long accountId;
     private String username;
     private String password;
+    private String refreshToken;
     private boolean isEnabled;
     private boolean isAccountNonExpired;
     private boolean isAccountNonLocked;
@@ -17,12 +18,13 @@ public class User implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
     @Builder
-    public User(Long accountId, String username, String password, boolean isEnabled, boolean isAccountNonExpired,
+    public User(Long accountId, String username, String password, String refreshToken, boolean isEnabled, boolean isAccountNonExpired,
                 boolean isAccountNonLocked, boolean isCredentialsNonExpired,
                 Collection<? extends GrantedAuthority> authorities) {
         this.accountId = accountId;
         this.username = username;
         this.password = password;
+        this.refreshToken = refreshToken;
         this.isEnabled = isEnabled;
         this.isAccountNonExpired = isAccountNonExpired;
         this.isAccountNonLocked = isAccountNonLocked;
@@ -33,6 +35,8 @@ public class User implements UserDetails {
     public Long getAccountId() {
         return accountId;
     }
+
+    public String getRefreshToken() { return refreshToken; }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

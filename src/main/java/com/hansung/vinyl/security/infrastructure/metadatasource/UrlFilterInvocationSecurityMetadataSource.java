@@ -50,6 +50,7 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
 
     @TransactionalEventListener
     public void reload(AuthorityCommandedEvent event) {
+        System.out.println("AuthorityCommandedEvent!!");
         requestMap.clear();
         requestMap = authorityService.findAuthorityPathMap();
     }

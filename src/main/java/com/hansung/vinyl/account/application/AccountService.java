@@ -81,6 +81,7 @@ public class AccountService implements UserDetailsService {
                 .accountId(account.getId())
                 .username(account.getEmail())
                 .password(account.getPassword())
+                .refreshToken(account.getRefreshToken())
                 .isEnabled(true)
                 .isAccountNonExpired(true)
                 .isAccountNonLocked(true)

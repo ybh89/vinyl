@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -19,9 +20,16 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
         User user = (User) authentication.getPrincipal();
-        String accessToken = jwtProvider.createAccessToken(String.valueOf(user.getAccountId()));
-        String refreshToken = jwtProvider.createRefreshToken(String.valueOf(user.getAccountId()));
+        String accessToken = jwtProvider.createAccessToken(user);
+        String refreshToken = jwtProvider.createRefreshToken(user);
+        jwtProvider.saveRefreshToken(accessToken, refreshToken);
+
+        Cookie refreshTokenCookie= new Cookie("refresh-token", refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setPath("/");
+
+        response.addCookie(refreshTokenCookie);
         response.addHeader("access-token", accessToken);
-        response.addHeader("refresh-token", refreshToken);
     }
 }
