@@ -4,8 +4,7 @@ import com.hansung.vinyl.account.domain.User;
 import com.hansung.vinyl.common.exception.ExpiredRefreshTokenException;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -26,6 +25,7 @@ import java.io.IOException;
  * case3: access token은 유효하지만, refresh token은 만료된 경우 ->  refresh token 재발급
  * case4: accesss token과 refresh token 모두가 유효한 경우 -> 다음 필더로
  */
+@Slf4j
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
@@ -39,7 +39,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             jwtProvider.validateAccessToken(accessToken);
         } catch (ExpiredJwtException exception) {
             isExpiredAccessToken = true;
-            System.out.println("accessToken 이 만료되었습니다.");
+            log.info("[JwtAuthorizationFilter] accessToken 이 만료되었습니다.");
         } catch (Exception exception) {
             request.setAttribute("exception", exception);
             filterChain.doFilter(request, response);
@@ -47,13 +47,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
 
         String refreshToken = jwtProvider.getRefreshToken(request);
-        System.out.println("accessToken="+accessToken);
-        System.out.println("isExpiredAccessToken="+isExpiredAccessToken);
-        System.out.println("refreshToken="+refreshToken);
+        log.info("[JwtAuthorizationFilter] accessToken = {}", accessToken);
+        log.info("[JwtAuthorizationFilter] refreshToken = {}", refreshToken);
 
         if (isExpiredAccessToken) {
             try {
-                jwtProvider.validateRefreshToken(accessToken, refreshToken);
+                jwtProvider.validateRefreshToken(refreshToken);
             } catch (Exception exception) {
                 request.setAttribute("exception", exception);
                 filterChain.doFilter(request, response);
@@ -61,15 +60,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
 
             accessToken = reissueAccessToken(response, refreshToken);
-            System.out.println("new accessToken="+accessToken);
+            log.info("[JwtAuthorizationFilter] new accessToken = {}", accessToken);
         }
 
         if (!isExpiredAccessToken) {
             try {
-                jwtProvider.validateRefreshToken(accessToken, refreshToken);
+                jwtProvider.validateRefreshToken(refreshToken);
             } catch (ExpiredRefreshTokenException exception) {
                 String newRefreshToken = reissueRefreshToken(response, accessToken);
-                System.out.println("new refreshToken=" + newRefreshToken);
+                log.info("[JwtAuthorizationFilter] new refreshToken = {}",  newRefreshToken);
             } catch (Exception exception) {
                 request.setAttribute("exception", exception);
                 filterChain.doFilter(request, response);
@@ -88,8 +87,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String newRefreshToken = jwtProvider.createRefreshToken(user);
         jwtProvider.saveRefreshToken(accessToken, newRefreshToken);
         Cookie refreshTokenCookie= new Cookie("refresh-token", newRefreshToken);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true);
+        //refreshTokenCookie.setHttpOnly(true);
+        //refreshTokenCookie.setSecure(true);
         refreshTokenCookie.setPath("/");
         response.addCookie(refreshTokenCookie);
         return newRefreshToken;

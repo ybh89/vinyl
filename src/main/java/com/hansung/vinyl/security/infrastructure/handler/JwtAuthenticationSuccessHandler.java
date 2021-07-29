@@ -25,8 +25,8 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
         jwtProvider.saveRefreshToken(accessToken, refreshToken);
 
         Cookie refreshTokenCookie= new Cookie("refresh-token", refreshToken);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true);
+        //refreshTokenCookie.setHttpOnly(true);
+        //refreshTokenCookie.setSecure(true);
         refreshTokenCookie.setPath("/");
 
         response.addCookie(refreshTokenCookie);

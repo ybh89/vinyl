@@ -1,9 +1,15 @@
 package com.hansung.vinyl.security.infrastructure.filter;
 
 import com.hansung.vinyl.account.application.AccountService;
-import com.hansung.vinyl.common.exception.*;
 import com.hansung.vinyl.account.domain.User;
-import io.jsonwebtoken.*;
+import com.hansung.vinyl.common.exception.ExpiredRefreshTokenException;
+import com.hansung.vinyl.common.exception.IllegalRefreshTokenException;
+import com.hansung.vinyl.common.exception.NoAccessTokenException;
+import com.hansung.vinyl.common.exception.NoRefreshTokenException;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -13,8 +19,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
@@ -78,19 +82,6 @@ public class JwtProvider {
         accountService.updateRefreshToken(accountId, refreshToken);
     }
 
-    public boolean isExpired(String token, HttpServletRequest request) {
-        try {
-            Claims claims = parseClaims(token);
-            return claims.getExpiration()
-                    .before(new Date());
-        } catch (ExpiredJwtException exception) {
-            return true;
-        } catch (JwtException exception) {
-            request.setAttribute(JWT_EXCEPTION_KEY, exception);
-            return false;
-        }
-    }
-
     private Claims parseClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(secretKey)
@@ -124,78 +115,7 @@ public class JwtProvider {
         return  (User) accountService.loadUserById(accountId);
     }
 
-    public void validateRefreshToken(String refreshToken, HttpServletResponse response) throws IOException, NoRefreshTokenException {
-        if (refreshToken.isEmpty()) {
-            throw new NoRefreshTokenException("test");
-        }
-
-        /*boolean isExpiredRefreshToken = isExpired(refreshToken, request);
-        if (isExpiredRefreshToken) {
-            ExpiredAccessAndRefreshTokenException expiredAccessAndRefreshTokenException = new ExpiredAccessAndRefreshTokenException();
-            request.setAttribute(JWT_EXCEPTION_KEY, expiredAccessAndRefreshTokenException);
-            throw expiredAccessAndRefreshTokenException;
-        }
-
-        User user = findUser(refreshToken);
-        if (!refreshToken.equals(user.getRefreshToken())) {
-            IllegalRefreshTokenException illegalRefreshTokenException = new IllegalRefreshTokenException();
-            request.setAttribute(JWT_EXCEPTION_KEY, illegalRefreshTokenException);
-            throw new IllegalRefreshTokenException();
-        }*/
-    }
-
-    public boolean isValidTokenExceptExpiration(String token, HttpServletRequest request) {
-        if (Objects.isNull(token) || token.isEmpty()) {
-            return false;
-        }
-        try {
-            parseClaims(token);
-            return true;
-        } catch (ExpiredJwtException exception) {
-            return true;
-        } catch (Exception exception) {
-            request.setAttribute("exception", exception);
-            return false;
-        }
-    }
-
-    public boolean isValidRefreshToken(String refreshToken, HttpServletRequest request) {
-        try {
-            if (refreshToken.isEmpty()) {
-                throw new NoRefreshTokenException("test");
-            }
-
-            if (!isValidTokenExceptExpiration(refreshToken, request)) {
-
-            }
-
-            boolean isExpiredRefreshToken = isExpired(refreshToken, request);
-            if (isExpiredRefreshToken) {
-                ExpiredRefreshTokenException expiredRefreshTokenException = new ExpiredRefreshTokenException();
-                request.setAttribute(JWT_EXCEPTION_KEY, expiredRefreshTokenException);
-                throw expiredRefreshTokenException;
-            }
-
-            return true;
-        } catch (Exception exception) {
-            request.setAttribute("exception", exception);
-            return false;
-        }
-    }
-
-    public void validateAccessTokenExceptExpiration(String accessToken) {
-        if (Objects.isNull(accessToken) || accessToken.isEmpty()) {
-            throw new NoAccessTokenException();
-        }
-
-        try {
-            parseClaims(accessToken);
-        } catch (ExpiredJwtException exception) {
-            return;
-        }
-    }
-
-    public void validateRefreshToken(String accessToken, String refreshToken) {
+    public void validateRefreshToken(String refreshToken) {
         if (Objects.isNull(refreshToken) || refreshToken.isEmpty()) {
             throw new NoRefreshTokenException();
         }
@@ -206,21 +126,9 @@ public class JwtProvider {
             throw new ExpiredRefreshTokenException();
         }
 
-        User user = findUser(accessToken);
+        User user = findUser(refreshToken);
         if (!user.getRefreshToken().equals(refreshToken)) {
             throw new IllegalRefreshTokenException();
-        }
-    }
-
-    public void validateRefreshTokenExceptExpiration(String refreshToken) {
-        if (Objects.isNull(refreshToken) || refreshToken.isEmpty()) {
-            throw new NoRefreshTokenException();
-        }
-
-        try {
-            parseClaims(refreshToken);
-        } catch (ExpiredJwtException exception) {
-            return;
         }
     }
 

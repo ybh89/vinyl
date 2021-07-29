@@ -6,6 +6,7 @@ import com.hansung.vinyl.common.exception.ExpiredRefreshTokenException;
 import com.hansung.vinyl.common.exception.IllegalRefreshTokenException;
 import com.hansung.vinyl.common.exception.NoRefreshTokenException;
 import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
@@ -19,25 +20,29 @@ import java.util.Objects;
 
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
+@Slf4j
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        System.out.println("JwtAuthenticationEntryPoint!!");
         String message = "인증이 필요합니다. 로그인 해주세요.";
-        String exceptionType = authException.getClass().getTypeName();
 
         Exception exception = (Exception) request.getAttribute("exception");
         if (Objects.nonNull(exception)) {
             message = getJWTErrorMessage(exception);
-            exceptionType = exception.getClass().getTypeName();
         }
+
+        if (Objects.isNull(exception)) {
+            exception = authException;
+        }
+
+        log.error("인증 에러 발생", exception);
 
         Error error = Error.builder()
                 .httpStatus(UNAUTHORIZED)
                 .message(message)
-                .exceptionType(exceptionType)
+                .exceptionType(exception.getClass().getTypeName())
                 .build();
 
         setResponse(response, error);
