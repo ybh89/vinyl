@@ -5,7 +5,9 @@ import com.hansung.vinyl.account.dto.AccountAuthorityRequest;
 import com.hansung.vinyl.account.dto.AccountRequest;
 import com.hansung.vinyl.account.dto.AccountResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.bind.BindResult;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -18,7 +20,7 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping
-    public ResponseEntity<AccountResponse> join(@RequestBody AccountRequest accountRequest) {
+    public ResponseEntity<AccountResponse> join(@Validated @RequestBody AccountRequest accountRequest) {
         AccountResponse accountResponse = accountService.join(accountRequest);
         return ResponseEntity.created(URI.create("/accounts/" + accountResponse.getId())).body(accountResponse);
     }

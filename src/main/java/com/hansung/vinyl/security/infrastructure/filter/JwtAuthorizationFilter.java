@@ -15,6 +15,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * 익명 사용자는 다음 필터로 이동하여 인가처리 필터에서 처리됨.
@@ -65,7 +66,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         if (!isExpiredAccessToken) {
             try {
-                jwtProvider.validateRefreshToken(refreshToken);
+                if (Objects.nonNull(refreshToken) && !refreshToken.isEmpty()) {
+                    jwtProvider.validateRefreshToken(refreshToken);
+                }
             } catch (ExpiredRefreshTokenException exception) {
                 String newRefreshToken = reissueRefreshToken(response, accessToken);
                 log.info("[JwtAuthorizationFilter] new refreshToken = {}",  newRefreshToken);

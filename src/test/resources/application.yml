@@ -2,15 +2,16 @@ spring:
   profiles:
     active: test
 
-  datasource:
-    initialization-mode: never
-
   jpa:
     properties:
       hibernate:
         format_sql: true
     hibernate:
       ddl-auto: create
+
+  messages:
+    basename: messages,errors
+    encoding: UTF-8
 
 logging.level:
   org.hibernate.SQL: debug
@@ -20,5 +21,14 @@ security:
   jwt:
     token:
       secret-key: jwt_secret_key
-      access-expiration: 10000 #630 #3600000 # 1시간
+      access-expiration: 3600000 # 1시간
       refresh-expiration: 1209600000 # 2주
+
+vinyl:
+  init-data:
+    super:
+      role: ROLE_SUPER
+      email: super@vinyl.com
+      password: $2a$10$LYB3JRPboWY45HVnKJEWzugFXhi1Uqw37GODw71Fue3Uh42BrZmWy
+      path: /**
+    roles: ROLE_ADMIN,ROLE_MANAGER,ROLE_USER,ROLE_ANONYMOUS
