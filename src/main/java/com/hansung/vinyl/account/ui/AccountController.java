@@ -2,10 +2,9 @@ package com.hansung.vinyl.account.ui;
 
 import com.hansung.vinyl.account.application.AccountService;
 import com.hansung.vinyl.account.dto.AccountAuthorityRequest;
-import com.hansung.vinyl.account.dto.AccountRequest;
-import com.hansung.vinyl.account.dto.AccountResponse;
+import com.hansung.vinyl.account.dto.JoinRequest;
+import com.hansung.vinyl.account.dto.JoinResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.properties.bind.BindResult;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,21 +19,21 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping
-    public ResponseEntity<AccountResponse> join(@Validated @RequestBody AccountRequest accountRequest) {
-        AccountResponse accountResponse = accountService.join(accountRequest);
-        return ResponseEntity.created(URI.create("/accounts/" + accountResponse.getId())).body(accountResponse);
+    public ResponseEntity<JoinResponse> join(@Validated @RequestBody JoinRequest joinRequest) {
+        JoinResponse joinResponse = accountService.join(joinRequest);
+        return ResponseEntity.created(URI.create("/accounts/" + joinResponse.getId())).body(joinResponse);
     }
 
     @GetMapping
-    public ResponseEntity<List<AccountResponse>> list() {
-        List<AccountResponse> accountResponses = accountService.list();
-        return ResponseEntity.ok(accountResponses);
+    public ResponseEntity<List<JoinResponse>> list() {
+        List<JoinResponse> joinRespons = accountService.list();
+        return ResponseEntity.ok(joinRespons);
     }
 
     @GetMapping("/{accountId}")
-    public ResponseEntity<AccountResponse> findById(@PathVariable Long accountId) {
-        AccountResponse accountResponse = accountService.findById(accountId);
-        return ResponseEntity.ok(accountResponse);
+    public ResponseEntity<JoinResponse> findById(@PathVariable Long accountId) {
+        JoinResponse joinResponse = accountService.findById(accountId);
+        return ResponseEntity.ok(joinResponse);
     }
 
     @DeleteMapping("/{accountId}")
@@ -44,9 +43,9 @@ public class AccountController {
     }
 
     @PutMapping("/{accountId}/authorities")
-    public ResponseEntity<AccountResponse> updateAuthorities(@PathVariable Long accountId,
-                                                             @RequestBody AccountAuthorityRequest accountAuthorityRequest) {
-        AccountResponse accountResponse = accountService.updateAuthorities(accountId, accountAuthorityRequest);
-        return ResponseEntity.ok(accountResponse);
+    public ResponseEntity<JoinResponse> updateAuthorities(@PathVariable Long accountId,
+                                                          @RequestBody AccountAuthorityRequest accountAuthorityRequest) {
+        JoinResponse joinResponse = accountService.updateAuthorities(accountId, accountAuthorityRequest);
+        return ResponseEntity.ok(joinResponse);
     }
 }

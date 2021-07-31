@@ -6,16 +6,16 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
-public class AccountResponse {
+public class JoinResponse {
     private Long id;
     private String email;
 
-    public AccountResponse(Long id, String email) {
+    public JoinResponse(Long id, String email) {
         this.id = id;
         this.email = email;
     }
 
-    public static AccountResponse of(Account savedAccount) {
-        return new AccountResponse(savedAccount.getId(), savedAccount.getEmail());
+    public static JoinResponse of(Account savedAccount) {
+        return new JoinResponse(savedAccount.getId(), savedAccount.getEmail());
     }
 }

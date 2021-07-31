@@ -1,8 +1,8 @@
 package com.hansung.vinyl.account.acceptance;
 
 import com.hansung.vinyl.AcceptanceTest;
-import com.hansung.vinyl.account.dto.AccountRequest;
-import com.hansung.vinyl.account.dto.AccountResponse;
+import com.hansung.vinyl.account.dto.JoinRequest;
+import com.hansung.vinyl.account.dto.JoinResponse;
 import com.hansung.vinyl.security.dto.LoginRequest;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -85,7 +85,7 @@ public class AccountAcceptanceTest extends AcceptanceTest {
 
     private void 계정_조회됨(ExtractableResponse<Response> getResponse) {
         assertHttpStatus(getResponse, OK);
-        assertThat(getResponse.as(AccountResponse.class).getId()).isNotNull();
+        assertThat(getResponse.as(JoinResponse.class).getId()).isNotNull();
     }
 
     private ExtractableResponse<Response> 계정_조회_요청(ExtractableResponse<Response> postResponse, String token) {
@@ -97,16 +97,16 @@ public class AccountAcceptanceTest extends AcceptanceTest {
     }
 
     private static ExtractableResponse<Response> 계정_생성_요청(String email, String password) {
-        AccountRequest accountRequest = new AccountRequest(email, password, Arrays.asList());
+        JoinRequest joinRequest = new JoinRequest(email, password, Arrays.asList());
 
-        ExtractableResponse<Response> postResponse = post("/accounts", accountRequest);
+        ExtractableResponse<Response> postResponse = post("/accounts", joinRequest);
         return postResponse;
     }
 
     private static ExtractableResponse<Response> 계정_생성_요청(String email, String password, List<Long> ids) {
-        AccountRequest accountRequest = new AccountRequest(email, password, ids);
+        JoinRequest joinRequest = new JoinRequest(email, password, ids);
 
-        ExtractableResponse<Response> postResponse = post("/accounts", accountRequest);
+        ExtractableResponse<Response> postResponse = post("/accounts", joinRequest);
         return postResponse;
     }
 

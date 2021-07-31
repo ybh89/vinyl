@@ -2,12 +2,12 @@ package com.hansung.vinyl.account.application;
 
 import com.hansung.vinyl.account.domain.*;
 import com.hansung.vinyl.account.dto.AccountAuthorityRequest;
-import com.hansung.vinyl.account.dto.AccountRequest;
-import com.hansung.vinyl.account.dto.AccountResponse;
-import com.hansung.vinyl.security.infrastructure.filter.JwtProvider;
+import com.hansung.vinyl.account.dto.JoinRequest;
+import com.hansung.vinyl.account.dto.JoinResponse;
 import com.hansung.vinyl.authority.domain.Authority;
 import com.hansung.vinyl.authority.domain.AuthorityRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -28,34 +27,37 @@ public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
     private final AuthorityRepository authorityRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ApplicationEventPublisher publisher;
 
-    public AccountResponse join(AccountRequest accountRequest) {
-        validateEmail(accountRequest.getEmail());
-        List<Authority> authorities = findAuthoritiesById(accountRequest.getAuthorityIds());
+    public JoinResponse join(JoinRequest joinRequest) {
+        validateEmail(joinRequest.getEmail());
+        List<Authority> authorities = findAuthoritiesById(joinRequest.getAuthorityIds());
+        Join join = joinRequest.toJoin();
 
         Account account = Account.builder()
-                .email(accountRequest.getEmail())
-                .password(passwordEncoder.encode(accountRequest.getPassword()))
+                .email(joinRequest.getEmail())
+                .password(passwordEncoder.encode(joinRequest.getPassword()))
                 .authorities(authorities)
+                .join(join)
                 .build();
 
         Account savedAccount = accountRepository.save(account);
-        return AccountResponse.of(savedAccount);
+        return JoinResponse.of(savedAccount);
     }
 
     @Transactional(readOnly = true)
-    public List<AccountResponse> list() {
+    public List<JoinResponse> list() {
         List<Account> accounts = accountRepository.findAll();
         return accounts.stream()
-                .map(AccountResponse::of)
+                .map(JoinResponse::of)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public AccountResponse findById(Long accountId) {
+    public JoinResponse findById(Long accountId) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new IllegalArgumentException("계정이 존재하지 않습니다."));
-        return AccountResponse.of(account);
+        return JoinResponse.of(account);
     }
 
     @Transactional(readOnly = true)
@@ -128,11 +130,11 @@ public class AccountService implements UserDetailsService {
         return authorityRepository.findAllById(ids);
     }
 
-    public AccountResponse updateAuthorities(Long accountId, AccountAuthorityRequest accountAuthorityRequest) {
+    public JoinResponse updateAuthorities(Long accountId, AccountAuthorityRequest accountAuthorityRequest) {
         Account account = findAccountById(accountId);
         List<Authority> authorities = findAuthoritiesById(accountAuthorityRequest.getAuthorityIds());
         account.changeAuthorities(authorities);
-        return AccountResponse.of(account);
+        return JoinResponse.of(account);
     }
 
     public void updateRefreshToken(Long accountId, String refreshToken) {

@@ -2,7 +2,7 @@ package com.hansung.vinyl.security.acceptance;
 
 import com.hansung.vinyl.AcceptanceTest;
 import com.hansung.vinyl.account.application.AccountService;
-import com.hansung.vinyl.account.dto.AccountRequest;
+import com.hansung.vinyl.account.dto.JoinRequest;
 import com.hansung.vinyl.authority.application.AuthorityService;
 import com.hansung.vinyl.authority.domain.HttpMethod;
 import com.hansung.vinyl.authority.dto.AuthorityRequest;
@@ -58,8 +58,8 @@ public class JwtAuthorizationFilterAcceptanceTest extends AcceptanceTest {
         List<ResourceRequest> 관리자권한자원 = createResourceRequestWithAllHttpMethod("/**");
         AuthorityRequest authorityRequest = new AuthorityRequest("ROLE_ADMIN", "test", 관리자권한자원);
         AuthorityResponse authorityResponse = authorityService.create(authorityRequest);
-        AccountRequest accountRequest = new AccountRequest(ADMIN_EMAIL, ADMIN_PASSWORD, Arrays.asList(authorityResponse.getId()));
-        accountService.join(accountRequest);
+        JoinRequest joinRequest = new JoinRequest(ADMIN_EMAIL, ADMIN_PASSWORD, Arrays.asList(authorityResponse.getId()));
+        accountService.join(joinRequest);
     }
 
     private void setUpUser() {
