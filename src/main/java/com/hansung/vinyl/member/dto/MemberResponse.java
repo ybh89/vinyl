@@ -18,9 +18,9 @@ public class MemberResponse {
     private String name;
     private String phone;
     private Gender gender;
-    private List<Long> favorites = new ArrayList<>();
+    //private List<Long> favorites = new ArrayList<>();
 
     public static MemberResponse of(Member member) {
-        return new MemberResponse(member.getId(), member.getEmail(), member.getName(), member.getPhone(), member.getGender(), member.getFavorites());
+        return new MemberResponse(member.getId(), member.getEmail(), member.getName(), member.getPhone(), member.getGender());
     }
 }

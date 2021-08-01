@@ -8,6 +8,7 @@ import com.hansung.vinyl.authority.domain.HttpMethod;
 import com.hansung.vinyl.authority.dto.AuthorityRequest;
 import com.hansung.vinyl.authority.dto.AuthorityResponse;
 import com.hansung.vinyl.authority.dto.ResourceRequest;
+import com.hansung.vinyl.member.domain.Gender;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,8 +31,10 @@ public class DynamicAuthorityAcceptanceTest extends AcceptanceTest {
     private static final String ADMIN_PASSWORD = "admin-password!123";
     private static final String MGR_EMAIL = "mgr@mgr.com";
     private static final String MGR_PASSWORD = "mgr-password!123";
+    private static final String MGR_NAME = "mgr";
     private static final String USER_EMAIL = "user@user.com";
     private static final String USER_PASSWORD = "user-password!123";
+    private static final String USER_NAME = "user";
 
     @Autowired
     private AccountService accountService;
@@ -56,8 +59,8 @@ public class DynamicAuthorityAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 매니저권한 = 권한_등록_되어있음("ROLE_MANAGER", "", 매니저권한자원, 관리자_토큰);
         ExtractableResponse<Response> 사용자권한 = 권한_등록_되어있음("ROLE_USER", "", 사용자권한자원, 관리자_토큰);
 
-        ExtractableResponse<Response> 매니저 = 계정_등록_되어있음(MGR_EMAIL, MGR_PASSWORD, null);
-        ExtractableResponse<Response> 사용자 = 계정_등록_되어있음(USER_EMAIL, USER_PASSWORD, null);
+        ExtractableResponse<Response> 매니저 = 계정_등록_되어있음(MGR_EMAIL, MGR_PASSWORD, null, MGR_NAME);
+        ExtractableResponse<Response> 사용자 = 계정_등록_되어있음(USER_EMAIL, USER_PASSWORD, null, USER_NAME);
 
         계정_권한_변경됨(매니저, Arrays.asList(매니저권한.as(AuthorityResponse.class).getId()), 관리자_토큰);
         계정_권한_변경됨(사용자, Arrays.asList(사용자권한.as(AuthorityResponse.class).getId()), 관리자_토큰);
@@ -102,11 +105,12 @@ public class DynamicAuthorityAcceptanceTest extends AcceptanceTest {
         return resourceRequests;
     }
 
-    private void setUpAdmin() {
+    public void setUpAdmin() {
         List<ResourceRequest> 관리자권한자원 = createResourceRequestWithAllHttpMethod("/**");
         AuthorityRequest authorityRequest = new AuthorityRequest("ROLE_ADMIN", "test", 관리자권한자원);
         AuthorityResponse authorityResponse = authorityService.create(authorityRequest);
-        JoinRequest joinRequest = new JoinRequest(ADMIN_EMAIL, ADMIN_PASSWORD, Arrays.asList(authorityResponse.getId()));
+        JoinRequest joinRequest = new JoinRequest(ADMIN_EMAIL, ADMIN_PASSWORD, Arrays.asList(authorityResponse.getId()),
+                "super", "", Gender.FEMALE);
         accountService.join(joinRequest);
     }
 }

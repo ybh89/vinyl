@@ -1,4 +1,4 @@
-package com.hansung.vinyl.post.domain;
+package com.hansung.vinyl.news.domain;
 
 public enum ImageNamePrefix {
     ORIGIN, THUMBNAIL

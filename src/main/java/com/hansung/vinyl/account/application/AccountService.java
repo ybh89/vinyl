@@ -32,16 +32,16 @@ public class AccountService implements UserDetailsService {
     public JoinResponse join(JoinRequest joinRequest) {
         validateEmail(joinRequest.getEmail());
         List<Authority> authorities = findAuthoritiesById(joinRequest.getAuthorityIds());
-        Join join = joinRequest.toJoin();
 
         Account account = Account.builder()
                 .email(joinRequest.getEmail())
                 .password(passwordEncoder.encode(joinRequest.getPassword()))
                 .authorities(authorities)
-                .join(join)
                 .build();
 
         Account savedAccount = accountRepository.save(account);
+        savedAccount.publishEvent(publisher, new AccountCreatedEvent(savedAccount.getId(), savedAccount.getEmail(),
+                joinRequest.getName(), joinRequest.getPhone(), joinRequest.getGender()));
         return JoinResponse.of(savedAccount);
     }
 

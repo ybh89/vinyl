@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.util.ArrayList;
+import javax.persistence.*;
 import java.util.List;
 
 @Getter
@@ -25,15 +22,14 @@ public class Member {
     private String name;
     private String phone;
     private Gender gender;
-    private List<Long> favorites = new ArrayList<>();
+    //private List<Long> favorites = new ArrayList<>();
 
     @Builder
-    public Member(Long accountId, String email, String name, String phone, Gender gender, List<Long> favorites) {
+    public Member(Long accountId, String email, String name, String phone, Gender gender) {
         this.id = accountId;
         this.email = email;
         this.name = name;
         this.phone = phone;
         this.gender = gender;
-        this.favorites = favorites;
     }
 }

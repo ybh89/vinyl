@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -37,13 +38,11 @@ public class Account {
     private List<AccountAuthority> accountAuthorities = new ArrayList<>();
 
     @Builder
-    public Account(Long id, String email, String password, List<Authority> authorities, Join join,
-                   ApplicationEventPublisher publisher) {
+    public Account(Long id, String email, String password, List<Authority> authorities) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.accountAuthorities.addAll(createAccountAuthorities(authorities));
-        publisher.publishEvent(new AccountCreatedEvent(id, email, join.getName(), join.getPhone(), join.getGender()));
     }
 
     public void delete() {
@@ -66,5 +65,11 @@ public class Account {
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public void publishEvent(ApplicationEventPublisher publisher, Object event) {
+        if (Objects.nonNull(publisher)) {
+            publisher.publishEvent(event);
+        }
     }
 }

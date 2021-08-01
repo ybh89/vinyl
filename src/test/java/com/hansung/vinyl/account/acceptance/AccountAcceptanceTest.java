@@ -3,6 +3,7 @@ package com.hansung.vinyl.account.acceptance;
 import com.hansung.vinyl.AcceptanceTest;
 import com.hansung.vinyl.account.dto.JoinRequest;
 import com.hansung.vinyl.account.dto.JoinResponse;
+import com.hansung.vinyl.member.domain.Gender;
 import com.hansung.vinyl.security.dto.LoginRequest;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -18,11 +19,12 @@ import static org.springframework.http.HttpStatus.*;
 public class AccountAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "test@test.com";
     public static final String PASSWORD = "test-password!12";
+    public static final String NAME = "test";
 
     @DisplayName("계정을 관리한다.")
     @Test
     public void accountManager() throws Exception {
-        ExtractableResponse<Response> postResponse = 계정_생성_요청(EMAIL, PASSWORD);
+        ExtractableResponse<Response> postResponse = 계정_생성_요청(EMAIL, PASSWORD, NAME);
         계정_생성됨(postResponse);
 
         ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD);
@@ -41,8 +43,8 @@ public class AccountAcceptanceTest extends AcceptanceTest {
         계정_삭제됨(deleteResponse);*/
     }
 
-    public static ExtractableResponse<Response> 계정_등록_되어있음(String email, String password, List<Long> authorityIds) {
-        ExtractableResponse<Response> response = 계정_생성_요청(email, password, authorityIds);
+    public static ExtractableResponse<Response> 계정_등록_되어있음(String email, String password, List<Long> authorityIds, String name) {
+        ExtractableResponse<Response> response = 계정_생성_요청(email, password, name, authorityIds);
         계정_생성됨(response);
         return response;
     }
@@ -96,15 +98,15 @@ public class AccountAcceptanceTest extends AcceptanceTest {
         assertHttpStatus(postResponse, CREATED);
     }
 
-    private static ExtractableResponse<Response> 계정_생성_요청(String email, String password) {
-        JoinRequest joinRequest = new JoinRequest(email, password, Arrays.asList());
+    private static ExtractableResponse<Response> 계정_생성_요청(String email, String password, String name) {
+        JoinRequest joinRequest = new JoinRequest(email, password, Arrays.asList(), name, null, Gender.FEMALE);
 
         ExtractableResponse<Response> postResponse = post("/accounts", joinRequest);
         return postResponse;
     }
 
-    private static ExtractableResponse<Response> 계정_생성_요청(String email, String password, List<Long> ids) {
-        JoinRequest joinRequest = new JoinRequest(email, password, ids);
+    private static ExtractableResponse<Response> 계정_생성_요청(String email, String password, String name, List<Long> ids) {
+        JoinRequest joinRequest = new JoinRequest(email, password, ids, name, null, Gender.FEMALE);
 
         ExtractableResponse<Response> postResponse = post("/accounts", joinRequest);
         return postResponse;

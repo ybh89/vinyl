@@ -2,6 +2,7 @@ package com.hansung.vinyl.authority.application;
 
 import com.hansung.vinyl.account.domain.Account;
 import com.hansung.vinyl.account.domain.AccountRepository;
+import com.hansung.vinyl.account.domain.Join;
 import com.hansung.vinyl.authority.domain.*;
 import com.hansung.vinyl.security.infrastructure.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import lombok.RequiredArgsConstructor;

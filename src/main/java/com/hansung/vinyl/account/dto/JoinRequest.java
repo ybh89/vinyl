@@ -1,6 +1,7 @@
 package com.hansung.vinyl.account.dto;
 
 import com.hansung.vinyl.account.domain.Join;
+import com.hansung.vinyl.member.domain.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,13 +23,8 @@ public class JoinRequest {
     private List<Long> authorityIds = new ArrayList<>();
     @NotBlank
     private String name;
-    @NotBlank
     private String phone;
-    private String gender;
-
-    public Join toJoin() {
-        return new Join(email, name, phone, gender);
-    }
+    private Gender gender;
 
     public JoinRequest(String email, String password, List<Long> authorityIds) {
         this.email = email;

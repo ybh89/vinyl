@@ -2,6 +2,7 @@ package com.hansung.vinyl.member.application;
 
 import com.hansung.vinyl.account.domain.AccountCreatedEvent;
 import com.hansung.vinyl.account.domain.LoginMember;
+import com.hansung.vinyl.account.domain.User;
 import com.hansung.vinyl.common.exception.NoSuchDataException;
 import com.hansung.vinyl.member.domain.Gender;
 import com.hansung.vinyl.member.domain.Member;
@@ -28,14 +29,14 @@ public class MemberService {
                 .email(accountCreatedEvent.getEmail())
                 .name(accountCreatedEvent.getName())
                 .phone(accountCreatedEvent.getPhone())
-                .gender(Gender.valueOf(accountCreatedEvent.getGender()))
+                .gender(accountCreatedEvent.getGender())
                 .build();
         memberRepository.save(member);
     }
 
     @Transactional(readOnly = true)
-    public MemberResponse me(LoginMember loginMember) {
-        Member member = findMemberById(loginMember.getId());
+    public MemberResponse me(User user) {
+        Member member = findMemberById(user.getAccountId());
         /**
          * TODO
          * 상품 디비 조회 해야함.

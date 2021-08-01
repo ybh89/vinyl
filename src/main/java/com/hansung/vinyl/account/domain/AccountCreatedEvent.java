@@ -1,5 +1,6 @@
 package com.hansung.vinyl.account.domain;
 
+import com.hansung.vinyl.member.domain.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,5 +15,5 @@ public class AccountCreatedEvent {
     private String email;
     private String name;
     private String phone;
-    private String gender;
+    private Gender gender;
 }
