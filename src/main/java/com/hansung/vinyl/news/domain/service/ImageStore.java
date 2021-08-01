@@ -1,5 +1,6 @@
 package com.hansung.vinyl.news.domain.service;
 
+import com.hansung.vinyl.common.exception.CannotStoreImageFileException;
 import com.hansung.vinyl.news.domain.Image;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +24,7 @@ public class ImageStore {
     @Value("${vinyl.file.directory}")
     private String fileDirectory;
 
-    public List<Image> storeImages(List<MultipartFile> multipartFiles) throws IOException {
+    public List<Image> storeImages(List<MultipartFile> multipartFiles) {
         List<Image> storeImages = new ArrayList<>();
         int seq = 1;
         for (MultipartFile multipartFile : multipartFiles) {
@@ -34,7 +35,7 @@ public class ImageStore {
         return storeImages;
     }
 
-    public Image storeImage(MultipartFile multipartFile, int seq) throws IOException {
+    public Image storeImage(MultipartFile multipartFile, int seq) {
         if (multipartFile.isEmpty()) {
             return null;
         }
@@ -54,24 +55,32 @@ public class ImageStore {
                 .build();
     }
 
-    private void storeThumbnailImage(MultipartFile multipartFile, File originalImage, File thumbnailImage) throws IOException {
-        BufferedImage bufferedOriginalImage = ImageIO.read(originalImage);
-        int width = (int) (bufferedOriginalImage.getWidth() / THUMBNAIL_RATIO);
-        int height = (int) (bufferedOriginalImage.getHeight() / THUMBNAIL_RATIO);
+    private void storeThumbnailImage(MultipartFile multipartFile, File originalImage, File thumbnailImage) {
+        try {
+            BufferedImage bufferedOriginalImage = ImageIO.read(originalImage);
+            int width = (int) (bufferedOriginalImage.getWidth() / THUMBNAIL_RATIO);
+            int height = (int) (bufferedOriginalImage.getHeight() / THUMBNAIL_RATIO);
 
-        Thumbnails.of(originalImage)
-                .size(width, height)
-                .toFile(thumbnailImage);
+            Thumbnails.of(originalImage)
+                    .size(width, height)
+                    .toFile(thumbnailImage);
 
-        store(multipartFile, thumbnailImage);
+            store(multipartFile, thumbnailImage);
+        } catch (IOException exception) {
+            throw new CannotStoreImageFileException();
+        }
     }
 
-    private void storeOriginalImage(MultipartFile multipartFile, File originalImage) throws IOException {
+    private void storeOriginalImage(MultipartFile multipartFile, File originalImage) {
         store(multipartFile, originalImage);
     }
 
-    private void store(MultipartFile multipartFile, File file) throws IOException {
-        multipartFile.transferTo(file);
+    private void store(MultipartFile multipartFile, File file) {
+        try {
+            multipartFile.transferTo(file);
+        } catch (IOException e) {
+            throw new CannotStoreImageFileException();
+        }
     }
 
     private String getFullPath(String imageName) {

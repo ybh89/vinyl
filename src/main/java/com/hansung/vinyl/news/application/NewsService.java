@@ -12,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -22,14 +20,7 @@ public class NewsService {
     private final ImageStore imageStore;
 
     public NewsResponse create(User user, NewsRequest newsRequest) {
-        AtomicInteger seq = new AtomicInteger(1);
-
-        List<Image> images = newsRequest.getImages().stream()
-                .map(multipartFile -> Image.builder()
-                        .name(multipartFile.getName())
-                        .seq(seq.getAndIncrement())
-                        .build())
-                .collect(Collectors.toList());
+        List<Image> images = imageStore.storeImages(newsRequest.getImages());
 
         News news = News.builder()
                 .writer(user.getAccountId())
