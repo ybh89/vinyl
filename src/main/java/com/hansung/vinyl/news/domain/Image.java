@@ -11,9 +11,9 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 50)
     private String storeName;
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 30)
     private String uploadName;
     @Column(nullable = false)
     private int seq;
@@ -27,6 +27,10 @@ public class Image {
         this.storeName = storeName;
         this.uploadName = uploadName;
         this.seq = seq;
+        this.news = news;
+    }
+
+    public void setNews(News news) {
         this.news = news;
     }
 }

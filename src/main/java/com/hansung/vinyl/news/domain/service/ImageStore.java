@@ -1,8 +1,13 @@
 package com.hansung.vinyl.news.domain.service;
 
+import com.hansung.vinyl.common.exception.CannotReadImageFileException;
 import com.hansung.vinyl.common.exception.CannotStoreImageFileException;
 import com.hansung.vinyl.news.domain.Image;
+import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.aspectj.util.FileUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,15 +16,18 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Component
 public class ImageStore {
     public static final String ORIGINAL_IMAGE_PREFIX = "original-";
     public static final String THUMBNAIL_IMAGE_PREFIX = "thumbnail-";
     public static final double THUMBNAIL_RATIO = 3;
+    public static final String EXTENSION_DELIMITER = ".";
 
     @Value("${vinyl.file.directory}")
     private String fileDirectory;
@@ -28,11 +36,16 @@ public class ImageStore {
         List<Image> storeImages = new ArrayList<>();
         int seq = 1;
         for (MultipartFile multipartFile : multipartFiles) {
-            if (!multipartFile.isEmpty()) {
-                storeImages.add(storeImage(multipartFile, seq++));
-            }
+            seq = addStoreImage(storeImages, seq, multipartFile);
         }
         return storeImages;
+    }
+
+    private int addStoreImage(List<Image> storeImages, int seq, MultipartFile multipartFile) {
+        if (!multipartFile.isEmpty()) {
+            storeImages.add(storeImage(multipartFile, seq++));
+        }
+        return seq;
     }
 
     public Image storeImage(MultipartFile multipartFile, int seq) {
@@ -46,7 +59,7 @@ public class ImageStore {
         File thumbnailImage = new File(getFullPath(THUMBNAIL_IMAGE_PREFIX + storeImageName));
 
         storeOriginalImage(multipartFile, originalImage);
-        storeThumbnailImage(multipartFile, originalImage, thumbnailImage);
+        storeThumbnailImage(originalImage, thumbnailImage);
 
         return Image.builder()
                 .storeName(storeImageName)
@@ -55,7 +68,7 @@ public class ImageStore {
                 .build();
     }
 
-    private void storeThumbnailImage(MultipartFile multipartFile, File originalImage, File thumbnailImage) {
+    private void storeThumbnailImage(File originalImage, File thumbnailImage) {
         try {
             BufferedImage bufferedOriginalImage = ImageIO.read(originalImage);
             int width = (int) (bufferedOriginalImage.getWidth() / THUMBNAIL_RATIO);
@@ -64,10 +77,8 @@ public class ImageStore {
             Thumbnails.of(originalImage)
                     .size(width, height)
                     .toFile(thumbnailImage);
-
-            store(multipartFile, thumbnailImage);
         } catch (IOException exception) {
-            throw new CannotStoreImageFileException();
+            throw new CannotStoreImageFileException(exception);
         }
     }
 
@@ -78,8 +89,8 @@ public class ImageStore {
     private void store(MultipartFile multipartFile, File file) {
         try {
             multipartFile.transferTo(file);
-        } catch (IOException e) {
-            throw new CannotStoreImageFileException();
+        } catch (IOException exception) {
+            throw new CannotStoreImageFileException(exception);
         }
     }
 
@@ -90,11 +101,21 @@ public class ImageStore {
     private String createStoreImageName(String originalImageName) {
         String extension = extractExtension(originalImageName);
         String uuid = UUID.randomUUID().toString();
-        return uuid + "." + extension;
+        return uuid + EXTENSION_DELIMITER + extension;
     }
 
     private String extractExtension(String originalImageName) {
-        int pos = originalImageName.lastIndexOf(".");
+        int pos = originalImageName.lastIndexOf(EXTENSION_DELIMITER);
         return originalImageName.substring(pos + 1);
+    }
+
+    public byte[] getMainThumbnailImage(Image image) {
+        try {
+            return FileUtil.readAsByteArray(new File(fileDirectory + THUMBNAIL_IMAGE_PREFIX +
+                    image.getStoreName()));
+        } catch (IOException exception) {
+            log.error("이미지 파일 읽기에 실패하였습니다.", exception);
+            return null;
+        }
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.security.Principal;
 
 @RequiredArgsConstructor
 @RequestMapping("/news")
@@ -21,8 +22,8 @@ public class NewsController {
     private final NewsService newsService;
 
     @PostMapping
-    public ResponseEntity<NewsResponse> create(@AuthenticationPrincipal User user, NewsRequest newsRequest) {
-        NewsResponse newsResponse = newsService.create(user, newsRequest);
-        return ResponseEntity.created(URI.create("/news/" + newsResponse.getId())).build();
+    public ResponseEntity<NewsResponse> create(Principal principal, NewsRequest newsRequest) {
+        NewsResponse newsResponse = newsService.create(principal, newsRequest);
+        return ResponseEntity.created(URI.create("/news/" + newsResponse.getId())).body(newsResponse);
     }
 }

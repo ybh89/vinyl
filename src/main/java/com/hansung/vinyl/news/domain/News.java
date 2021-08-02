@@ -24,7 +24,7 @@ public class News {
     private LocalDateTime releaseDate;
     @Embedded
     private Price price;
-    @OneToMany(mappedBy = "news")
+    @OneToMany(mappedBy = "news", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 
     @Builder
@@ -36,6 +36,12 @@ public class News {
         this.sourceUrl = sourceUrl;
         this.releaseDate = releaseDate;
         this.price = price;
-        this.images = images;
+        setImages(images);
+    }
+
+    public void setImages(List<Image> images) {
+        this.images.clear();
+        this.images.addAll(images);
+        images.forEach(image -> image.setNews(this));
     }
 }

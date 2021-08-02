@@ -1,5 +1,8 @@
 package com.hansung.vinyl.common.exception;
 
+import lombok.Getter;
+
+@Getter
 public abstract class DataException extends RuntimeException {
     private String field;
     private String rejectedValue;

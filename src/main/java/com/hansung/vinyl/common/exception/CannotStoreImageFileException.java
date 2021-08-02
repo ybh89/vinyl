@@ -14,4 +14,8 @@ public class CannotStoreImageFileException extends RuntimeException {
     public CannotStoreImageFileException(String message) {
         super(message);
     }
+
+    public CannotStoreImageFileException(Throwable cause) {
+        super(cause);
+    }
 }

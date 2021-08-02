@@ -1,9 +1,13 @@
 package com.hansung.vinyl.authority.application;
 
 import com.hansung.vinyl.account.domain.Account;
+import com.hansung.vinyl.account.domain.AccountCreatedEvent;
 import com.hansung.vinyl.account.domain.AccountRepository;
 import com.hansung.vinyl.account.domain.Join;
 import com.hansung.vinyl.authority.domain.*;
+import com.hansung.vinyl.member.domain.Gender;
+import com.hansung.vinyl.member.domain.Member;
+import com.hansung.vinyl.member.domain.MemberRepository;
 import com.hansung.vinyl.security.infrastructure.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +53,7 @@ public class InitialDataService {
 
         private final AuthorityRepository authorityRepository;
         private final AccountRepository accountRepository;
+        private final MemberRepository memberRepository;
         private final ApplicationEventPublisher publisher;
 
         @Transactional
@@ -86,7 +91,16 @@ public class InitialDataService {
                         .authorities(Arrays.asList(authority))
                         .build();
 
-                accountRepository.save(account);
+                Account savedAccount = accountRepository.save(account);
+
+                Member member = Member.builder()
+                        .accountId(savedAccount.getId())
+                        .email(savedAccount.getEmail())
+                        .name("super")
+                        .gender(Gender.MALE)
+                        .build();
+
+                memberRepository.save(member);
             }
         }
     }

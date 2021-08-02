@@ -127,7 +127,7 @@ public class JwtProvider {
         }
 
         User user = findUser(refreshToken);
-        if (!user.getRefreshToken().equals(refreshToken)) {
+        if (Objects.isNull(user.getRefreshToken()) || !user.getRefreshToken().equals(refreshToken)) {
             throw new IllegalRefreshTokenException();
         }
     }
