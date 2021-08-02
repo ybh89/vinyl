@@ -43,19 +43,19 @@ public class NewsService {
 
     @Transactional(readOnly = true)
     public NewsResponse find(Long newsId) {
-        News news = findNewsById(newsId);
+        News news = findNewsByIdAndDeletedFalse(newsId);
         byte[] mainThumbnailImage = imageStore.getMainThumbnailImage(news.getImages().get(0));
         return NewsResponse.of(news, mainThumbnailImage);
     }
 
-    private News findNewsById(Long newsId) {
-        return newsRepository.findById(newsId).orElseThrow(() ->
+    private News findNewsByIdAndDeletedFalse(Long newsId) {
+        return newsRepository.findByIdAndDeletedFalse(newsId).orElseThrow(() ->
                 new NoSuchDataException("newsId", String.valueOf(newsId), getClass().getName()));
     }
 
     @Transactional(readOnly = true)
     public Slice<NewsListResponse> list(Pageable pageable) {
-        Slice<News> newsPage = newsRepository.findAll(pageable);
+        Slice<News> newsPage = newsRepository.findAllByDeletedFalse(pageable);
         return newsPage.map(news -> {
             byte[] mainThumbnailImage = imageStore.getMainThumbnailImage(news.getImages().get(0));
             return NewsListResponse.of(news, mainThumbnailImage);
@@ -63,12 +63,18 @@ public class NewsService {
     }
 
     public NewsResponse update(Long newsId, NewsRequest newsRequest) {
-        News news = findNewsById(newsId);
+        News news = findNewsByIdAndDeletedFalse(newsId);
         News updateNews = newsRequest.toNews();
         imageStore.deleteImages(news.getImages());
         List<Image> updateImages = imageStore.storeImages(newsRequest.getImages());
         byte[] mainThumbnailImage = imageStore.getMainThumbnailImage(updateImages.get(0));
         news.update(updateNews, updateImages);
         return NewsResponse.of(news, mainThumbnailImage);
+    }
+
+    public void delete(Long newsId) {
+        News news = findNewsByIdAndDeletedFalse(newsId);
+        imageStore.deleteImages(news.getImages());
+        news.delete();
     }
 }

@@ -25,11 +25,13 @@ public class News extends BaseEntity {
     private LocalDateTime releaseDate;
     @Embedded
     private Price price;
+    private boolean deleted;
     @OneToMany(mappedBy = "news", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 
     @Builder
-    public News(Long id, String title, String content, String sourceUrl, LocalDateTime releaseDate, Price price, List<Image> images) {
+    public News(Long id, String title, String content, String sourceUrl, LocalDateTime releaseDate, Price price,
+                List<Image> images) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -55,5 +57,9 @@ public class News extends BaseEntity {
         this.releaseDate = updateNews.getReleaseDate();
         this.price = updateNews.getPrice();
         setImages(images);
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 }

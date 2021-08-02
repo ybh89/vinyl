@@ -44,4 +44,10 @@ public class NewsController {
         NewsResponse newsResponse = newsService.update(newsId, newsRequest);
         return ResponseEntity.ok(newsResponse);
     }
+
+    @DeleteMapping("/{newsId}")
+    public ResponseEntity delete(@PathVariable Long newsId) {
+        newsService.delete(newsId);
+        return ResponseEntity.noContent().build();
+    }
 }
