@@ -38,4 +38,10 @@ public class NewsController {
         Slice<NewsListResponse> newsListResponses = newsService.list(pageable);
         return ResponseEntity.ok(newsListResponses);
     }
+
+    @PutMapping("/{newsId}")
+    public ResponseEntity<NewsResponse> update(@PathVariable Long newsId, NewsRequest newsRequest) {
+        NewsResponse newsResponse = newsService.update(newsId, newsRequest);
+        return ResponseEntity.ok(newsResponse);
+    }
 }

@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,7 +41,19 @@ public class News extends BaseEntity {
 
     public void setImages(List<Image> images) {
         this.images.clear();
+        if (Objects.isNull(images)) {
+            return;
+        }
         this.images.addAll(images);
         images.forEach(image -> image.setNews(this));
+    }
+
+    public void update(News updateNews, List<Image> images) {
+        this.title = updateNews.getTitle();
+        this.content = updateNews.getContent();
+        this.sourceUrl = updateNews.getSourceUrl();
+        this.releaseDate = updateNews.getReleaseDate();
+        this.price = updateNews.getPrice();
+        setImages(images);
     }
 }

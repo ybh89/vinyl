@@ -1,8 +1,6 @@
 package com.hansung.vinyl.news.application;
 
 import com.hansung.vinyl.common.exception.NoSuchDataException;
-import com.hansung.vinyl.member.domain.Member;
-import com.hansung.vinyl.member.domain.MemberRepository;
 import com.hansung.vinyl.news.domain.Image;
 import com.hansung.vinyl.news.domain.News;
 import com.hansung.vinyl.news.domain.NewsRepository;
@@ -18,13 +16,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class NewsService {
     private final NewsRepository newsRepository;
-    private final MemberRepository memberRepository;
     private final ImageStore imageStore;
 
     public NewsResponse create(NewsRequest newsRequest) {
@@ -41,20 +38,14 @@ public class NewsService {
                 .build();
 
         News saveNews = newsRepository.save(news);
-        return NewsResponse.of(saveNews, null, mainThumbnailImage);
+        return NewsResponse.of(saveNews, mainThumbnailImage);
     }
 
     @Transactional(readOnly = true)
     public NewsResponse find(Long newsId) {
         News news = findNewsById(newsId);
-        Member writer = findMemberById(news.getCreatedBy());
         byte[] mainThumbnailImage = imageStore.getMainThumbnailImage(news.getImages().get(0));
-        return NewsResponse.of(news, writer, mainThumbnailImage);
-    }
-
-    private Member findMemberById(Long id) {
-        return memberRepository.findById(id).orElseThrow(() ->
-                new NoSuchDataException("createdBy", String.valueOf(id), getClass().getName()));
+        return NewsResponse.of(news, mainThumbnailImage);
     }
 
     private News findNewsById(Long newsId) {
@@ -69,5 +60,15 @@ public class NewsService {
             byte[] mainThumbnailImage = imageStore.getMainThumbnailImage(news.getImages().get(0));
             return NewsListResponse.of(news, mainThumbnailImage);
         });
+    }
+
+    public NewsResponse update(Long newsId, NewsRequest newsRequest) {
+        News news = findNewsById(newsId);
+        News updateNews = newsRequest.toNews();
+        imageStore.deleteImages(news.getImages());
+        List<Image> updateImages = imageStore.storeImages(newsRequest.getImages());
+        byte[] mainThumbnailImage = imageStore.getMainThumbnailImage(updateImages.get(0));
+        news.update(updateNews, updateImages);
+        return NewsResponse.of(news, mainThumbnailImage);
     }
 }

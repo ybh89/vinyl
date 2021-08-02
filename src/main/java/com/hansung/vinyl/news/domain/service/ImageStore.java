@@ -114,4 +114,15 @@ public class ImageStore {
             return null;
         }
     }
+
+    public void deleteImages(List<Image> images) {
+        images.forEach(image -> {
+            deleteImage(ORIGINAL_IMAGE_PREFIX + image.getStoreName());
+            deleteImage(THUMBNAIL_IMAGE_PREFIX + image.getStoreName());
+        });
+    }
+
+    private void deleteImage(String storeImageName) {
+        FileUtil.deleteContents(new File(fileDirectory + storeImageName));
+    }
 }

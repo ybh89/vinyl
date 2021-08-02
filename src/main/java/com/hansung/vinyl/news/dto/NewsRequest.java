@@ -1,5 +1,8 @@
 package com.hansung.vinyl.news.dto;
 
+import com.hansung.vinyl.news.domain.Image;
+import com.hansung.vinyl.news.domain.News;
+import com.hansung.vinyl.news.domain.Price;
 import com.hansung.vinyl.news.domain.PriceType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,4 +31,14 @@ public class NewsRequest {
     private String price;
     private PriceType priceType;
     private List<MultipartFile> images = new ArrayList<>();
+
+    public News toNews() {
+        return News.builder()
+                .title(title)
+                .content(content)
+                .sourceUrl(sourceUrl)
+                .releaseDate(releaseDate)
+                .price(new Price(price, priceType))
+                .build();
+    }
 }
