@@ -1,7 +1,7 @@
 package com.hansung.vinyl.security.infrastructure.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hansung.vinyl.common.exception.Error;
+import com.hansung.vinyl.common.exception.handler.Error;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

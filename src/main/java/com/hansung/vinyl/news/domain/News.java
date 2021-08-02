@@ -1,5 +1,6 @@
 package com.hansung.vinyl.news.domain;
 
+import com.hansung.vinyl.common.domain.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,11 +11,10 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class News {
+public class News extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
-    private Long writer;
     @Column(nullable = false, length = 50)
     private String title;
     @Lob
@@ -28,9 +28,8 @@ public class News {
     private List<Image> images = new ArrayList<>();
 
     @Builder
-    public News(Long id, Long writer, String title, String content, String sourceUrl, LocalDateTime releaseDate, Price price, List<Image> images) {
+    public News(Long id, String title, String content, String sourceUrl, LocalDateTime releaseDate, Price price, List<Image> images) {
         this.id = id;
-        this.writer = writer;
         this.title = title;
         this.content = content;
         this.sourceUrl = sourceUrl;

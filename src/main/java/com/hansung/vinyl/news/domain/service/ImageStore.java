@@ -1,12 +1,9 @@
 package com.hansung.vinyl.news.domain.service;
 
-import com.hansung.vinyl.common.exception.CannotReadImageFileException;
 import com.hansung.vinyl.common.exception.CannotStoreImageFileException;
 import com.hansung.vinyl.news.domain.Image;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.aspectj.util.FileUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,7 +13,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

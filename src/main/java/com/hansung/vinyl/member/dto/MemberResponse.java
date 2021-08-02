@@ -6,8 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,6 +20,9 @@ public class MemberResponse {
     //private List<Long> favorites = new ArrayList<>();
 
     public static MemberResponse of(Member member) {
+        if (Objects.isNull(member)) {
+            return new MemberResponse();
+        }
         return new MemberResponse(member.getId(), member.getEmail(), member.getName(), member.getPhone(), member.getGender());
     }
 }

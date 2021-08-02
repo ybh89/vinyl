@@ -1,4 +1,4 @@
-package com.hansung.vinyl.common.exception;
+package com.hansung.vinyl.common.exception.handler;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
