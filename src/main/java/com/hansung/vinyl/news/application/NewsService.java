@@ -12,6 +12,7 @@ import com.hansung.vinyl.news.dto.NewsRequest;
 import com.hansung.vinyl.news.dto.NewsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.util.List;
@@ -45,5 +46,23 @@ public class NewsService {
     private Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchDataException("email", email, getClass().getName()));
+    }
+
+    @Transactional(readOnly = true)
+    public NewsResponse find(Long newsId) {
+        News news = findNewsById(newsId);
+        Member writer = findMemberById(news);
+        byte[] mainThumbnailImage = imageStore.getMainThumbnailImage(news.getImages().get(0));
+        return NewsResponse.of(news, writer, mainThumbnailImage);
+    }
+
+    private Member findMemberById(News news) {
+        return memberRepository.findById(news.getWriter()).orElseThrow(() ->
+                new NoSuchDataException("writer", String.valueOf(news.getWriter()), getClass().getName()));
+    }
+
+    private News findNewsById(Long newsId) {
+        return newsRepository.findById(newsId).orElseThrow(() ->
+                new NoSuchDataException("newsId", String.valueOf(newsId), getClass().getName()));
     }
 }

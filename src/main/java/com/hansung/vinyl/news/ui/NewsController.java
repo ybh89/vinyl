@@ -8,9 +8,7 @@ import com.hansung.vinyl.news.dto.NewsRequest;
 import com.hansung.vinyl.news.dto.NewsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.security.Principal;
@@ -25,5 +23,11 @@ public class NewsController {
     public ResponseEntity<NewsResponse> create(Principal principal, NewsRequest newsRequest) {
         NewsResponse newsResponse = newsService.create(principal, newsRequest);
         return ResponseEntity.created(URI.create("/news/" + newsResponse.getId())).body(newsResponse);
+    }
+
+    @GetMapping("/{newsId}")
+    public ResponseEntity<NewsResponse> news(@PathVariable Long newsId) {
+        NewsResponse newsResponse = newsService.find(newsId);
+        return ResponseEntity.ok(newsResponse);
     }
 }
