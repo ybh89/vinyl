@@ -1,5 +1,7 @@
 package com.hansung.vinyl.news.ui;
 
+import com.hansung.vinyl.account.domain.AuthenticationPrincipal;
+import com.hansung.vinyl.account.domain.User;
 import com.hansung.vinyl.news.application.NewsService;
 import com.hansung.vinyl.news.dto.NewsListResponse;
 import com.hansung.vinyl.news.dto.NewsRequest;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.security.Principal;
 
 @RequiredArgsConstructor
 @RequestMapping("/news")
@@ -40,14 +43,15 @@ public class NewsController {
     }
 
     @PutMapping("/{newsId}")
-    public ResponseEntity<NewsResponse> update(@PathVariable Long newsId, NewsRequest newsRequest) {
-        NewsResponse newsResponse = newsService.update(newsId, newsRequest);
+    public ResponseEntity<NewsResponse> update(@AuthenticationPrincipal User user, @PathVariable Long newsId,
+                                               NewsRequest newsRequest) {
+        NewsResponse newsResponse = newsService.update(user, newsId, newsRequest);
         return ResponseEntity.ok(newsResponse);
     }
 
     @DeleteMapping("/{newsId}")
-    public ResponseEntity delete(@PathVariable Long newsId) {
-        newsService.delete(newsId);
+    public ResponseEntity delete(@AuthenticationPrincipal User user, @PathVariable Long newsId) {
+        newsService.delete(user, newsId);
         return ResponseEntity.noContent().build();
     }
 }

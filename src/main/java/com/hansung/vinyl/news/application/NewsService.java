@@ -1,5 +1,7 @@
 package com.hansung.vinyl.news.application;
 
+import com.hansung.vinyl.account.domain.User;
+import com.hansung.vinyl.common.exception.AuthorizationException;
 import com.hansung.vinyl.common.exception.NoSuchDataException;
 import com.hansung.vinyl.news.domain.Image;
 import com.hansung.vinyl.news.domain.News;
@@ -10,6 +12,7 @@ import com.hansung.vinyl.news.dto.NewsListResponse;
 import com.hansung.vinyl.news.dto.NewsRequest;
 import com.hansung.vinyl.news.dto.NewsResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,9 @@ import java.util.List;
 public class NewsService {
     private final NewsRepository newsRepository;
     private final ImageStore imageStore;
+
+    @Value("${vinyl.init-data.super.role}")
+    private String superRole;
 
     public NewsResponse create(NewsRequest newsRequest) {
         List<Image> images = imageStore.storeImages(newsRequest.getImages());
@@ -62,18 +68,37 @@ public class NewsService {
         });
     }
 
-    public NewsResponse update(Long newsId, NewsRequest newsRequest) {
+    public NewsResponse update(User user, Long newsId, NewsRequest newsRequest) {
         News news = findNewsByIdAndDeletedFalse(newsId);
-        News updateNews = newsRequest.toNews();
-        imageStore.deleteImages(news.getImages());
-        List<Image> updateImages = imageStore.storeImages(newsRequest.getImages());
+        validateAuthorization(user, news);
+
+        List<Image> updateImages = imageStore.updateImages(news.getImages(), newsRequest.getImages());
         byte[] mainThumbnailImage = imageStore.getMainThumbnailImage(updateImages.get(0));
-        news.update(updateNews, updateImages);
+
+        news.update(newsRequest.toNews(), updateImages);
         return NewsResponse.of(news, mainThumbnailImage);
     }
 
-    public void delete(Long newsId) {
+    private void validateAuthorization(User user, News news) {
+        if (isNoneMatchRoleSuper(user)) {
+            validateWriter(user, news);
+        }
+    }
+
+    private boolean isNoneMatchRoleSuper(User user) {
+        return user.getAuthorities().stream().noneMatch(grantedAuthority ->
+                grantedAuthority.getAuthority().equals(superRole));
+    }
+
+    private void validateWriter(User user, News news) {
+        if (!news.getCreatedBy().equals(user.getAccountId())) {
+            throw new AuthorizationException();
+        }
+    }
+
+    public void delete(User user, Long newsId) {
         News news = findNewsByIdAndDeletedFalse(newsId);
+        validateAuthorization(user, news);
         imageStore.deleteImages(news.getImages());
         news.delete();
     }

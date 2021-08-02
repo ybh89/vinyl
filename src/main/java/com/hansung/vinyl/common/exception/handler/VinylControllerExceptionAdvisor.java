@@ -1,5 +1,6 @@
 package com.hansung.vinyl.common.exception.handler;
 
+import com.hansung.vinyl.common.exception.AuthorizationException;
 import com.hansung.vinyl.common.exception.DataException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,8 +16,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -70,4 +70,15 @@ public class VinylControllerExceptionAdvisor {
         return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(error);
     }
 
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<Error> handleAuthorizationException(AuthorizationException exception) {
+        log.error("권한 에러 발생", exception);
+        Error error = Error.builder()
+                .httpStatus(FORBIDDEN)
+                .message(exception.getMessage())
+                .exceptionType(exception.getClass().getTypeName())
+                .dateTime(LocalDateTime.now())
+                .build();
+        return ResponseEntity.status(FORBIDDEN).body(error);
+    }
 }

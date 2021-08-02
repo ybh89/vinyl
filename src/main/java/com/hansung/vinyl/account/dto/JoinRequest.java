@@ -1,6 +1,5 @@
 package com.hansung.vinyl.account.dto;
 
-import com.hansung.vinyl.account.domain.Join;
 import com.hansung.vinyl.member.domain.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;

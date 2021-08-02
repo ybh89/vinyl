@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -19,14 +18,7 @@ public class CustomAuditorAware implements AuditorAware<Long> {
         if (null == authentication || !authentication.isAuthenticated()) {
             return null;
         }
-
-        Object principal = authentication.getPrincipal();
-        Long accountId = null;
-
-        if(principal instanceof UserDetails) {
-            accountId = ((User) principal).getAccountId();
-        }
-
+        Long accountId = ((User) authentication.getPrincipal()).getAccountId();
         return Optional.ofNullable(accountId);
     }
 }

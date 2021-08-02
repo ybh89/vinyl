@@ -125,4 +125,9 @@ public class ImageStore {
     private void deleteImage(String storeImageName) {
         FileUtil.deleteContents(new File(fileDirectory + storeImageName));
     }
+
+    public List<Image> updateImages(List<Image> deleteImages, List<MultipartFile> storeImages) {
+        deleteImages(deleteImages);
+        return storeImages(storeImages);
+    }
 }

@@ -91,7 +91,7 @@ public class JwtProvider {
 
     public Authentication getAuthentication(String token) {
         User user = findUser(token);
-        return new UsernamePasswordAuthenticationToken(user.getUsername(),null, user.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(user,null, user.getAuthorities());
     }
 
     public String getRefreshToken(HttpServletRequest request) {
