@@ -28,6 +28,7 @@ dependencies {
 	implementation group: 'com.google.guava', name: 'guava', version: 'r05'
     implementation 'junit:junit:4.13.1'
 	implementation 'net.coobird:thumbnailator:0.4.1'
+	implementation 'com.google.firebase:firebase-admin:8.0.0'
 
 	compileOnly 'org.projectlombok:lombok'
 
