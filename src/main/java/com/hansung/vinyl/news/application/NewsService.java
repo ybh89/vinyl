@@ -18,6 +18,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -33,18 +34,21 @@ public class NewsService {
     public NewsResponse create(NewsRequest newsRequest) {
         List<Image> images = imageStore.storeImages(newsRequest.getImages());
         byte[] mainThumbnailImage = imageStore.getMainThumbnailImage(images.get(0));
+        News saveNews = newsRepository.save(buildNews(newsRequest, images));
+        return NewsResponse.of(saveNews, mainThumbnailImage);
+    }
 
-        News news = News.builder()
+    private News buildNews(NewsRequest newsRequest, List<Image> images) {
+        return News.builder()
                 .title(newsRequest.getTitle())
+                .brand(newsRequest.getBrand())
                 .content(newsRequest.getContent())
                 .sourceUrl(newsRequest.getSourceUrl())
                 .releaseDate(newsRequest.getReleaseDate())
                 .price(new Price(newsRequest.getPrice(), newsRequest.getPriceType()))
+                .topic(newsRequest.getTopic())
                 .images(images)
                 .build();
-
-        News saveNews = newsRepository.save(news);
-        return NewsResponse.of(saveNews, mainThumbnailImage);
     }
 
     @Transactional(readOnly = true)
@@ -101,5 +105,11 @@ public class NewsService {
         validateAuthorization(user, news);
         imageStore.deleteImages(news.getImages());
         news.delete();
+    }
+
+    public List<News> findByReleaseDate(long dDay) {
+        LocalDateTime targetDate = LocalDateTime.now().plusDays(dDay);
+        LocalDateTime nextDate = targetDate.plusDays(1);
+        return newsRepository.findAllByReleaseDateBetweenAndDeletedFalse(targetDate, nextDate);
     }
 }

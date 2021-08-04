@@ -16,28 +16,43 @@ public class News extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
+
     @Column(nullable = false, length = 50)
     private String title;
+
+    @Column(length = 50)
+    private String brand;
+
     @Lob
     @Column(nullable = false)
     private String content;
+
     private String sourceUrl;
+
     private LocalDateTime releaseDate;
+
     @Embedded
     private Price price;
+
     private boolean deleted;
+
+    @Column(unique = true, nullable = false, updatable = false)
+    private String topic;
+
     @OneToMany(mappedBy = "news", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 
     @Builder
-    public News(Long id, String title, String content, String sourceUrl, LocalDateTime releaseDate, Price price,
-                List<Image> images) {
+    public News(Long id, String title, String brand, String content, String sourceUrl, LocalDateTime releaseDate,
+                Price price, String topic, List<Image> images) {
         this.id = id;
         this.title = title;
+        this.brand = brand;
         this.content = content;
         this.sourceUrl = sourceUrl;
         this.releaseDate = releaseDate;
         this.price = price;
+        this.topic = topic;
         setImages(images);
     }
 
