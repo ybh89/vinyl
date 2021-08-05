@@ -2,6 +2,7 @@ package com.hansung.vinyl.account.dto;
 
 import com.hansung.vinyl.member.domain.Gender;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +12,7 @@ import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
 @Data
 public class JoinRequest {
@@ -24,10 +25,6 @@ public class JoinRequest {
     private String name;
     private String phone;
     private Gender gender;
-
-    public JoinRequest(String email, String password, List<Long> authorityIds) {
-        this.email = email;
-        this.password = password;
-        this.authorityIds = authorityIds;
-    }
+    @NotBlank
+    private String fcmToken;
 }

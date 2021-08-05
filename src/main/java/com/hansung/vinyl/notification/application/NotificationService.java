@@ -6,19 +6,27 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
+import com.hansung.vinyl.account.domain.AccountCreatedEvent;
+import com.hansung.vinyl.notification.domain.FcmToken;
+import com.hansung.vinyl.notification.domain.FcmTokenRepository;
 import com.hansung.vinyl.notification.dto.NotificationRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
-public class FirebaseCloudMessageService {
+public class NotificationService {
     private static final String FCM_PRIVATE_KEY_PATH = "firebase/vinyl-fcm-firebase-adminsdk.json";
+
+    private final FcmTokenRepository fcmTokenRepository;
 
     @PostConstruct
     public void initialize() {
@@ -52,5 +60,11 @@ public class FirebaseCloudMessageService {
                         .setImage(notificationRequest.getImageURL())
                         .build())
                 .build();
+    }
+
+    @TransactionalEventListener
+    public void createFcmToken(AccountCreatedEvent accountCreatedEvent) {
+        FcmToken fcmToken = new FcmToken(accountCreatedEvent.getAccountId(), accountCreatedEvent.getFcmToken());
+        fcmTokenRepository.save(fcmToken);
     }
 }

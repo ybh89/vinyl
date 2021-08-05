@@ -32,17 +32,29 @@ public class AccountService implements UserDetailsService {
     public JoinResponse join(JoinRequest joinRequest) {
         validateEmail(joinRequest.getEmail());
         List<Authority> authorities = findAuthoritiesById(joinRequest.getAuthorityIds());
+        Account account = buildAccount(joinRequest, authorities);
+        Account savedAccount = accountRepository.save(account);
+        savedAccount.publishEvent(publisher, buildAccountCreatedEvent(joinRequest, savedAccount));
+        return JoinResponse.of(savedAccount);
+    }
 
-        Account account = Account.builder()
+    private AccountCreatedEvent buildAccountCreatedEvent(JoinRequest joinRequest, Account savedAccount) {
+        return AccountCreatedEvent.builder()
+                        .accountId(savedAccount.getId())
+                        .email(savedAccount.getEmail())
+                        .name(joinRequest.getName())
+                        .phone(joinRequest.getPhone())
+                        .gender(joinRequest.getGender())
+                        .fcmToken(joinRequest.getFcmToken())
+                .build();
+    }
+
+    private Account buildAccount(JoinRequest joinRequest, List<Authority> authorities) {
+        return Account.builder()
                 .email(joinRequest.getEmail())
                 .password(passwordEncoder.encode(joinRequest.getPassword()))
                 .authorities(authorities)
                 .build();
-
-        Account savedAccount = accountRepository.save(account);
-        savedAccount.publishEvent(publisher, new AccountCreatedEvent(savedAccount.getId(), savedAccount.getEmail(),
-                joinRequest.getName(), joinRequest.getPhone(), joinRequest.getGender()));
-        return JoinResponse.of(savedAccount);
     }
 
     @Transactional(readOnly = true)
@@ -78,7 +90,10 @@ public class AccountService implements UserDetailsService {
                 .map(accountAuthority -> accountAuthority.getAuthorityId())
                 .collect(Collectors.toList());
         List<Authority> authorities = authorityRepository.findAllById(authorityIds);
+        return buildUser(account, authorities);
+    }
 
+    private User buildUser(Account account, List<Authority> authorities) {
         return User.builder()
                 .accountId(account.getId())
                 .username(account.getEmail())
@@ -96,16 +111,6 @@ public class AccountService implements UserDetailsService {
         return accountRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다. email=" + username));
     }
-
-    /*public LoginMember findMemberByToken(String credentials) {
-        if (!jwtProvider.validateToken(credentials)) {
-            throw new JwtValidateException();
-        }
-
-        String email = jwtProvider.getPayload(credentials);
-        Account account = findAccountByEmail(email);
-        return new LoginMember(account.getId(), account.getEmail());
-    }*/
 
     public void delete(Long accountId) {
         Account account = findAccountById(accountId);

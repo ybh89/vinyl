@@ -109,8 +109,13 @@ public class DynamicAuthorityAcceptanceTest extends AcceptanceTest {
         List<ResourceRequest> 관리자권한자원 = createResourceRequestWithAllHttpMethod("/**");
         AuthorityRequest authorityRequest = new AuthorityRequest("ROLE_ADMIN", "test", 관리자권한자원);
         AuthorityResponse authorityResponse = authorityService.create(authorityRequest);
-        JoinRequest joinRequest = new JoinRequest(ADMIN_EMAIL, ADMIN_PASSWORD, Arrays.asList(authorityResponse.getId()),
-                "super", "", Gender.FEMALE);
+        JoinRequest joinRequest = JoinRequest.builder()
+                .email(ADMIN_EMAIL)
+                .password(ADMIN_PASSWORD)
+                .authorityIds(Arrays.asList(authorityResponse.getId()))
+                .name("super")
+                .gender(Gender.FEMALE)
+                .build();
         accountService.join(joinRequest);
     }
 }

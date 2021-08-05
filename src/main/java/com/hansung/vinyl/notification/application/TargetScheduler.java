@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutionException;
 @Component
 public class TargetScheduler {
     private final NewsService newsService;
-    private final FirebaseCloudMessageService firebaseCloudMessageService;
+    private final NotificationService notificationService;
 
     /**
      * 매일 18시에 실행
@@ -39,7 +39,7 @@ public class TargetScheduler {
     private void sendMessage(List<News> targets) {
         targets.forEach(news -> {
                 try {
-                    firebaseCloudMessageService.sendMessageByTopic(NotificationRequest.builder()
+                    notificationService.sendMessageByTopic(NotificationRequest.builder()
                         .title(news.getTitle())
                         .body("여기에 뭐라고 적을까")
                         .imageURL("https://cdn.pixabay.com/photo/2014/06/03/19/38/road-sign-361514_960_720.png")

@@ -1,14 +1,11 @@
 package com.hansung.vinyl.account.domain;
 
 import com.hansung.vinyl.member.domain.Gender;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @ToString
 @Getter
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
 public class AccountCreatedEvent {
     private Long accountId;
@@ -16,4 +13,5 @@ public class AccountCreatedEvent {
     private String name;
     private String phone;
     private Gender gender;
+    private String fcmToken;
 }

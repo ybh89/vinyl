@@ -99,14 +99,26 @@ public class AccountAcceptanceTest extends AcceptanceTest {
     }
 
     private static ExtractableResponse<Response> 계정_생성_요청(String email, String password, String name) {
-        JoinRequest joinRequest = new JoinRequest(email, password, Arrays.asList(), name, null, Gender.FEMALE);
+        JoinRequest joinRequest = JoinRequest.builder()
+                .email(email)
+                .password(password)
+                .authorityIds(Arrays.asList())
+                .name(name)
+                .gender(Gender.FEMALE)
+                .build();
 
         ExtractableResponse<Response> postResponse = post("/accounts", joinRequest);
         return postResponse;
     }
 
     private static ExtractableResponse<Response> 계정_생성_요청(String email, String password, String name, List<Long> ids) {
-        JoinRequest joinRequest = new JoinRequest(email, password, ids, name, null, Gender.FEMALE);
+        JoinRequest joinRequest = JoinRequest.builder()
+                .email(email)
+                .password(password)
+                .authorityIds(ids)
+                .name(name)
+                .gender(Gender.FEMALE)
+                .build();
 
         ExtractableResponse<Response> postResponse = post("/accounts", joinRequest);
         return postResponse;
