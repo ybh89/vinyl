@@ -31,6 +31,8 @@ public class News extends BaseEntity {
 
     private LocalDateTime releaseDate;
 
+    private int subscribeCount;
+
     @Embedded
     private Price price;
 
@@ -76,5 +78,15 @@ public class News extends BaseEntity {
 
     public void delete() {
         this.deleted = true;
+    }
+
+    public void plusSubscribeCount() {
+        subscribeCount++;
+    }
+
+    public void minusSubscribeCount() {
+        if (subscribeCount > 0) {
+            subscribeCount--;
+        }
     }
 }

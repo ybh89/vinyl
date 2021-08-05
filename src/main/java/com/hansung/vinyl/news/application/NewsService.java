@@ -3,11 +3,14 @@ package com.hansung.vinyl.news.application;
 import com.hansung.vinyl.account.domain.User;
 import com.hansung.vinyl.common.exception.AuthorizationException;
 import com.hansung.vinyl.common.exception.NoSuchDataException;
+import com.hansung.vinyl.member.domain.Member;
+import com.hansung.vinyl.member.domain.MemberRepository;
 import com.hansung.vinyl.news.domain.Image;
 import com.hansung.vinyl.news.domain.News;
 import com.hansung.vinyl.news.domain.NewsRepository;
 import com.hansung.vinyl.news.domain.Price;
 import com.hansung.vinyl.news.domain.service.ImageStore;
+import com.hansung.vinyl.news.domain.service.SubscribeManager;
 import com.hansung.vinyl.news.dto.NewsListResponse;
 import com.hansung.vinyl.news.dto.NewsRequest;
 import com.hansung.vinyl.news.dto.NewsResponse;
@@ -27,6 +30,8 @@ import java.util.List;
 public class NewsService {
     private final NewsRepository newsRepository;
     private final ImageStore imageStore;
+    private final SubscribeManager subscribeManager;
+    private final MemberRepository memberRepository;
 
     @Value("${vinyl.init-data.super.role}")
     private String superRole;
@@ -111,5 +116,22 @@ public class NewsService {
         LocalDateTime targetDate = LocalDateTime.now().plusDays(dDay);
         LocalDateTime nextDate = targetDate.plusDays(1);
         return newsRepository.findAllByReleaseDateBetweenAndDeletedFalse(targetDate, nextDate);
+    }
+
+    public void subscribe(User user, Long newsId) {
+        Member member = findMemberById(user.getAccountId());
+        News news = findNewsByIdAndDeletedFalse(newsId);
+        subscribeManager.subscribe(member, news);
+    }
+
+    public void unsubscribe(User user, Long newsId) {
+        Member member = findMemberById(user.getAccountId());
+        News news = findNewsByIdAndDeletedFalse(newsId);
+        subscribeManager.unsubscribe(member, news);
+    }
+
+    private Member findMemberById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new NoSuchDataException("accountId", id, getClass().getName()));
     }
 }

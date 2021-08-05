@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public abstract class DataException extends RuntimeException {
     private String field;
-    private String rejectedValue;
+    private Object rejectedValue;
     private String objectName;
 
-    public DataException(String message, String field, String rejectedValue, String objectName) {
+    public DataException(String message, String field, Object rejectedValue, String objectName) {
         super(message);
         this.field = field;
         this.rejectedValue = rejectedValue;

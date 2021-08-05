@@ -4,10 +4,8 @@ import com.hansung.vinyl.account.domain.AccountCreatedEvent;
 import com.hansung.vinyl.account.domain.LoginMember;
 import com.hansung.vinyl.account.domain.User;
 import com.hansung.vinyl.common.exception.NoSuchDataException;
-import com.hansung.vinyl.member.domain.Gender;
 import com.hansung.vinyl.member.domain.Member;
 import com.hansung.vinyl.member.domain.MemberRepository;
-import com.hansung.vinyl.member.dto.FavoritesRequest;
 import com.hansung.vinyl.member.dto.MemberResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -48,13 +46,5 @@ public class MemberService {
         return memberRepository.findById(accountId)
                 .orElseThrow(() -> new NoSuchDataException("accountId", String.valueOf(accountId),
                         getClass().getName()));
-    }
-
-    public void add(LoginMember loginMember, FavoritesRequest favoritesRequest) {
-        Member member = findMemberById(loginMember.getId());
-        /**
-         * TODO
-         * 상품 도메인 먼저 개발 후.. 상품 도메인 조회하여 객체를 add..
-         */
     }
 }

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -22,7 +23,7 @@ public class Member {
     private String name;
     private String phone;
     private Gender gender;
-    //private List<Long> favorites = new ArrayList<>();
+    private List<Long> subscribes = new ArrayList<>();
 
     @Builder
     public Member(Long accountId, String email, String name, String phone, Gender gender) {
@@ -31,5 +32,15 @@ public class Member {
         this.name = name;
         this.phone = phone;
         this.gender = gender;
+    }
+
+    public void subscribe(Long newsId) {
+        if (!subscribes.contains(newsId)) {
+            subscribes.add(newsId);
+        }
+    }
+
+    public void unsubscribe(Long newsId) {
+        subscribes.remove(newsId);
     }
 }
