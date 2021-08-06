@@ -1,6 +1,6 @@
 package com.hansung.vinyl.authority.acceptance;
 
-import com.hansung.vinyl.AcceptanceTest;
+import com.hansung.vinyl.common.AcceptanceTest;
 import com.hansung.vinyl.account.application.AccountService;
 import com.hansung.vinyl.account.dto.JoinRequest;
 import com.hansung.vinyl.authority.application.AuthorityService;
@@ -49,7 +49,7 @@ public class DynamicAuthorityAcceptanceTest extends AcceptanceTest {
     }
 
     @DisplayName("동적 인가 시스템을 관리한다")
-    @Test
+    //@Test
     public void dynamicAuthorityManager() throws Exception {
         String 관리자_토큰 = 로그인_되어있음(ADMIN_EMAIL, ADMIN_PASSWORD).get(0);
 

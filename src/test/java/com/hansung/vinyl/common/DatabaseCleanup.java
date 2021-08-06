@@ -1,4 +1,4 @@
-package com.hansung.vinyl;
+package com.hansung.vinyl.common;
 
 import com.google.common.base.CaseFormat;
 import org.springframework.beans.factory.InitializingBean;
@@ -35,7 +35,7 @@ public class DatabaseCleanup implements InitializingBean {
 
         for (String tableName : tableNames) {
             entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
-            if (!tableName.equals("member")) {
+            if (!tableName.equals("member") && !tableName.equals("fcm_token")) {
                 entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1").executeUpdate();
             }
         }

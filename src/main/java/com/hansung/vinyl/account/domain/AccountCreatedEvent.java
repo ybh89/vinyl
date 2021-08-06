@@ -6,6 +6,7 @@ import lombok.*;
 @ToString
 @Getter
 @Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class AccountCreatedEvent {
     private Long accountId;

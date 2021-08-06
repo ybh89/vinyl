@@ -1,4 +1,4 @@
-package com.hansung.vinyl;
+package com.hansung.vinyl.common;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;

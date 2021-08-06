@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class NewsRequest {
@@ -34,7 +35,7 @@ public class NewsRequest {
     private PriceType priceType;
     @NotBlank
     private String topic;
-    private List<MultipartFile> images = new ArrayList<>();
+    private List<MultipartFile> images;
 
     public News toNews() {
         return News.builder()

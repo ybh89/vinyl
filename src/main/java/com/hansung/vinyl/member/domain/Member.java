@@ -23,7 +23,9 @@ public class Member {
     private String name;
     private String phone;
     private Gender gender;
-    private List<Long> subscribes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Subscribe> subscribes = new ArrayList<>();
 
     @Builder
     public Member(Long accountId, String email, String name, String phone, Gender gender) {
@@ -35,12 +37,21 @@ public class Member {
     }
 
     public void subscribe(Long newsId) {
-        if (!subscribes.contains(newsId)) {
-            subscribes.add(newsId);
+        Subscribe subscribe = buildSubscribe(newsId);
+        if (!subscribes.contains(subscribe)) {
+            subscribes.add(subscribe);
         }
     }
 
     public void unsubscribe(Long newsId) {
-        subscribes.remove(newsId);
+        Subscribe subscribe = buildSubscribe(newsId);
+        subscribes.remove(subscribe);
+    }
+
+    private Subscribe buildSubscribe(Long newsId) {
+        return Subscribe.builder()
+                .member(this)
+                .newsId(newsId)
+                .build();
     }
 }

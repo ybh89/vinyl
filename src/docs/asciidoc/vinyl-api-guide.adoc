@@ -1,0 +1,21 @@
+= RESTful vinyl API Guide
+:doctype: vinyl
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectnums:
+:sectlinks:
+:sectanchors:
+
+[[api]]
+== Authority Api (권한 Api)
+=== 권한 생성 요청
+==== http 요청 메시지
+include::{snippets}/authority/http-request.adoc[]
+==== http 응답 메시지
+include::{snippets}/authority/http-response.adoc[]
+==== 요청 파라미터
+include::{snippets}/authority/request-fields.adoc[]
+==== 응답 파라미터
+include::{snippets}/authority/response-fields.adoc[]

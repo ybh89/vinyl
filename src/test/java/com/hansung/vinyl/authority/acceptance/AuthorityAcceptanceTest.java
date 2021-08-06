@@ -1,21 +1,16 @@
 package com.hansung.vinyl.authority.acceptance;
 
-import com.hansung.vinyl.AcceptanceTest;
+import com.hansung.vinyl.common.AcceptanceTest;
 import com.hansung.vinyl.account.dto.AccountAuthorityRequest;
 import com.hansung.vinyl.authority.dto.AuthorityRequest;
-import com.hansung.vinyl.authority.dto.AuthorityResponse;
 import com.hansung.vinyl.authority.dto.ResourceRequest;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.bind.annotation.PutMapping;
 
-import java.util.Arrays;
 import java.util.List;
 
-import static com.hansung.vinyl.account.acceptance.AccountAcceptanceTest.*;
-import static com.hansung.vinyl.account.acceptance.AccountAcceptanceTest.계정_등록_되어있음;
 import static org.springframework.http.HttpStatus.*;
 
 @DisplayName("인증인가 관리")

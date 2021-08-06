@@ -1,6 +1,6 @@
 package com.hansung.vinyl.account.acceptance;
 
-import com.hansung.vinyl.AcceptanceTest;
+import com.hansung.vinyl.common.AcceptanceTest;
 import com.hansung.vinyl.account.dto.JoinRequest;
 import com.hansung.vinyl.account.dto.JoinResponse;
 import com.hansung.vinyl.member.domain.Gender;
@@ -22,7 +22,7 @@ public class AccountAcceptanceTest extends AcceptanceTest {
     public static final String NAME = "test";
 
     @DisplayName("계정을 관리한다.")
-    @Test
+    //@Test
     public void accountManager() throws Exception {
         ExtractableResponse<Response> postResponse = 계정_생성_요청(EMAIL, PASSWORD, NAME);
         계정_생성됨(postResponse);

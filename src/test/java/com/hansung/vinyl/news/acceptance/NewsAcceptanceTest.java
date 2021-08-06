@@ -1,6 +1,6 @@
 package com.hansung.vinyl.news.acceptance;
 
-import com.hansung.vinyl.AcceptanceTest;
+import com.hansung.vinyl.common.AcceptanceTest;
 import com.hansung.vinyl.account.application.AccountService;
 import com.hansung.vinyl.account.dto.JoinRequest;
 import com.hansung.vinyl.account.dto.JoinResponse;
@@ -10,30 +10,16 @@ import com.hansung.vinyl.authority.dto.AuthorityRequest;
 import com.hansung.vinyl.authority.dto.AuthorityResponse;
 import com.hansung.vinyl.authority.dto.ResourceRequest;
 import com.hansung.vinyl.member.domain.Gender;
-import com.hansung.vinyl.news.domain.PriceType;
 import com.hansung.vinyl.news.dto.NewsRequest;
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.apache.tomcat.util.http.fileupload.FileItem;
-import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import java.io.FileInputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
-
-import static com.hansung.vinyl.account.acceptance.AccountAcceptanceTest.로그인_되어있음;
 
 @DisplayName("소식 관리")
 public class NewsAcceptanceTest extends AcceptanceTest {

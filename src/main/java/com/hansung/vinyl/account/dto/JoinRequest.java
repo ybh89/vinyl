@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class JoinRequest {
@@ -20,7 +21,7 @@ public class JoinRequest {
     private String email;
     @Pattern(regexp="(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,20}")
     private String password;
-    private List<Long> authorityIds = new ArrayList<>();
+    private List<Long> authorityIds;
     @NotBlank
     private String name;
     private String phone;

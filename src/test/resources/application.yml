@@ -32,3 +32,5 @@ vinyl:
       password: $2a$10$LYB3JRPboWY45HVnKJEWzugFXhi1Uqw37GODw71Fue3Uh42BrZmWy
       path: /**
     roles: ROLE_ADMIN,ROLE_MANAGER,ROLE_USER,ROLE_ANONYMOUS
+  file:
+    directory: /Users/ybh/Pictures/test/
