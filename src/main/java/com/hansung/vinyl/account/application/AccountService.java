@@ -112,8 +112,8 @@ public class AccountService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다. email=" + username));
     }
 
-    public void delete(Long accountId) {
-        Account account = findAccountById(accountId);
+    public void delete(User user) {
+        Account account = findAccountById(user.getAccountId());
         account.delete();
     }
 
@@ -135,11 +135,10 @@ public class AccountService implements UserDetailsService {
         return authorityRepository.findAllById(ids);
     }
 
-    public JoinResponse updateAuthorities(Long accountId, AccountAuthorityRequest accountAuthorityRequest) {
+    public void updateAuthorities(Long accountId, AccountAuthorityRequest accountAuthorityRequest) {
         Account account = findAccountById(accountId);
         List<Authority> authorities = findAuthoritiesById(accountAuthorityRequest.getAuthorityIds());
         account.changeAuthorities(authorities);
-        return JoinResponse.of(account);
     }
 
     public void updateRefreshToken(Long accountId, String refreshToken) {

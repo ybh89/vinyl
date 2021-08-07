@@ -68,3 +68,45 @@ include::{snippets}/authority_delete/request-headers.adoc[]
 
 === Response http message
 include::{snippets}/authority_delete/http-response.adoc[]
+
+== 회원 가입
+
+=== Request http message
+include::{snippets}/account_create/http-request.adoc[]
+
+=== Request Headers
+include::{snippets}/account_create/request-headers.adoc[]
+
+=== Request parameter
+include::{snippets}/account_create/request-fields.adoc[]
+
+=== Response http message
+include::{snippets}/account_create/http-response.adoc[]
+
+=== Response parameter
+include::{snippets}/account_create/response-fields.adoc[]
+
+== 회원 탈퇴
+
+=== Request http message
+include::{snippets}/account_delete/http-request.adoc[]
+
+=== Request Headers
+include::{snippets}/account_delete/request-headers.adoc[]
+
+=== Response http message
+include::{snippets}/account_delete/http-response.adoc[]
+
+== 계정 권한 변경
+
+=== Request http message
+include::{snippets}/account_authority_update/http-request.adoc[]
+
+=== Request Headers
+include::{snippets}/account_authority_update/request-headers.adoc[]
+
+=== Request parameter
+include::{snippets}/account_authority_update/request-fields.adoc[]
+
+=== Response http message
+include::{snippets}/account_authority_update/http-response.adoc[]

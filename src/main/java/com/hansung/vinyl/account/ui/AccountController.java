@@ -1,6 +1,8 @@
 package com.hansung.vinyl.account.ui;
 
 import com.hansung.vinyl.account.application.AccountService;
+import com.hansung.vinyl.account.domain.AuthenticationPrincipal;
+import com.hansung.vinyl.account.domain.User;
 import com.hansung.vinyl.account.dto.AccountAuthorityRequest;
 import com.hansung.vinyl.account.dto.JoinRequest;
 import com.hansung.vinyl.account.dto.JoinResponse;
@@ -36,16 +38,16 @@ public class AccountController {
         return ResponseEntity.ok(joinResponse);
     }
 
-    @DeleteMapping("/{accountId}")
-    public ResponseEntity delete(@PathVariable Long accountId) {
-        accountService.delete(accountId);
+    @DeleteMapping
+    public ResponseEntity delete(@AuthenticationPrincipal User user) {
+        accountService.delete(user);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{accountId}/authorities")
-    public ResponseEntity<JoinResponse> updateAuthorities(@PathVariable Long accountId,
+    public ResponseEntity updateAuthorities(@PathVariable Long accountId,
                                                           @RequestBody AccountAuthorityRequest accountAuthorityRequest) {
-        JoinResponse joinResponse = accountService.updateAuthorities(accountId, accountAuthorityRequest);
-        return ResponseEntity.ok(joinResponse);
+        accountService.updateAuthorities(accountId, accountAuthorityRequest);
+        return ResponseEntity.noContent().build();
     }
 }
