@@ -18,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -27,14 +28,19 @@ import java.util.Arrays;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -49,17 +55,22 @@ public class AuthorityControllerTest extends ControllerTest {
     private AuthorityService authorityService;
 
     private ObjectMapper objectMapper = new ObjectMapper();
+    private RestDocumentationResultHandler docResultHandler;
 
     @BeforeEach
     public void setUp(RestDocumentationContextProvider restDocumentation) {
+        this.docResultHandler = document("{method-name}", preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()));
+
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(documentationConfiguration(restDocumentation))
+                .alwaysDo(docResultHandler)
                 .build();
     }
 
     @DisplayName("권한생성")
     @Test
-    public void 권한생성_요청_응답확인() throws Exception {
+    public void authority_create() throws Exception {
         AuthorityResponse authorityResponse = AuthorityResponse.builder()
                 .id(1L)
                 .name("ROLE_TEST")
@@ -73,19 +84,26 @@ public class AuthorityControllerTest extends ControllerTest {
                 .resources(Arrays.asList(new ResourceRequest("/**", HttpMethod.GET)))
                 .build();
         mockMvc.perform(post("/authorities")
+                        .header("Authorization", "jwt access token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(APPLICATION_JSON_UTF8)
                         .content(objectMapper.writeValueAsString(authorityRequest)))
-                .andDo(document("authority",
+                .andDo(docResultHandler.document(
+                        requestHeaders(headerWithName("Authorization").description( "jwt access token")),
                         requestFields(
-                                fieldWithPath("name").description("권한 이름, 'ROLE_'로 시작해야한다."),
-                                fieldWithPath("remark").description("권한 설명"),
-                                subsectionWithPath("resources").description("권한에 매핑될 자원 목록")),
+                                fieldWithPath("name").description("권한 이름")
+                                        .attributes(key("constraint").value("ROLE_ 로 시작해야한다.")),
+                                fieldWithPath("remark").description("권한 설명").optional(),
+                                fieldWithPath("resources.[].path").description("권한에 매핑된 자원의 경로").optional()
+                                        .attributes(key("constraint").value("pathPattern 형식")),
+                                fieldWithPath("resources.[].httpMethod").description("권한에 매핑될 자원의 http method").optional()
+                                        .attributes(key("constraint").value("GET, POST, PUT, PATCH, DELETE 중 택1"))),
                         responseFields(
                                 fieldWithPath("id").description("권한 유니크 아이디"),
                                 fieldWithPath("name").description("권한 이름"),
                                 fieldWithPath("remark").description("권한 설명"),
-                                subsectionWithPath("resources").description("권한에 매핑된 자원 목록"))
+                                fieldWithPath("resources.[].path").description("권한에 매핑된 자원의 경로"),
+                                fieldWithPath("resources.[].httpMethod").description("권한에 매핑될 자원의 http method"))
                 ))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(notNullValue())))
@@ -95,7 +113,7 @@ public class AuthorityControllerTest extends ControllerTest {
 
     @DisplayName("권한 목록 조회")
     @Test
-    public void 권한목록조회_요청_응답확인() throws Exception {
+    public void authority_list() throws Exception {
         AuthorityResponse authorityResponse1 = AuthorityResponse.builder()
                 .id(1L)
                 .name("ROLE_TEST1")
@@ -110,9 +128,11 @@ public class AuthorityControllerTest extends ControllerTest {
                 .build();
         when(authorityService.list()).thenReturn(Arrays.asList(authorityResponse1, authorityResponse2));
         mockMvc.perform(get("/authorities")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .accept(APPLICATION_JSON_UTF8))
-                .andDo(document("authority",
+                        .header("Authorization", "jwt access token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(APPLICATION_JSON_UTF8))
+                .andDo(docResultHandler.document(
+                        requestHeaders(headerWithName("Authorization").description( "jwt access token")),
                         responseFields(
                                 fieldWithPath("[].id").description("권한 유니크 아이디"),
                                 fieldWithPath("[].name").description("권한 이름"),
@@ -127,11 +147,13 @@ public class AuthorityControllerTest extends ControllerTest {
 
     @DisplayName("권한 삭제")
     @Test
-    public void 권한삭제_요청_응답확인() throws Exception {
+    public void authority_delete() throws Exception {
         mockMvc.perform(delete("/authorities/{authorityId}", 1)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(APPLICATION_JSON_UTF8))
-                .andDo(document("authority",
+                        .header("Authorization", "jwt access token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(APPLICATION_JSON_UTF8))
+                .andDo(docResultHandler.document(
+                        requestHeaders(headerWithName("Authorization").description( "jwt access token")),
                         pathParameters(
                                 parameterWithName("authorityId").description("삭제할 권한 유니크 아이디"))
                 ))
@@ -141,7 +163,7 @@ public class AuthorityControllerTest extends ControllerTest {
 
     @DisplayName("권한 변경")
     @Test
-    public void 권한변경_요청_응답확인() throws Exception {
+    public void authority_update() throws Exception {
         AuthorityRequest authorityRequest = AuthorityRequest.builder()
                 .name("ROLE_UPDATE")
                 .remark("변경할 테스트 권한입니다.")
@@ -157,21 +179,28 @@ public class AuthorityControllerTest extends ControllerTest {
         when(authorityService.update(anyLong(), any())).thenReturn(authorityResponse);
 
         mockMvc.perform(put("/authorities/{authorityId}", 1)
+                        .header("Authorization", "jwt access token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(APPLICATION_JSON_UTF8)
                         .content(objectMapper.writeValueAsString(authorityRequest)))
-                .andDo(document("authority",
+                .andDo(docResultHandler.document(
+                        requestHeaders(headerWithName("Authorization").description( "jwt access token")),
                         pathParameters(
                                 parameterWithName("authorityId").description("권한 유니크 아이디")),
                         requestFields(
-                                fieldWithPath("name").description("변경할 권한 이름, 'ROLE_'로 시작해야한다."),
-                                fieldWithPath("remark").description("변경할 권한 설명"),
-                                subsectionWithPath("resources").description("변경할 권한에 매핑된 자원 목록")),
+                                fieldWithPath("name").description("권한 이름")
+                                        .attributes(key("constraint").value("ROLE_ 로 시작해야한다.")),
+                                fieldWithPath("remark").description("변경할 권한 설명").optional(),
+                                fieldWithPath("resources.[].path").description("권한에 매핑된 자원의 경로").optional()
+                                        .attributes(key("constraint").value("pathPattern 형식")),
+                                fieldWithPath("resources.[].httpMethod").description("권한에 매핑될 자원의 http method").optional()
+                                        .attributes(key("constraint").value("GET, POST, PUT, PATCH, DELETE 중 택1"))),
                         responseFields(
                                 fieldWithPath("id").description("변경된 권한 유니크 아이디"),
                                 fieldWithPath("name").description("변경된 권한 이름"),
                                 fieldWithPath("remark").description("변경된 권한 설명"),
-                                subsectionWithPath("resources").description("변경된 권한에 매핑된 자원 목록"))
+                                fieldWithPath("resources.[].path").description("권한에 매핑된 자원의 경로"),
+                                fieldWithPath("resources.[].httpMethod").description("권한에 매핑될 자원의 http method"))
                         ))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(notNullValue())))
