@@ -20,7 +20,7 @@ public class AccountControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    /*@DisplayName("회원가입")
+    @DisplayName("회원가입")
     @Test
     public void 회원가입_요청_응답확인() throws Exception {
         JoinRequest joinRequest = JoinRequest.builder()
@@ -32,5 +32,5 @@ public class AccountControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isCreated());
-    }*/
+    }
 }
