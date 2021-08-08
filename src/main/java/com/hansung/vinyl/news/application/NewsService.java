@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional
@@ -75,6 +76,16 @@ public class NewsService {
             byte[] mainThumbnailImage = imageStore.getMainThumbnailImage(news.getImages().get(0));
             return NewsListResponse.of(news, mainThumbnailImage);
         });
+    }
+
+    @Transactional(readOnly = true)
+    public List<NewsListResponse> list(List<Long> newsIds) {
+        List<News> newsList = newsRepository.findAllById(newsIds);
+        return newsList.stream()
+                .map(news -> {
+                    byte[] mainThumbnailImage = imageStore.getMainThumbnailImage(news.getImages().get(0));
+                    return NewsListResponse.of(news, mainThumbnailImage);})
+                .collect(Collectors.toList());
     }
 
     public NewsResponse update(User user, Long newsId, NewsRequest newsRequest) {

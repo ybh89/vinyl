@@ -11,102 +11,119 @@ endif::[]
 
 
 == 권한 생성
-
 === Request http message
 include::{snippets}/authority_create/http-request.adoc[]
-
 === Request Headers
 include::{snippets}/authority_create/request-headers.adoc[]
-
 === Request parameter
 include::{snippets}/authority_create/request-fields.adoc[]
-
 === Response http message
 include::{snippets}/authority_create/http-response.adoc[]
-
 === Response parameter
 include::{snippets}/authority_create/response-fields.adoc[]
 
 == 권한 목록 조회
-
 === Request http message
 include::{snippets}/authority_list/http-request.adoc[]
-
 === Request Headers
 include::{snippets}/authority_list/request-headers.adoc[]
-
 === Response http message
 include::{snippets}/authority_list/http-response.adoc[]
-
 === Response parameter
 include::{snippets}/authority_list/response-fields.adoc[]
 
 == 권한 수정
-
 === Request http message
 include::{snippets}/authority_update/http-request.adoc[]
-
 === Request Headers
 include::{snippets}/authority_update/request-headers.adoc[]
-
 === Request parameter
 include::{snippets}/authority_update/request-fields.adoc[]
-
+=== Request Path parameter
+include::{snippets}/authority_update/path-parameters.adoc[]
 === Response http message
 include::{snippets}/authority_update/http-response.adoc[]
-
 === Response parameter
 include::{snippets}/authority_update/response-fields.adoc[]
 
 == 권한 삭제
-
 === Request http message
 include::{snippets}/authority_delete/http-request.adoc[]
-
 === Request Headers
 include::{snippets}/authority_delete/request-headers.adoc[]
-
+=== Request Path parameter
+include::{snippets}/authority_delete/path-parameters.adoc[]
 === Response http message
 include::{snippets}/authority_delete/http-response.adoc[]
 
 == 회원 가입
-
 === Request http message
 include::{snippets}/account_create/http-request.adoc[]
-
-=== Request Headers
-include::{snippets}/account_create/request-headers.adoc[]
-
 === Request parameter
 include::{snippets}/account_create/request-fields.adoc[]
-
 === Response http message
 include::{snippets}/account_create/http-response.adoc[]
-
 === Response parameter
 include::{snippets}/account_create/response-fields.adoc[]
 
 == 회원 탈퇴
-
 === Request http message
 include::{snippets}/account_delete/http-request.adoc[]
-
 === Request Headers
 include::{snippets}/account_delete/request-headers.adoc[]
-
 === Response http message
 include::{snippets}/account_delete/http-response.adoc[]
 
 == 계정 권한 변경
-
 === Request http message
 include::{snippets}/account_authority_update/http-request.adoc[]
-
 === Request Headers
 include::{snippets}/account_authority_update/request-headers.adoc[]
-
+=== Request Path parameter
+include::{snippets}/account_authority_update/path-parameters.adoc[]
 === Request parameter
 include::{snippets}/account_authority_update/request-fields.adoc[]
-
 === Response http message
 include::{snippets}/account_authority_update/http-response.adoc[]
+
+== 프로필 조회
+=== Request http message
+include::{snippets}/member_me/http-request.adoc[]
+=== Request Headers
+include::{snippets}/member_me/request-headers.adoc[]
+=== Response http message
+include::{snippets}/member_me/http-response.adoc[]
+=== Response parameter
+include::{snippets}/member_me/response-fields.adoc[]
+
+== 구독 목록 조회
+=== Request http message
+include::{snippets}/member_subscribe-list/http-request.adoc[]
+=== Request Headers
+include::{snippets}/member_subscribe-list/request-headers.adoc[]
+=== Response http message
+include::{snippets}/member_subscribe-list/http-response.adoc[]
+=== Response parameter
+include::{snippets}/member_subscribe-list/response-fields.adoc[]
+
+== 회원 조회
+=== Request http message
+include::{snippets}/member/http-request.adoc[]
+=== Request Headers
+include::{snippets}/member/request-headers.adoc[]
+=== Request Path parameter
+include::{snippets}/member/path-parameters.adoc[]
+=== Response http message
+include::{snippets}/member/http-response.adoc[]
+=== Response parameter
+include::{snippets}/member/response-fields.adoc[]
+
+== 회원 목록 조회
+=== Request http message
+include::{snippets}/member_list/http-request.adoc[]
+=== Request Headers
+include::{snippets}/member_list/request-headers.adoc[]
+=== Response http message
+include::{snippets}/member_list/http-response.adoc[]
+=== Response parameter
+include::{snippets}/member_list/response-fields.adoc[]

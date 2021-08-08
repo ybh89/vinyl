@@ -1,5 +1,6 @@
 package com.hansung.vinyl.member.domain;
 
+import com.hansung.vinyl.common.domain.BaseDateTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Member {
+public class Member extends BaseDateTimeEntity {
     @Id
     private Long id;
 

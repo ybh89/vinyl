@@ -13,13 +13,18 @@ import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.Objects;
 
 import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class ControllerTest {
@@ -64,18 +69,24 @@ public class ControllerTest {
                 .content(objectMapper.writeValueAsString(requestDto)));
     }
 
-    protected ResultActions get(String url, boolean isAuthorizationRequired) throws Exception {
-        if (!isAuthorizationRequired) {
-            return get(url);
-        }
-        return mockMvc.perform(RestDocumentationRequestBuilders.get(url)
-                .header(AUTHORIZATION, TEMPORARY_JWT_TOKEN)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(APPLICATION_JSON_UTF8));
-    }
+    protected ResultActions get(String url, Object pathVariable, MultiValueMap params, boolean isAuthorizationRequired) throws Exception {
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
-    protected ResultActions get(String url) throws Exception {
-        return mockMvc.perform(RestDocumentationRequestBuilders.get(url)
+        if (Objects.isNull(pathVariable)) {
+            mockHttpServletRequestBuilder = RestDocumentationRequestBuilders.get(url);
+        } else {
+            mockHttpServletRequestBuilder = RestDocumentationRequestBuilders.get(url, pathVariable);
+        }
+
+        if (isAuthorizationRequired) {
+            mockHttpServletRequestBuilder.header(AUTHORIZATION, TEMPORARY_JWT_TOKEN);
+        }
+
+        if (Objects.nonNull(params)) {
+            mockHttpServletRequestBuilder.params(params);
+        }
+
+        return mockMvc.perform(mockHttpServletRequestBuilder
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(APPLICATION_JSON_UTF8));
     }
@@ -96,6 +107,7 @@ public class ControllerTest {
     }
 
     protected void documentApi(ResultActions resultActions, RestDocumentationResultHandler document) throws Exception {
-        resultActions.andDo(document);
+        resultActions.andDo(document)
+                .andDo(print());
     }
 }

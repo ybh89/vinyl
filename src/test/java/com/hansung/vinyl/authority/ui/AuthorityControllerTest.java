@@ -72,7 +72,7 @@ public class AuthorityControllerTest extends ControllerTest {
         when(authorityService.list()).thenReturn(asList(authorityResponse1, authorityResponse2));
 
         // when
-        ResultActions resultActions = get("/authorities", true);
+        ResultActions resultActions = get("/authorities", null, null, true);
 
         // then
         resultActions.andExpect(status().isOk())

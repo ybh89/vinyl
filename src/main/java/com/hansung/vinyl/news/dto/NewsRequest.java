@@ -1,6 +1,5 @@
 package com.hansung.vinyl.news.dto;
 
-import com.hansung.vinyl.news.domain.Image;
 import com.hansung.vinyl.news.domain.News;
 import com.hansung.vinyl.news.domain.Price;
 import com.hansung.vinyl.news.domain.PriceType;
@@ -14,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Builder

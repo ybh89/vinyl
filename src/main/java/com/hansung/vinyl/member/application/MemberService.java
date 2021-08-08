@@ -1,16 +1,23 @@
 package com.hansung.vinyl.member.application;
 
 import com.hansung.vinyl.account.domain.AccountCreatedEvent;
-import com.hansung.vinyl.account.domain.LoginMember;
 import com.hansung.vinyl.account.domain.User;
 import com.hansung.vinyl.common.exception.NoSuchDataException;
 import com.hansung.vinyl.member.domain.Member;
 import com.hansung.vinyl.member.domain.MemberRepository;
+import com.hansung.vinyl.member.domain.Subscribe;
 import com.hansung.vinyl.member.dto.MemberResponse;
+import com.hansung.vinyl.news.application.NewsService;
+import com.hansung.vinyl.news.dto.NewsListResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -18,6 +25,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final NewsService newsService;
 
     @TransactionalEventListener
     public void create(AccountCreatedEvent accountCreatedEvent) {
@@ -35,10 +43,6 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MemberResponse me(User user) {
         Member member = findMemberById(user.getAccountId());
-        /**
-         * TODO
-         * 상품 디비 조회 해야함.
-         */
         return MemberResponse.of(member);
     }
 
@@ -46,5 +50,26 @@ public class MemberService {
         return memberRepository.findById(accountId)
                 .orElseThrow(() -> new NoSuchDataException("accountId", String.valueOf(accountId),
                         getClass().getName()));
+    }
+
+    @Transactional(readOnly = true)
+    public MemberResponse member(Long memberId) {
+        Member member = findMemberById(memberId);
+        return MemberResponse.of(member);
+    }
+
+    @Transactional(readOnly = true)
+    public List<NewsListResponse> subscribes(User user) {
+        Member member = findMemberById(user.getAccountId());
+        List<Long> newsIds = member.getSubscribes().stream()
+                .map(Subscribe::getNewsId)
+                .collect(Collectors.toList());
+        return newsService.list(newsIds);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<MemberResponse> list(Pageable pageable) {
+        Page<Member> members = memberRepository.findAll(pageable);
+        return members.map(MemberResponse::of);
     }
 }
