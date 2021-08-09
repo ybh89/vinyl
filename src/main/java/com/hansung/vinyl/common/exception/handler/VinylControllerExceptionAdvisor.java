@@ -2,6 +2,7 @@ package com.hansung.vinyl.common.exception.handler;
 
 import com.hansung.vinyl.common.exception.AuthorizationException;
 import com.hansung.vinyl.common.exception.DataException;
+import com.hansung.vinyl.common.exception.FileException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -59,7 +60,7 @@ public class VinylControllerExceptionAdvisor {
     public ResponseEntity<Error> handleDataException(DataException exception) {
         log.error("데이터 에러 발생", exception);
         Error error = Error.builder()
-                .httpStatus(INTERNAL_SERVER_ERROR)
+                .httpStatus(BAD_REQUEST)
                 .message(exception.getMessage())
                 .objectName(exception.getObjectName())
                 .field(exception.getField())
@@ -67,7 +68,7 @@ public class VinylControllerExceptionAdvisor {
                 .exceptionType(exception.getClass().getTypeName())
                 .dateTime(LocalDateTime.now())
                 .build();
-        return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(error);
+        return ResponseEntity.status(BAD_REQUEST).body(error);
     }
 
     @ExceptionHandler(AuthorizationException.class)
@@ -80,5 +81,19 @@ public class VinylControllerExceptionAdvisor {
                 .dateTime(LocalDateTime.now())
                 .build();
         return ResponseEntity.status(FORBIDDEN).body(error);
+    }
+
+    @ExceptionHandler(FileException.class)
+    public ResponseEntity<Error> handleFileException(FileException exception) {
+        log.error("파일 에러 발생", exception);
+        Error error = Error.builder()
+                .httpStatus(BAD_REQUEST)
+                .message(exception.getMessage())
+                .field(exception.getPath() + exception.getFileName())
+                .exceptionType(exception.getClass().getTypeName())
+                .dateTime(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(BAD_REQUEST).body(error);
     }
 }

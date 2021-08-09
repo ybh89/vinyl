@@ -90,7 +90,7 @@ public class ImageStore {
         }
     }
 
-    private String getFullPath(String imageName) {
+    public String getFullPath(String imageName) {
         return fileDirectory + imageName;
     }
 
@@ -129,5 +129,9 @@ public class ImageStore {
     public List<Image> updateImages(List<Image> deleteImages, List<MultipartFile> storeImages) {
         deleteImages(deleteImages);
         return storeImages(storeImages);
+    }
+
+    public String getFileDirectory() {
+        return fileDirectory;
     }
 }
