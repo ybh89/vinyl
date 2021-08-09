@@ -66,13 +66,6 @@ public class AccountService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public JoinResponse findById(Long accountId) {
-        Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new IllegalArgumentException("계정이 존재하지 않습니다."));
-        return JoinResponse.of(account);
-    }
-
-    @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Account account = findAccountByEmail(username);

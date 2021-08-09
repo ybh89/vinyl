@@ -2,7 +2,6 @@ package com.hansung.vinyl.news.ui;
 
 import com.hansung.vinyl.common.ControllerTest;
 import com.hansung.vinyl.common.UnsecuredWebMvcTest;
-import com.hansung.vinyl.news.application.NewsService;
 import com.hansung.vinyl.news.domain.service.ImageStore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

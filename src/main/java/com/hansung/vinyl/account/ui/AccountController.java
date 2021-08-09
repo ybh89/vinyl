@@ -26,18 +26,6 @@ public class AccountController {
         return ResponseEntity.created(URI.create("/accounts/" + joinResponse.getId())).body(joinResponse);
     }
 
-    @GetMapping
-    public ResponseEntity<List<JoinResponse>> list() {
-        List<JoinResponse> joinRespons = accountService.list();
-        return ResponseEntity.ok(joinRespons);
-    }
-
-    @GetMapping("/{accountId}")
-    public ResponseEntity<JoinResponse> findById(@PathVariable Long accountId) {
-        JoinResponse joinResponse = accountService.findById(accountId);
-        return ResponseEntity.ok(joinResponse);
-    }
-
     @DeleteMapping
     public ResponseEntity delete(@AuthenticationPrincipal User user) {
         accountService.delete(user);
