@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class SubscribeController {
     private final NewsService newsService;
 
-    @PostMapping
+    @PutMapping
     public ResponseEntity subscribe(@AuthenticationPrincipal User user, @PathVariable Long newsId) {
         newsService.subscribe(user, newsId);
         return ResponseEntity.noContent().build();
