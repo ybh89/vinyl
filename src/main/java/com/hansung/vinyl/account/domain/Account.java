@@ -1,48 +1,48 @@
 package com.hansung.vinyl.account.domain;
 
 import com.hansung.vinyl.authority.domain.Authority;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+import static javax.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
+
+@NoArgsConstructor(access = PROTECTED)
 @Getter
 @Table(uniqueConstraints={ @UniqueConstraint(name = "uk_account_email", columnNames = "email") })
 @Entity
 public class Account {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Id
     private Long id;
 
-    @Column(nullable = false, updatable = false, length = 50)
-    private String email;
+    @Embedded
+    private Email email;
 
-    @Column(nullable = false, length = 150)
-    private String password;
+    @Embedded
+    private EncryptedPassword encryptedPassword;
 
     private boolean deleted;
 
-    @Column(length = 150)
-    private String refreshToken;
+    @Embedded
+    private RefreshToken refreshToken;
 
-    @OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
-            orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<AccountAuthority> accountAuthorities = new ArrayList<>();
+    @Embedded
+    private AccountAuthorities accountAuthorities;
 
     @Builder
-    public Account(Long id, String email, String password, List<Authority> authorities) {
+    public Account(Long id, String email, String encryptedPassword, List<Authority> authorities) {
         this.id = id;
-        this.email = email;
-        this.password = password;
-        this.accountAuthorities.addAll(createAccountAuthorities(authorities));
+        this.email = new Email(email);
+        this.encryptedPassword = new EncryptedPassword(encryptedPassword);
+        this.accountAuthorities = new AccountAuthorities(createAccountAuthorities(authorities));
     }
 
     public void delete() {
@@ -59,12 +59,15 @@ public class Account {
     }
 
     public void changeAuthorities(List<Authority> authorities) {
-        accountAuthorities.clear();
-        accountAuthorities.addAll(createAccountAuthorities(authorities));
+        accountAuthorities.change(createAccountAuthorities(authorities));
     }
 
-    public void updateRefreshToken(String refreshToken) {
+    public void updateRefreshToken(RefreshToken refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public List<Long> getAuthorityIds() {
+        return accountAuthorities.getAuthorityIds();
     }
 
     public void publishEvent(ApplicationEventPublisher publisher, Object event) {
@@ -72,4 +75,26 @@ public class Account {
             publisher.publishEvent(event);
         }
     }
+
+    public String getRefreshTokenValue() {
+        if (Objects.isNull(refreshToken)) {
+            return null;
+        }
+        return refreshToken.value();
+    }
+
+    public String getEncryptedPasswordValue() {
+        if (Objects.isNull(encryptedPassword)) {
+            return null;
+        }
+        return encryptedPassword.value();
+    }
+
+    public String getEmailValue() {
+        if (Objects.isNull(email)) {
+            return null;
+        }
+        return email.value();
+    }
+
 }

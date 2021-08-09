@@ -1,8 +1,7 @@
 package com.hansung.vinyl.account.acceptance;
 
-import com.hansung.vinyl.common.AcceptanceTest;
 import com.hansung.vinyl.account.dto.JoinRequest;
-import com.hansung.vinyl.account.dto.JoinResponse;
+import com.hansung.vinyl.common.AcceptanceTest;
 import com.hansung.vinyl.member.domain.Gender;
 import com.hansung.vinyl.security.dto.LoginRequest;
 import io.restassured.response.ExtractableResponse;
@@ -20,32 +19,30 @@ public class AccountAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "test@test.com";
     public static final String PASSWORD = "test-password!12";
     public static final String NAME = "test";
+    public static final String FCM_TOKEN = "test-fcm-token";
 
     @DisplayName("계정을 관리한다.")
-    //@Test
+    @Test
     public void accountManager() throws Exception {
-        ExtractableResponse<Response> postResponse = 계정_생성_요청(EMAIL, PASSWORD, NAME);
-        계정_생성됨(postResponse);
+        /**
+         * TODO
+         * given
+         * 유저 권한 생성 후 회원가입때 전달해야함.
+         */
+
+        ExtractableResponse<Response> joinResponse = 회원가입_요청(EMAIL, PASSWORD, NAME, FCM_TOKEN);
+        회원가입됨(joinResponse);
 
         ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD);
         String 토큰 = 로그인됨(loginResponse).get(0);
 
-        ExtractableResponse<Response> loginFailResponse = 로그인_요청("fail@fail.com", "fail-password!123");
-
-        // 권한이 있어야 진행 가능
-        /*ExtractableResponse<Response> getResponse = 계정_조회_요청(postResponse, 토큰);
-        계정_조회됨(getResponse);
-
-        ExtractableResponse<Response> getListResponse = 계정_목록_조회_요청(토큰);
-        계정_목록_조회됨(getListResponse);
-
-        ExtractableResponse<Response> deleteResponse = 계정_삭제_요청(postResponse, 토큰);
-        계정_삭제됨(deleteResponse);*/
+        ExtractableResponse<Response> deleteResponse = 회원탈퇴_요청(joinResponse, 토큰);
+        회원탈퇴됨(deleteResponse);
     }
 
     public static ExtractableResponse<Response> 계정_등록_되어있음(String email, String password, List<Long> authorityIds, String name) {
-        ExtractableResponse<Response> response = 계정_생성_요청(email, password, name, authorityIds);
-        계정_생성됨(response);
+        ExtractableResponse<Response> response = 회원가입_요청(email, password, name, authorityIds);
+        회원가입됨(response);
         return response;
     }
 
@@ -85,33 +82,25 @@ public class AccountAcceptanceTest extends AcceptanceTest {
         return get("/accounts", accessToken, refreshToken);
     }
 
-    private void 계정_조회됨(ExtractableResponse<Response> getResponse) {
-        assertHttpStatus(getResponse, OK);
-        assertThat(getResponse.as(JoinResponse.class).getId()).isNotNull();
-    }
-
-    private ExtractableResponse<Response> 계정_조회_요청(ExtractableResponse<Response> postResponse, String token) {
-        return get(postResponse.header("Location"), token);
-    }
-
-    private static void 계정_생성됨(ExtractableResponse<Response> postResponse) {
+    private static void 회원가입됨(ExtractableResponse<Response> postResponse) {
         assertHttpStatus(postResponse, CREATED);
     }
 
-    private static ExtractableResponse<Response> 계정_생성_요청(String email, String password, String name) {
+    private static ExtractableResponse<Response> 회원가입_요청(String email, String password, String name, String fcmToken) {
         JoinRequest joinRequest = JoinRequest.builder()
                 .email(email)
                 .password(password)
                 .authorityIds(Arrays.asList())
                 .name(name)
                 .gender(Gender.FEMALE)
+                .fcmToken(fcmToken)
                 .build();
 
         ExtractableResponse<Response> postResponse = post("/accounts", joinRequest);
         return postResponse;
     }
 
-    private static ExtractableResponse<Response> 계정_생성_요청(String email, String password, String name, List<Long> ids) {
+    private static ExtractableResponse<Response> 회원가입_요청(String email, String password, String name, List<Long> ids) {
         JoinRequest joinRequest = JoinRequest.builder()
                 .email(email)
                 .password(password)
@@ -124,11 +113,11 @@ public class AccountAcceptanceTest extends AcceptanceTest {
         return postResponse;
     }
 
-    private void 계정_삭제됨(ExtractableResponse<Response> deleteResponse) {
+    private void 회원탈퇴됨(ExtractableResponse<Response> deleteResponse) {
         assertHttpStatus(deleteResponse, NO_CONTENT);
     }
 
-    private ExtractableResponse<Response> 계정_삭제_요청(ExtractableResponse<Response> postResponse, String 토큰) {
+    private ExtractableResponse<Response> 회원탈퇴_요청(ExtractableResponse<Response> postResponse, String 토큰) {
         return delete(postResponse.header("Location"), 토큰);
     }
 }

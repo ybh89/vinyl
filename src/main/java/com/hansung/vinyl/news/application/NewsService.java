@@ -2,7 +2,7 @@ package com.hansung.vinyl.news.application;
 
 import com.hansung.vinyl.account.domain.User;
 import com.hansung.vinyl.common.exception.AuthorizationException;
-import com.hansung.vinyl.common.exception.NoSuchDataException;
+import com.hansung.vinyl.common.exception.data.NoSuchDataException;
 import com.hansung.vinyl.member.domain.Member;
 import com.hansung.vinyl.member.domain.MemberRepository;
 import com.hansung.vinyl.news.domain.Image;

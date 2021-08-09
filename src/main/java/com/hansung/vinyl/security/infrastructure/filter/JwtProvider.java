@@ -1,11 +1,12 @@
 package com.hansung.vinyl.security.infrastructure.filter;
 
 import com.hansung.vinyl.account.application.AccountService;
+import com.hansung.vinyl.account.domain.RefreshToken;
 import com.hansung.vinyl.account.domain.User;
-import com.hansung.vinyl.common.exception.ExpiredRefreshTokenException;
-import com.hansung.vinyl.common.exception.IllegalRefreshTokenException;
-import com.hansung.vinyl.common.exception.NoAccessTokenException;
-import com.hansung.vinyl.common.exception.NoRefreshTokenException;
+import com.hansung.vinyl.common.exception.jwt.ExpiredRefreshTokenException;
+import com.hansung.vinyl.common.exception.jwt.IllegalRefreshTokenException;
+import com.hansung.vinyl.common.exception.jwt.NoAccessTokenException;
+import com.hansung.vinyl.common.exception.jwt.NoRefreshTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -56,17 +57,18 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String createRefreshToken(User user) {
+    public RefreshToken createRefreshToken(User user) {
         Claims claims = Jwts.claims().setSubject(String.valueOf(user.getAccountId()));
         Date now = new Date();
         Date expiration = new Date(now.getTime() + refreshValidityInMilliseconds);
 
-        return Jwts.builder()
+        String refreshToken = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+        return new RefreshToken(refreshToken);
     }
 
     public String getAccessToken(HttpServletRequest request) {
@@ -77,7 +79,7 @@ public class JwtProvider {
                 .replace("Bearer", "");
     }
 
-    public void saveRefreshToken(String accessToken, String refreshToken) {
+    public void saveRefreshToken(String accessToken, RefreshToken refreshToken) {
         Long accountId = getAccountId(accessToken);
         accountService.updateRefreshToken(accountId, refreshToken);
     }

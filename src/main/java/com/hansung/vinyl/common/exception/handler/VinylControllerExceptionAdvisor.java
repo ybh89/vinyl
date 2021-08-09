@@ -1,8 +1,8 @@
 package com.hansung.vinyl.common.exception.handler;
 
 import com.hansung.vinyl.common.exception.AuthorizationException;
-import com.hansung.vinyl.common.exception.DataException;
-import com.hansung.vinyl.common.exception.FileException;
+import com.hansung.vinyl.common.exception.data.DataException;
+import com.hansung.vinyl.common.exception.file.FileException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;

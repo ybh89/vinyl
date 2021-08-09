@@ -17,8 +17,10 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class JoinRequest {
+    @NotBlank
     @Email
     private String email;
+    @NotBlank
     @Pattern(regexp="(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,20}")
     private String password;
     private List<Long> authorityIds;

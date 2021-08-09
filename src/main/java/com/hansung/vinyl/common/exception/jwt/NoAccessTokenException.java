@@ -1,4 +1,4 @@
-package com.hansung.vinyl.common.exception;
+package com.hansung.vinyl.common.exception.jwt;
 
 public class NoAccessTokenException extends RuntimeException {
     public static final String MESSAGE = "access token 이 존재하지 않습니다.";

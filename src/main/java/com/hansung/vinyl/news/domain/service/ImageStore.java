@@ -1,6 +1,6 @@
 package com.hansung.vinyl.news.domain.service;
 
-import com.hansung.vinyl.common.exception.CannotStoreImageFileException;
+import com.hansung.vinyl.common.exception.file.CannotStoreImageFileException;
 import com.hansung.vinyl.news.domain.Image;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -74,7 +74,7 @@ public class ImageStore {
                     .size(width, height)
                     .toFile(thumbnailImage);
         } catch (IOException exception) {
-            throw new CannotStoreImageFileException(exception);
+            throw new CannotStoreImageFileException(exception, thumbnailImage.getName(), fileDirectory);
         }
     }
 
@@ -86,7 +86,7 @@ public class ImageStore {
         try {
             multipartFile.transferTo(file);
         } catch (IOException exception) {
-            throw new CannotStoreImageFileException(exception);
+            throw new CannotStoreImageFileException(exception, file.getName(), fileDirectory);
         }
     }
 

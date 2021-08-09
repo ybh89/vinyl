@@ -1,6 +1,6 @@
 package com.hansung.vinyl.news.ui;
 
-import com.hansung.vinyl.common.exception.NoSuchFileException;
+import com.hansung.vinyl.common.exception.file.NoSuchFileException;
 import com.hansung.vinyl.news.domain.service.ImageStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;

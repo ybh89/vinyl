@@ -1,9 +1,8 @@
 package com.hansung.vinyl.authority.application;
 
 import com.hansung.vinyl.account.domain.Account;
-import com.hansung.vinyl.account.domain.AccountCreatedEvent;
 import com.hansung.vinyl.account.domain.AccountRepository;
-import com.hansung.vinyl.account.domain.Join;
+import com.hansung.vinyl.account.domain.Email;
 import com.hansung.vinyl.authority.domain.*;
 import com.hansung.vinyl.member.domain.Gender;
 import com.hansung.vinyl.member.domain.Member;
@@ -84,7 +83,7 @@ public class InitialDataService {
 
             authorityRepository.save(authority);
 
-            if (!accountRepository.existsByEmail(superEmail)) {
+            if (!accountRepository.existsByEmail(Email.of(superEmail))) {
                 Account account = Account.builder()
                         .email(superEmail)
                         .password(superPassword)
@@ -95,7 +94,7 @@ public class InitialDataService {
 
                 Member member = Member.builder()
                         .accountId(savedAccount.getId())
-                        .email(savedAccount.getEmail())
+                        .email(savedAccount.getEmail().value())
                         .name("super")
                         .gender(Gender.MALE)
                         .build();

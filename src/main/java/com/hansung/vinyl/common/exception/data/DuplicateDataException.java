@@ -1,4 +1,4 @@
-package com.hansung.vinyl.common.exception;
+package com.hansung.vinyl.common.exception.data;
 
 public class DuplicateDataException extends DataException {
     private static final String MESSAGE = "중복된 데이터가 이미 존재합니다.";

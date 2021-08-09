@@ -18,8 +18,8 @@ public class User implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
     @Builder
-    public User(Long accountId, String username, String password, String refreshToken, boolean isEnabled, boolean isAccountNonExpired,
-                boolean isAccountNonLocked, boolean isCredentialsNonExpired,
+    public User(Long accountId, String username, String password, String refreshToken, boolean isEnabled,
+                boolean isAccountNonExpired, boolean isAccountNonLocked, boolean isCredentialsNonExpired,
                 Collection<? extends GrantedAuthority> authorities) {
         this.accountId = accountId;
         this.username = username;

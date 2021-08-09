@@ -15,6 +15,6 @@ public class JoinResponse {
     private String email;
 
     public static JoinResponse of(Account savedAccount) {
-        return new JoinResponse(savedAccount.getId(), savedAccount.getEmail());
+        return new JoinResponse(savedAccount.getId(), savedAccount.getEmail().value());
     }
 }

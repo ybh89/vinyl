@@ -1,4 +1,4 @@
-package com.hansung.vinyl.common.exception;
+package com.hansung.vinyl.common.exception.file;
 
 import lombok.Getter;
 
@@ -9,6 +9,12 @@ public abstract class FileException extends RuntimeException {
 
     public FileException(String message, String fileName, String path) {
         super(message);
+        this.fileName = fileName;
+        this.path = path;
+    }
+
+    public FileException(String message, Throwable cause, String fileName, String path) {
+        super(message, cause);
         this.fileName = fileName;
         this.path = path;
     }

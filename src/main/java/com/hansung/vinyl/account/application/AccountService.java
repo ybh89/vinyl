@@ -41,7 +41,7 @@ public class AccountService implements UserDetailsService {
     private AccountCreatedEvent buildAccountCreatedEvent(JoinRequest joinRequest, Account savedAccount) {
         return AccountCreatedEvent.builder()
                         .accountId(savedAccount.getId())
-                        .email(savedAccount.getEmail())
+                        .email(savedAccount.getEmail().value())
                         .name(joinRequest.getName())
                         .phone(joinRequest.getPhone())
                         .gender(joinRequest.getGender())
@@ -68,7 +68,7 @@ public class AccountService implements UserDetailsService {
     @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = findAccountByEmail(username);
+        Account account = findAccountByEmail(Email.of(username));
         return loadUser(account);
     }
 
@@ -79,9 +79,7 @@ public class AccountService implements UserDetailsService {
     }
 
     private UserDetails loadUser(Account account) {
-        List<Long> authorityIds = account.getAccountAuthorities().stream()
-                .map(accountAuthority -> accountAuthority.getAuthorityId())
-                .collect(Collectors.toList());
+        List<Long> authorityIds = account.getAuthorityIds();
         List<Authority> authorities = authorityRepository.findAllById(authorityIds);
         return buildUser(account, authorities);
     }
@@ -89,9 +87,9 @@ public class AccountService implements UserDetailsService {
     private User buildUser(Account account, List<Authority> authorities) {
         return User.builder()
                 .accountId(account.getId())
-                .username(account.getEmail())
-                .password(account.getPassword())
-                .refreshToken(account.getRefreshToken())
+                .username(account.getEmailValue())
+                .password(account.getEncryptedPasswordValue())
+                .refreshToken(account.getRefreshTokenValue())
                 .isEnabled(true)
                 .isAccountNonExpired(true)
                 .isAccountNonLocked(true)
@@ -100,9 +98,9 @@ public class AccountService implements UserDetailsService {
                 .build();
     }
 
-    public Account findAccountByEmail(String username) {
-        return accountRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다. email=" + username));
+    public Account findAccountByEmail(Email email) {
+        return accountRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다. email=" + email));
     }
 
     public void delete(User user) {
@@ -116,7 +114,7 @@ public class AccountService implements UserDetailsService {
     }
 
     private void validateEmail(String email) {
-        if (accountRepository.existsByEmail(email)) {
+        if (accountRepository.existsByEmail(Email.of(email))) {
             throw new IllegalArgumentException("해당 아이디로 가입된 계정이 이미 존재합니다.");
         }
     }
@@ -134,7 +132,7 @@ public class AccountService implements UserDetailsService {
         account.changeAuthorities(authorities);
     }
 
-    public void updateRefreshToken(Long accountId, String refreshToken) {
+    public void updateRefreshToken(Long accountId, RefreshToken refreshToken) {
         Account account = findAccountById(accountId);
         account.updateRefreshToken(refreshToken);
     }

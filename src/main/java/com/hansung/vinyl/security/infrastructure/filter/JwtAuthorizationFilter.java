@@ -1,7 +1,7 @@
 package com.hansung.vinyl.security.infrastructure.filter;
 
+import com.hansung.vinyl.account.domain.RefreshToken;
 import com.hansung.vinyl.account.domain.User;
-import com.hansung.vinyl.common.exception.ExpiredRefreshTokenException;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Objects;
 
 /**
  * 익명 사용자는 다음 필터로 이동하여 인가처리 필터에서 처리됨.
@@ -85,11 +84,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String reissueRefreshToken(HttpServletResponse response, String accessToken) throws IOException {
+    private RefreshToken reissueRefreshToken(HttpServletResponse response, String accessToken) throws IOException {
         User user = jwtProvider.findUser(accessToken);
-        String newRefreshToken = jwtProvider.createRefreshToken(user);
+        RefreshToken newRefreshToken = jwtProvider.createRefreshToken(user);
         jwtProvider.saveRefreshToken(accessToken, newRefreshToken);
-        Cookie refreshTokenCookie= new Cookie("refresh-token", newRefreshToken);
+        Cookie refreshTokenCookie= new Cookie("refresh-token", newRefreshToken.value());
         //refreshTokenCookie.setHttpOnly(true);
         //refreshTokenCookie.setSecure(true);
         refreshTokenCookie.setPath("/");

@@ -2,9 +2,9 @@ package com.hansung.vinyl.security.infrastructure.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hansung.vinyl.common.exception.handler.Error;
-import com.hansung.vinyl.common.exception.ExpiredRefreshTokenException;
-import com.hansung.vinyl.common.exception.IllegalRefreshTokenException;
-import com.hansung.vinyl.common.exception.NoRefreshTokenException;
+import com.hansung.vinyl.common.exception.jwt.ExpiredRefreshTokenException;
+import com.hansung.vinyl.common.exception.jwt.IllegalRefreshTokenException;
+import com.hansung.vinyl.common.exception.jwt.NoRefreshTokenException;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -1,5 +1,6 @@
 package com.hansung.vinyl.security.infrastructure.handler;
 
+import com.hansung.vinyl.account.domain.RefreshToken;
 import com.hansung.vinyl.account.domain.User;
 import com.hansung.vinyl.security.infrastructure.filter.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +22,12 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
                                         Authentication authentication) throws IOException, ServletException {
         User user = (User) authentication.getPrincipal();
         String accessToken = jwtProvider.createAccessToken(user);
-        String refreshToken = jwtProvider.createRefreshToken(user);
+        RefreshToken refreshToken = jwtProvider.createRefreshToken(user);
         jwtProvider.saveRefreshToken(accessToken, refreshToken);
 
-        Cookie refreshTokenCookie= new Cookie("refresh-token", refreshToken);
-        //refreshTokenCookie.setHttpOnly(true);
-        //refreshTokenCookie.setSecure(true);
+        Cookie refreshTokenCookie= new Cookie("refresh-token", refreshToken.value());
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true);
         refreshTokenCookie.setPath("/");
 
         response.addCookie(refreshTokenCookie);

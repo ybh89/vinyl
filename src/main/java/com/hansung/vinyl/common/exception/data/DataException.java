@@ -1,4 +1,4 @@
-package com.hansung.vinyl.common.exception;
+package com.hansung.vinyl.common.exception.data;
 
 import lombok.Getter;
 
