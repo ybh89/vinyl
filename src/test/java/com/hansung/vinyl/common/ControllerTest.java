@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -14,13 +14,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Objects;
 
-import static org.springframework.http.HttpHeaders.*;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -104,6 +106,29 @@ public class ControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(APPLICATION_JSON_UTF8)
                 .content(objectMapper.writeValueAsString(requestDto)));
+    }
+
+    protected ResultActions postWithMultipart(String url, Object pathVariable, MultiValueMap params,
+                                              MockMultipartFile file) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders.multipart(url, pathVariable).file(file)
+                .header(AUTHORIZATION, TEMPORARY_JWT_TOKEN)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .accept(APPLICATION_JSON_UTF8)
+                .params(params));
+    }
+
+    protected ResultActions putWithMultipart(String url, Object pathVariable, MultiValueMap params,
+                                             MockMultipartFile file) throws Exception {
+        MockMultipartHttpServletRequestBuilder builder = RestDocumentationRequestBuilders.fileUpload(url, pathVariable);
+        builder.with(request -> {
+                    request.setMethod("PUT");
+                    return request;
+                });
+        return mockMvc.perform(builder.file(file)
+                .header(AUTHORIZATION, TEMPORARY_JWT_TOKEN)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .accept(APPLICATION_JSON_UTF8)
+                .params(params));
     }
 
     protected void documentApi(ResultActions resultActions, RestDocumentationResultHandler document) throws Exception {

@@ -38,7 +38,7 @@ public class VinylControllerExceptionAdvisor {
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<List<Error>> handleBindException(BindException exception, Locale locale) {
-        log.error("필드 에러가 발생", exception.getMessage());
+        log.error("필드 에러가 발생", exception);
         List<FieldError> fieldErrors = exception.getFieldErrors();
 
         List<Error> errors = fieldErrors.stream()

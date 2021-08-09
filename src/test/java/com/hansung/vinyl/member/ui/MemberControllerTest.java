@@ -7,7 +7,6 @@ import com.hansung.vinyl.member.domain.Gender;
 import com.hansung.vinyl.member.dto.MemberResponse;
 import com.hansung.vinyl.news.domain.PriceType;
 import com.hansung.vinyl.news.dto.NewsListResponse;
-import com.jayway.jsonpath.JsonPath;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -23,7 +23,7 @@ public class NewsController {
     private final NewsService newsService;
 
     @PostMapping
-    public ResponseEntity<NewsResponse> create(NewsRequest newsRequest) {
+    public ResponseEntity<NewsResponse> create(@ModelAttribute NewsRequest newsRequest) {
         NewsResponse newsResponse = newsService.create(newsRequest);
         return ResponseEntity.created(URI.create("/news/" + newsResponse.getId())).body(newsResponse);
     }
@@ -43,7 +43,7 @@ public class NewsController {
 
     @PutMapping("/{newsId}")
     public ResponseEntity<NewsResponse> update(@AuthenticationPrincipal User user, @PathVariable Long newsId,
-                                               NewsRequest newsRequest) {
+                                               @ModelAttribute NewsRequest newsRequest) {
         NewsResponse newsResponse = newsService.update(user, newsId, newsRequest);
         return ResponseEntity.ok(newsResponse);
     }

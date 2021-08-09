@@ -27,6 +27,7 @@ public class NewsRequest {
     private String content;
     @URL
     private String sourceUrl;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime releaseDate;
     private String price;

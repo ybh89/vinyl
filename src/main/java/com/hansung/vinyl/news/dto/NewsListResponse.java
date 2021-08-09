@@ -22,9 +22,10 @@ public class NewsListResponse {
     private String price;
     private PriceType priceType;
     private byte[] mainThumbnailImage;
+    private String topic;
 
     public static NewsListResponse of(News news, byte[] mainThumbnailImage) {
         return new NewsListResponse(news.getId(), news.getTitle(), news.getReleaseDate(), news.getPrice().getPrice(),
-                news.getPrice().getPriceType(), mainThumbnailImage);
+                news.getPrice().getPriceType(), mainThumbnailImage, news.getTopic());
     }
 }

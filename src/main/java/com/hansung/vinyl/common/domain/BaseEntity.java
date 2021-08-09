@@ -18,5 +18,5 @@ public class BaseEntity extends BaseDateTimeEntity {
     private Long createdBy;
 
     @LastModifiedBy
-    private Long lastModifiedBy;
+    private Long updatedBy;
 }
