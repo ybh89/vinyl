@@ -1,31 +1,37 @@
 package com.hansung.vinyl.authority.domain;
 
+import com.hansung.vinyl.common.exception.validate.NullException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 import java.util.Objects;
 
+import static javax.persistence.AccessType.FIELD;
 import static lombok.AccessLevel.PROTECTED;
 
 @Getter
 @NoArgsConstructor(access = PROTECTED)
+@Access(FIELD)
 @Embeddable
 public class Resource {
-    @Column(name = "path", nullable = false, length = 100)
-    private String path;
+    @Embedded
+    private Path path;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "http_method", nullable = false, length = 10)
     private HttpMethod httpMethod;
 
     public Resource(String path, HttpMethod httpMethod) {
-        this.path = path;
+        validate(httpMethod);
+        this.path = new Path(path);
         this.httpMethod = httpMethod;
+    }
+
+    private void validate(HttpMethod httpMethod) {
+        if (Objects.isNull(httpMethod)) {
+            throw new NullException("httpMethod", getClass().getName());
+        }
     }
 
     @Override
@@ -47,5 +53,9 @@ public class Resource {
                 "path='" + path + '\'' +
                 ", httpMethod=" + httpMethod +
                 '}';
+    }
+
+    public String getPathValue() {
+        return path.value();
     }
 }

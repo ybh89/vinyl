@@ -1,8 +1,15 @@
 package com.hansung.vinyl.authority.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 public interface AuthorityRepository extends JpaRepository<Authority, Long> {
-    boolean existsByIdNotAndNameEquals(Long authorityId, String name);
-    boolean existsByName(String name);
+    boolean existsByIdNotAndRoleEquals(Long authorityId, Role role);
+    boolean existsByRole(Role role);
+    List<Authority> findAllDistinctByIdIn(List<Long> ids);
+    @Query("select distinct auth from Authority auth")
+    List<Authority> findAllDistinct();
 }

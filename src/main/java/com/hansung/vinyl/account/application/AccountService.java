@@ -32,6 +32,7 @@ public class AccountService implements UserDetailsService {
     public JoinResponse join(JoinRequest joinRequest) {
         validateEmail(joinRequest.getEmail());
         List<Authority> authorities = findAuthoritiesById(joinRequest.getAuthorityIds());
+        System.out.println("authorities = " + authorities);
         Account account = buildAccount(joinRequest, authorities);
         Account savedAccount = accountRepository.save(account);
         savedAccount.publishEvent(publisher, buildAccountCreatedEvent(joinRequest, savedAccount));
@@ -52,7 +53,7 @@ public class AccountService implements UserDetailsService {
     private Account buildAccount(JoinRequest joinRequest, List<Authority> authorities) {
         return Account.builder()
                 .email(joinRequest.getEmail())
-                .password(passwordEncoder.encode(joinRequest.getPassword()))
+                .encryptedPassword(passwordEncoder.encode(joinRequest.getPassword()))
                 .authorities(authorities)
                 .build();
     }
@@ -123,7 +124,7 @@ public class AccountService implements UserDetailsService {
         if (Objects.isNull(ids)) {
             return Arrays.asList();
         }
-        return authorityRepository.findAllById(ids);
+        return authorityRepository.findAllDistinctByIdIn(ids);
     }
 
     public void updateAuthorities(Long accountId, AccountAuthorityRequest accountAuthorityRequest) {

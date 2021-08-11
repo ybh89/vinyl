@@ -58,10 +58,10 @@ public class InitialDataService {
         @Transactional
         public void initAuthority() {
             roles.stream()
-                .filter(roleName -> !authorityRepository.existsByName(roleName))
+                .filter(roleName -> !authorityRepository.existsByRole(Role.of(roleName)))
                 .forEach(roleName -> {
                     Authority authority = Authority.builder()
-                            .name(roleName)
+                            .role(roleName)
                             .publisher(publisher)
                             .build();
                     authorityRepository.save(authority);
@@ -76,7 +76,7 @@ public class InitialDataService {
             }
 
             Authority authority = Authority.builder()
-                    .name(superRole)
+                    .role(superRole)
                     .resources(resources)
                     .publisher(publisher)
                     .build();
@@ -86,7 +86,7 @@ public class InitialDataService {
             if (!accountRepository.existsByEmail(Email.of(superEmail))) {
                 Account account = Account.builder()
                         .email(superEmail)
-                        .password(superPassword)
+                        .encryptedPassword(superPassword)
                         .authorities(Arrays.asList(authority))
                         .build();
 

@@ -30,7 +30,7 @@ public class AccountAcceptanceTest extends AcceptanceTest {
          * 유저 권한 생성 후 회원가입때 전달해야함.
          */
 
-        ExtractableResponse<Response> joinResponse = 회원가입_요청(EMAIL, PASSWORD, NAME, FCM_TOKEN);
+        ExtractableResponse<Response> joinResponse = 회원가입_요청(EMAIL, PASSWORD, NAME, null, FCM_TOKEN);
         회원가입됨(joinResponse);
 
         ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD);
@@ -40,8 +40,8 @@ public class AccountAcceptanceTest extends AcceptanceTest {
         회원탈퇴됨(deleteResponse);
     }
 
-    public static ExtractableResponse<Response> 계정_등록_되어있음(String email, String password, List<Long> authorityIds, String name) {
-        ExtractableResponse<Response> response = 회원가입_요청(email, password, name, authorityIds);
+    public static ExtractableResponse<Response> 회원가입_되어있음(String email, String password, List<Long> authorityIds, String name) {
+        ExtractableResponse<Response> response = 회원가입_요청(email, password, name, authorityIds, FCM_TOKEN);
         회원가입됨(response);
         return response;
     }
@@ -86,27 +86,15 @@ public class AccountAcceptanceTest extends AcceptanceTest {
         assertHttpStatus(postResponse, CREATED);
     }
 
-    private static ExtractableResponse<Response> 회원가입_요청(String email, String password, String name, String fcmToken) {
-        JoinRequest joinRequest = JoinRequest.builder()
-                .email(email)
-                .password(password)
-                .authorityIds(Arrays.asList())
-                .name(name)
-                .gender(Gender.FEMALE)
-                .fcmToken(fcmToken)
-                .build();
-
-        ExtractableResponse<Response> postResponse = post("/accounts", joinRequest);
-        return postResponse;
-    }
-
-    private static ExtractableResponse<Response> 회원가입_요청(String email, String password, String name, List<Long> ids) {
+    private static ExtractableResponse<Response> 회원가입_요청(String email, String password, String name, List<Long> ids,
+                                                         String fcmToken) {
         JoinRequest joinRequest = JoinRequest.builder()
                 .email(email)
                 .password(password)
                 .authorityIds(ids)
                 .name(name)
                 .gender(Gender.FEMALE)
+                .fcmToken(fcmToken)
                 .build();
 
         ExtractableResponse<Response> postResponse = post("/accounts", joinRequest);

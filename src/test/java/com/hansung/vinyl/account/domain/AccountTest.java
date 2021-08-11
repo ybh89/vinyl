@@ -37,7 +37,7 @@ public class AccountTest {
         return Account.builder()
                 .id(id)
                 .email(email)
-                .password(password)
+                .encryptedPassword(password)
                 .authorities(Arrays.asList(authority1, authority2))
                 .build();
     }
@@ -45,7 +45,7 @@ public class AccountTest {
     private Authority buildAuthority(Long id, String name, String remark, List<Resource> resources) {
         return Authority.builder()
                 .id(id)
-                .name(name)
+                .role(name)
                 .remark(remark)
                 .resources(resources)
                 .build();

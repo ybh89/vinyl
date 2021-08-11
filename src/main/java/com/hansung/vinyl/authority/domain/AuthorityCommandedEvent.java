@@ -13,7 +13,7 @@ public class AuthorityCommandedEvent {
     public String toString() {
         return "AuthorityCommandedEvent{" +
                 "authorityId=" + authority.getId() +
-                "authorityName=" + authority.getName() +
+                "authorityName=" + authority.getRoleValue() +
                 ", command='" + command + '\'' +
                 '}';
     }

@@ -12,6 +12,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Getter
 @NoArgsConstructor(access = PROTECTED)
+@Access(AccessType.FIELD)
 @Table(uniqueConstraints={ @UniqueConstraint(name = "uk_account_authority", columnNames = { "account_id", "authority_id" }) })
 @Entity
 public class AccountAuthority {

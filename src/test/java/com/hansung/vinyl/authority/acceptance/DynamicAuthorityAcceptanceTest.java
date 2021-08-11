@@ -13,7 +13,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -59,8 +58,8 @@ public class DynamicAuthorityAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 매니저권한 = 권한_등록_되어있음("ROLE_MANAGER", "", 매니저권한자원, 관리자_토큰);
         ExtractableResponse<Response> 사용자권한 = 권한_등록_되어있음("ROLE_USER", "", 사용자권한자원, 관리자_토큰);
 
-        ExtractableResponse<Response> 매니저 = 계정_등록_되어있음(MGR_EMAIL, MGR_PASSWORD, null, MGR_NAME);
-        ExtractableResponse<Response> 사용자 = 계정_등록_되어있음(USER_EMAIL, USER_PASSWORD, null, USER_NAME);
+        ExtractableResponse<Response> 매니저 = 회원가입_되어있음(MGR_EMAIL, MGR_PASSWORD, null, MGR_NAME);
+        ExtractableResponse<Response> 사용자 = 회원가입_되어있음(USER_EMAIL, USER_PASSWORD, null, USER_NAME);
 
         계정_권한_변경됨(매니저, Arrays.asList(매니저권한.as(AuthorityResponse.class).getId()), 관리자_토큰);
         계정_권한_변경됨(사용자, Arrays.asList(사용자권한.as(AuthorityResponse.class).getId()), 관리자_토큰);

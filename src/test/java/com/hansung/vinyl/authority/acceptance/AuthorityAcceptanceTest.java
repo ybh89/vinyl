@@ -1,53 +1,93 @@
 package com.hansung.vinyl.authority.acceptance;
 
-import com.hansung.vinyl.common.AcceptanceTest;
 import com.hansung.vinyl.account.dto.AccountAuthorityRequest;
+import com.hansung.vinyl.authority.domain.*;
 import com.hansung.vinyl.authority.dto.AuthorityRequest;
+import com.hansung.vinyl.authority.dto.AuthorityResponse;
 import com.hansung.vinyl.authority.dto.ResourceRequest;
+import com.hansung.vinyl.common.AcceptanceTest;
+import com.hansung.vinyl.security.infrastructure.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import static com.hansung.vinyl.account.acceptance.AccountAcceptanceTest.*;
 import static org.springframework.http.HttpStatus.*;
 
 @DisplayName("인증인가 관리")
 public class AuthorityAcceptanceTest extends AcceptanceTest {
+    @Autowired
+    private AuthorityRepository authorityRepository;
+    @Autowired
+    private UrlFilterInvocationSecurityMetadataSource metadataSource;
+
     @DisplayName("권한을 관리한다.")
     @Test
     public void authorityManager() throws Exception {
-        /*//권한 생성
-        ExtractableResponse<Response> postResponse = 권한_생성_요청("ROLE_TEST", null, Arrays.asList("/accounts/**"));
-        권한_생성됨(postResponse);
+        // given
+        Authority saveAuthority = 테스트권한_생성_되어있음();
+        회원가입_되어있음(EMAIL, PASSWORD, Arrays.asList(saveAuthority.getId()), NAME);
+        String 테스트토큰 = 로그인_되어있음(EMAIL, PASSWORD).get(0);
 
-        // 권한과 함꼐 계정신청요청
-        ExtractableResponse<Response> accountPostResponse = 계정_등록_되어있음(EMAIL, PASSWORD,
-                Arrays.asList(postResponse.as(AuthorityResponse.class).getId()));
-
-        // 로그인
-        String 토큰 = 로그인_되어있음(EMAIL, PASSWORD);
+        // 권한 생성
+        ResourceRequest resourceRequest = new ResourceRequest("/test/**", HttpMethod.GET);
+        ExtractableResponse<Response> postAuthorityResponse = 권한_생성_요청("ROLE_CREATE", null,
+                Arrays.asList(resourceRequest), 테스트토큰);
+        권한_생성됨(postAuthorityResponse);
 
         // 권한 조회
-        ExtractableResponse<Response> getListResponse = 권한_목록_조회_요청(토큰);
+        ExtractableResponse<Response> getListResponse = 권한_목록_조회_요청(테스트토큰);
         권한_목록_조회됨(getListResponse);
 
         // 권한 수정
-        ExtractableResponse<Response> putResponse = 권한_수정_요청(postResponse, 토큰, "ROLE_UPDATE",
-                "UPDATE-TEST", Arrays.asList("/**"));
+        ResourceRequest updateResourceRequest = new ResourceRequest("/test/*", HttpMethod.POST);
+        ExtractableResponse<Response> putResponse = 권한_수정_요청(postAuthorityResponse, 테스트토큰, "ROLE_UPDATE",
+                "UPDATE-TEST", Arrays.asList(updateResourceRequest));
         권한_수정됨(putResponse);
 
         // 계정 권한 변경
-        ExtractableResponse<Response> newResponse = 권한_생성_요청("ROLE_NEW", "NEW", Arrays.asList("/accounts/**"));
-        권한_생성됨(newResponse);
-        ExtractableResponse<Response> changeResponse = 계정_권한_변경_요청(accountPostResponse,
-                Arrays.asList(newResponse.as(AuthorityResponse.class).getId()), 토큰);
+        ResourceRequest newResourceRequest = new ResourceRequest("/new/**", HttpMethod.POST);
+        ExtractableResponse<Response> newAuthorityResponse = 권한_생성_요청("ROLE_NEW", "NEW",
+                Arrays.asList(newResourceRequest), 테스트토큰);
+        권한_생성됨(newAuthorityResponse);
+        ExtractableResponse<Response> response = 회원가입_되어있음("new@new.com", "new-password123",
+                Arrays.asList(postAuthorityResponse.as(AuthorityResponse.class).getId()), "new-name");
+
+        ExtractableResponse<Response> changeResponse = 계정_권한_변경_요청(response,
+                Arrays.asList(newAuthorityResponse.as(AuthorityResponse.class).getId()), 테스트토큰);
         계정_권한_변경됨(changeResponse);
 
         // 권한 삭제
-        ExtractableResponse<Response> deleteResponse = 권한_삭제_요청(postResponse, 토큰);
-        권한_삭제됨(deleteResponse);*/
+        ExtractableResponse<Response> deleteResponse = 권한_삭제_요청(postAuthorityResponse, 테스트토큰);
+        권한_삭제됨(deleteResponse);
+    }
+
+    private Authority 테스트권한_생성_되어있음() {
+        Authority testAuthority = buildAuthority("ROLE_TEST", "/**");
+        Authority saveAuthority = authorityRepository.save(testAuthority);
+        metadataSource.reload(new AuthorityCommandedEvent());
+        return saveAuthority;
+    }
+
+    public List<Resource> createPermitAllResource(String path) {
+        List<Resource> resources = new ArrayList<>();
+        for (HttpMethod value : HttpMethod.values()) {
+            resources.add(new Resource(path, value));
+        }
+        return resources;
+    }
+
+    private Authority buildAuthority(String role, String path) {
+        return Authority.builder()
+                .role(role)
+                .resources(createPermitAllResource(path))
+                .build();
     }
 
     public static ExtractableResponse<Response> 권한_수정_되어있음(ExtractableResponse<Response> postResponse, String token,
@@ -64,12 +104,6 @@ public class AuthorityAcceptanceTest extends AcceptanceTest {
         return response;
     }
 
-    public static ExtractableResponse<Response> 권한_목록_조회됨(String token) {
-        ExtractableResponse<Response> response = 권한_목록_조회_요청(token);
-        권한_목록_조회됨(response);
-        return response;
-    }
-
     public static ExtractableResponse<Response> 계정_권한_변경됨(ExtractableResponse<Response> accountPostResponse,
                                                           List<Long> authorityIds, String 토큰) {
         ExtractableResponse<Response> response = 계정_권한_변경_요청(accountPostResponse, authorityIds, 토큰);
@@ -78,7 +112,7 @@ public class AuthorityAcceptanceTest extends AcceptanceTest {
     }
 
     private static void 계정_권한_변경됨(ExtractableResponse<Response> changeResponse) {
-        assertHttpStatus(changeResponse, OK);
+        assertHttpStatus(changeResponse, NO_CONTENT);
     }
 
     private static ExtractableResponse<Response> 계정_권한_변경_요청(ExtractableResponse<Response> accountPostResponse,

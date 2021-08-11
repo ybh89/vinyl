@@ -20,7 +20,7 @@ public class PermitAllFilter extends FilterSecurityInterceptor {
     private List<RequestMatcher> permitAllRequestMatchers = new ArrayList<>();
 
     public PermitAllFilter(List<Resource> permitResources) {
-        permitResources.forEach(resource -> permitAllRequestMatchers.add(new AntPathRequestMatcher(resource.getPath(),
+        permitResources.forEach(resource -> permitAllRequestMatchers.add(new AntPathRequestMatcher(resource.getPathValue(),
                 resource.getHttpMethod().name())));
     }
 

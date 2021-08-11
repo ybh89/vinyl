@@ -1,7 +1,6 @@
 package com.hansung.vinyl.account.domain;
 
-import com.hansung.vinyl.common.exception.validate.EmailFormatException;
-import lombok.AccessLevel;
+import com.hansung.vinyl.common.exception.validate.FormatException;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Access;
@@ -11,7 +10,7 @@ import javax.persistence.Embeddable;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import static lombok.AccessLevel.*;
+import static lombok.AccessLevel.PROTECTED;
 
 @NoArgsConstructor(access = PROTECTED)
 @Access(AccessType.FIELD)
@@ -33,7 +32,7 @@ public class Email {
 
     private void validate(String email) {
         if (!pattern.matcher(email).matches()) {
-            throw new EmailFormatException(email, getClass().getName());
+            throw new FormatException("email", email, getClass().getName());
         }
     }
 

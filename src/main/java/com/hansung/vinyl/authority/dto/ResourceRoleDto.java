@@ -1,7 +1,9 @@
 package com.hansung.vinyl.authority.dto;
 
 import com.hansung.vinyl.authority.domain.HttpMethod;
+import com.hansung.vinyl.authority.domain.Path;
 import com.hansung.vinyl.authority.domain.Resource;
+import com.hansung.vinyl.authority.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,11 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ResourceResponse {
-    private String path;
-    private HttpMethod httpMethod;
-
-    public static ResourceResponse of(Resource resource) {
-        return new ResourceResponse(resource.getPathValue(), resource.getHttpMethod());
-    }
+public class ResourceRoleDto {
+    private Resource resource;
+    private Role role;
 }

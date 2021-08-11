@@ -40,6 +40,8 @@ public class DatabaseCleanup implements InitializingBean {
             }
         }
 
+        entityManager.createNativeQuery("TRUNCATE TABLE authority_resource").executeUpdate();
+
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
     }
 }

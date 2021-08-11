@@ -25,6 +25,6 @@ public class AuthorityResponse {
         List<ResourceResponse> resourceResponses = authority.getResources().stream()
                 .map(ResourceResponse::of)
                 .collect(Collectors.toList());
-        return new AuthorityResponse(authority.getId(), authority.getName(), authority.getRemark(), resourceResponses);
+        return new AuthorityResponse(authority.getId(), authority.getRoleValue(), authority.getRemark(), resourceResponses);
     }
 }

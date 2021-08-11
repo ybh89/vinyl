@@ -7,67 +7,57 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static javax.persistence.AccessType.FIELD;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 @NoArgsConstructor(access = PROTECTED)
 @Getter
-@Table(uniqueConstraints={ @UniqueConstraint(name = "uk_authority_name", columnNames = "name") })
+@Access(FIELD)
+@SecondaryTable(
+        name = "authority_resource",
+        pkJoinColumns = @PrimaryKeyJoinColumn(name = "authority_id")
+)
+@Table(uniqueConstraints={ @UniqueConstraint(name = "uk_authority_role", columnNames = "role") })
 @Entity
 public class Authority implements GrantedAuthority {
     @GeneratedValue(strategy = IDENTITY)
     @Id
     private Long id;
 
-    @Column(nullable = false, length = 50)
-    private String name;
+    @Embedded
+    private Role role;
 
     @Column(length = 100)
     private String remark;
 
-    @OneToMany(mappedBy = "authority", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
-            orphanRemoval = true)
-    private List<AuthorityResource> authorityResources = new ArrayList<>();
+    @Embedded
+    private AuthorityResources authorityResources;
 
     @Builder
-    public Authority(Long id, String name, String remark, List<Resource> resources, ApplicationEventPublisher publisher) {
+    public Authority(Long id, String role, String remark, List<Resource> resources, ApplicationEventPublisher publisher) {
         this.id = id;
-        this.name = name;
+        this.role = new Role(role);
         this.remark = remark;
         if (Objects.nonNull(resources)) {
-            this.authorityResources = createAuthorityResources(resources);
+            authorityResources = new AuthorityResources(createAuthorityResources(resources));
         }
         publishEvent(publisher, new AuthorityCommandedEvent(this, "create"));
     }
 
     public List<Resource> getResources() {
-        return authorityResources.stream()
-                .map(AuthorityResource::getResource)
-                .collect(Collectors.toList());
+        return authorityResources.getResources();
     }
 
     public void update(Authority authority, ApplicationEventPublisher publisher) {
-        this.name = authority.name;
+        this.role = authority.role;
         this.remark = authority.remark;
-        changeResources(authority.getAuthorityResources());
+        this.authorityResources.change(authority.getAuthorityResources());
         publishEvent(publisher, new AuthorityCommandedEvent(this, "update"));
-    }
-
-    public void clearAuthorityResources() {
-        authorityResources.clear();
-    }
-
-    public void changeResources(List<AuthorityResource> authorityResources) {
-        this.authorityResources.clear();
-        authorityResources.forEach(authorityResource -> authorityResource.setAuthority(this));
-        this.authorityResources.addAll(authorityResources);
     }
 
     public void publishEvent(ApplicationEventPublisher publisher, Object event) {
@@ -77,13 +67,8 @@ public class Authority implements GrantedAuthority {
     }
 
     private List<AuthorityResource> createAuthorityResources(List<Resource> resources) {
-        AtomicInteger seq = new AtomicInteger(1);
         return resources.stream()
-                .map(resource ->  AuthorityResource.builder()
-                            .authority(this)
-                            .resource(resource)
-                            .seq(seq.getAndIncrement())
-                            .build())
+                .map(AuthorityResource::new)
                 .collect(Collectors.toList());
     }
 
@@ -102,13 +87,17 @@ public class Authority implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return name;
+        return role.value();
     }
 
     @Override
     public String toString() {
         return "Authority{" +
-                "name='" + name + '\'' +
+                "name='" + role.value() + '\'' +
                 '}';
+    }
+
+    public String getRoleValue() {
+        return role.value();
     }
 }

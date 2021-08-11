@@ -1,6 +1,6 @@
 package com.hansung.vinyl.account.domain;
 
-import com.hansung.vinyl.common.exception.validate.EmailFormatException;
+import com.hansung.vinyl.common.exception.validate.FormatException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,7 +17,7 @@ public class EmailTest {
     public void 이메일_생성_예외(String email) throws Exception {
         // when
         // then
-        assertThatThrownBy(() -> new Email(email)).isInstanceOf(EmailFormatException.class);
+        assertThatThrownBy(() -> new Email(email)).isInstanceOf(FormatException.class);
     }
 
     @DisplayName("이메일 생성 확인")
