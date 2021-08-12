@@ -63,7 +63,7 @@ public class AuthorityService {
     }
 
     private Authority findAuthorityById(Long authorityId) {
-        return authorityRepository.findById(authorityId)
+        return authorityRepository.findDistinctById(authorityId)
                 .orElseThrow(() -> new NoSuchDataException("authorityId", String.valueOf(authorityId),
                         getClass().getName()));
     }

@@ -63,6 +63,11 @@ public class NewsAcceptanceTest extends AcceptanceTest {
         소식_삭제됨(deleteResponse);
     }
 
+    public static void 소식_조회됨() {
+        ExtractableResponse<Response> response = get("/news");
+        소식_목록_조회됨(response);
+    }
+
     private void 소식_삭제됨(ExtractableResponse<Response> deleteResponse) {
         assertHttpStatus(deleteResponse, HttpStatus.NO_CONTENT);
     }
@@ -94,7 +99,7 @@ public class NewsAcceptanceTest extends AcceptanceTest {
         return updateParams;
     }
 
-    private void 소식_목록_조회됨(ExtractableResponse<Response> newsListResponse) {
+    private static void 소식_목록_조회됨(ExtractableResponse<Response> newsListResponse) {
         assertHttpStatus(newsListResponse, HttpStatus.OK);
     }
 

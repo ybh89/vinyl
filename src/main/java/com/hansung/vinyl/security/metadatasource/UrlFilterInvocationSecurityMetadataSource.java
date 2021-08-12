@@ -1,4 +1,4 @@
-package com.hansung.vinyl.security.infrastructure.metadatasource;
+package com.hansung.vinyl.security.metadatasource;
 
 import com.hansung.vinyl.authority.application.AuthorityService;
 import com.hansung.vinyl.authority.domain.AuthorityCommandedEvent;

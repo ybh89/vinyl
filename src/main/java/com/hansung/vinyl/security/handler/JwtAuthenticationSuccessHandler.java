@@ -1,8 +1,8 @@
-package com.hansung.vinyl.security.infrastructure.handler;
+package com.hansung.vinyl.security.handler;
 
 import com.hansung.vinyl.account.domain.RefreshToken;
 import com.hansung.vinyl.account.domain.User;
-import com.hansung.vinyl.security.infrastructure.filter.JwtProvider;
+import com.hansung.vinyl.security.filter.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;

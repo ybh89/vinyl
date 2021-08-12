@@ -1,4 +1,4 @@
-package com.hansung.vinyl.security.infrastructure.filter;
+package com.hansung.vinyl.security.filter;
 
 import com.hansung.vinyl.authority.domain.Resource;
 import org.springframework.security.access.intercept.InterceptorStatusToken;

@@ -1,17 +1,17 @@
 package com.hansung.vinyl.security;
 
 import com.hansung.vinyl.account.application.AccountService;
-import com.hansung.vinyl.security.infrastructure.filter.JwtAuthorizationFilter;
-import com.hansung.vinyl.security.infrastructure.filter.JwtProvider;
+import com.hansung.vinyl.security.filter.JwtAuthorizationFilter;
+import com.hansung.vinyl.security.filter.JwtProvider;
 import com.hansung.vinyl.authority.application.AuthorityService;
-import com.hansung.vinyl.security.application.UrlPathMapFactoryBean;
-import com.hansung.vinyl.security.domain.PermitAllResourceGroup;
-import com.hansung.vinyl.security.infrastructure.filter.JwtAuthenticationFilter;
-import com.hansung.vinyl.security.infrastructure.filter.PermitAllFilter;
-import com.hansung.vinyl.security.infrastructure.handler.JwtAuthenticationEntryPoint;
-import com.hansung.vinyl.security.infrastructure.handler.JwtAuthenticationFailureHandler;
-import com.hansung.vinyl.security.infrastructure.handler.JwtAuthenticationSuccessHandler;
-import com.hansung.vinyl.security.infrastructure.metadatasource.UrlFilterInvocationSecurityMetadataSource;
+import com.hansung.vinyl.security.factory.UrlPathMapFactoryBean;
+import com.hansung.vinyl.security.filter.PermitAllResourceGroup;
+import com.hansung.vinyl.security.filter.JwtAuthenticationFilter;
+import com.hansung.vinyl.security.filter.PermitAllFilter;
+import com.hansung.vinyl.security.handler.JwtAuthenticationEntryPoint;
+import com.hansung.vinyl.security.handler.JwtAuthenticationFailureHandler;
+import com.hansung.vinyl.security.handler.JwtAuthenticationSuccessHandler;
+import com.hansung.vinyl.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +27,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.Arrays;
 import java.util.List;

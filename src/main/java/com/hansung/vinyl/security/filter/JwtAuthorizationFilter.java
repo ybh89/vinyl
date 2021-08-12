@@ -1,4 +1,4 @@
-package com.hansung.vinyl.security.infrastructure.filter;
+package com.hansung.vinyl.security.filter;
 
 import com.hansung.vinyl.account.domain.RefreshToken;
 import com.hansung.vinyl.account.domain.User;

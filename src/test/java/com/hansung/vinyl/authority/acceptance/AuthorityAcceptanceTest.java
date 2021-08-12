@@ -6,15 +6,11 @@ import com.hansung.vinyl.authority.dto.AuthorityRequest;
 import com.hansung.vinyl.authority.dto.AuthorityResponse;
 import com.hansung.vinyl.authority.dto.ResourceRequest;
 import com.hansung.vinyl.common.AcceptanceTest;
-import com.hansung.vinyl.security.infrastructure.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -104,8 +100,8 @@ public class AuthorityAcceptanceTest extends AcceptanceTest {
         assertHttpStatus(putResponse, OK);
     }
 
-    private static ExtractableResponse<Response> 권한_수정_요청(ExtractableResponse<Response> postResponse, String token,
-                                                          String name, String desc, List<ResourceRequest> resourceRequests) {
+    public static ExtractableResponse<Response> 권한_수정_요청(ExtractableResponse<Response> postResponse, String token,
+                                                         String name, String desc, List<ResourceRequest> resourceRequests) {
         AuthorityRequest authorityRequest = new AuthorityRequest(name, desc, resourceRequests);
         ExtractableResponse<Response> putResponse = put(postResponse.header("Location"), authorityRequest, token);
         return putResponse;

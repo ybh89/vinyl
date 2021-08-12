@@ -1,4 +1,4 @@
-package com.hansung.vinyl.security.infrastructure.handler;
+package com.hansung.vinyl.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hansung.vinyl.common.exception.handler.Error;

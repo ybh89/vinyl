@@ -1,4 +1,4 @@
-package com.hansung.vinyl.security.domain;
+package com.hansung.vinyl.security.filter;
 
 import com.hansung.vinyl.authority.domain.Resource;
 import lombok.Getter;

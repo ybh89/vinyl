@@ -7,7 +7,7 @@ import com.hansung.vinyl.authority.domain.*;
 import com.hansung.vinyl.member.domain.Gender;
 import com.hansung.vinyl.member.domain.Member;
 import com.hansung.vinyl.member.domain.MemberRepository;
-import com.hansung.vinyl.security.infrastructure.metadatasource.UrlFilterInvocationSecurityMetadataSource;
+import com.hansung.vinyl.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

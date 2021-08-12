@@ -42,6 +42,12 @@ public class AccountAcceptanceTest extends AcceptanceTest {
         return response;
     }
 
+    public static ExtractableResponse<Response> 회원가입_되어있음(String email, String password, List<Long> authorityIds, String name, String fcmToken) {
+        ExtractableResponse<Response> response = 회원가입_요청(email, password, name, authorityIds, fcmToken);
+        회원가입됨(response);
+        return response;
+    }
+
     public static List<String> 로그인_되어있음(String email, String password) {
         ExtractableResponse<Response> response = 로그인_요청(email, password);
         List<String> tokens = 로그인됨(response);

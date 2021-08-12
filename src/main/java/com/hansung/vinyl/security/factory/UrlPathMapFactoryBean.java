@@ -1,4 +1,4 @@
-package com.hansung.vinyl.security.application;
+package com.hansung.vinyl.security.factory;
 
 import com.hansung.vinyl.authority.application.AuthorityService;
 import lombok.RequiredArgsConstructor;

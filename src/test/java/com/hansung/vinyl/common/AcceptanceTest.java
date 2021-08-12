@@ -1,7 +1,7 @@
 package com.hansung.vinyl.common;
 
 import com.hansung.vinyl.authority.domain.*;
-import com.hansung.vinyl.security.infrastructure.metadatasource.UrlFilterInvocationSecurityMetadataSource;
+import com.hansung.vinyl.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -17,7 +17,6 @@ import java.util.*;
 
 import static com.hansung.vinyl.account.acceptance.AccountAcceptanceTest.로그인_되어있음;
 import static com.hansung.vinyl.account.acceptance.AccountAcceptanceTest.회원가입_되어있음;
-import static io.restassured.RestAssured.*;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,4 +1,4 @@
-package com.hansung.vinyl.security.infrastructure.filter;
+package com.hansung.vinyl.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hansung.vinyl.security.dto.LoginRequest;
