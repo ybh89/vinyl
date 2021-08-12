@@ -1,18 +1,16 @@
 package com.hansung.vinyl.news.domain;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
+
+import static javax.persistence.AccessType.FIELD;
+import static lombok.AccessLevel.PROTECTED;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
+@Access(FIELD)
 @Embeddable
 public class Price {
     @Column(length = 20)
@@ -20,4 +18,13 @@ public class Price {
     @Column
     @Enumerated(EnumType.STRING)
     private PriceType priceType;
+
+    public Price(String price, PriceType priceType) {
+        this.price = price;
+        this.priceType = priceType;
+    }
+
+    public String value() {
+        return price;
+    }
 }

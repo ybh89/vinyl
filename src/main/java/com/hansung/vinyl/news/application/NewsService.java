@@ -5,10 +5,7 @@ import com.hansung.vinyl.common.exception.AuthorizationException;
 import com.hansung.vinyl.common.exception.data.NoSuchDataException;
 import com.hansung.vinyl.member.domain.Member;
 import com.hansung.vinyl.member.domain.MemberRepository;
-import com.hansung.vinyl.news.domain.Image;
-import com.hansung.vinyl.news.domain.News;
-import com.hansung.vinyl.news.domain.NewsRepository;
-import com.hansung.vinyl.news.domain.Price;
+import com.hansung.vinyl.news.domain.*;
 import com.hansung.vinyl.news.domain.service.ImageStore;
 import com.hansung.vinyl.news.domain.service.SubscribeManager;
 import com.hansung.vinyl.news.dto.NewsListResponse;
@@ -38,42 +35,50 @@ public class NewsService {
     private String superRole;
 
     public NewsResponse create(NewsRequest newsRequest) {
-        List<Image> images = imageStore.storeImages(newsRequest.getImages());
-        byte[] mainThumbnailImage = imageStore.getMainThumbnailImage(images.get(0));
-        News saveNews = newsRepository.save(buildNews(newsRequest, images));
+        Images images = imageStore.storeImages(newsRequest.getImages());
+        byte[] mainThumbnailImage = imageStore.getThumbnailImageByte(images.getMainImage());
+        Catalog catalog = buildCatalog(newsRequest);
+        Post post = buildPost(newsRequest, images);
+        News saveNews = newsRepository.save(new News(catalog, post));
         return NewsResponse.of(saveNews, mainThumbnailImage);
     }
 
-    private News buildNews(NewsRequest newsRequest, List<Image> images) {
-        return News.builder()
+    private Post buildPost(NewsRequest newsRequest, Images images) {
+        return Post.builder()
                 .title(newsRequest.getTitle())
-                .brand(newsRequest.getBrand())
                 .content(newsRequest.getContent())
-                .sourceUrl(newsRequest.getSourceUrl())
-                .releaseDate(newsRequest.getReleaseDate())
-                .price(new Price(newsRequest.getPrice(), newsRequest.getPriceType()))
-                .topic(newsRequest.getTopic())
                 .images(images)
+                .topic(newsRequest.getTopic())
+                .build();
+    }
+
+    private Catalog buildCatalog(NewsRequest newsRequest) {
+        return Catalog.builder()
+                .name(newsRequest.getCatalogName())
+                .brand(newsRequest.getBrand())
+                .price(new Price(newsRequest.getPrice(), newsRequest.getPriceType()))
+                .releaseDate(newsRequest.getReleaseDate())
+                .sourceUrl(new Url(newsRequest.getSourceUrl()))
                 .build();
     }
 
     @Transactional(readOnly = true)
     public NewsResponse find(Long newsId) {
         News news = findNewsByIdAndDeletedFalse(newsId);
-        byte[] mainThumbnailImage = imageStore.getMainThumbnailImage(news.getImages().get(0));
+        byte[] mainThumbnailImage = imageStore.getThumbnailImageByte(news.getMainImage());
         return NewsResponse.of(news, mainThumbnailImage);
     }
 
     private News findNewsByIdAndDeletedFalse(Long newsId) {
-        return newsRepository.findByIdAndDeletedFalse(newsId).orElseThrow(() ->
+        return newsRepository.findByIdAndPostDeletedFalse(newsId).orElseThrow(() ->
                 new NoSuchDataException("newsId", String.valueOf(newsId), getClass().getName()));
     }
 
     @Transactional(readOnly = true)
     public Slice<NewsListResponse> list(Pageable pageable) {
-        Slice<News> newsPage = newsRepository.findAllByDeletedFalse(pageable);
+        Slice<News> newsPage = newsRepository.findAllByPostDeletedFalse(pageable);
         return newsPage.map(news -> {
-            byte[] mainThumbnailImage = imageStore.getMainThumbnailImage(news.getImages().get(0));
+            byte[] mainThumbnailImage = imageStore.getThumbnailImageByte(news.getMainImage());
             return NewsListResponse.of(news, mainThumbnailImage);
         });
     }
@@ -83,7 +88,7 @@ public class NewsService {
         List<News> newsList = newsRepository.findAllById(newsIds);
         return newsList.stream()
                 .map(news -> {
-                    byte[] mainThumbnailImage = imageStore.getMainThumbnailImage(news.getImages().get(0));
+                    byte[] mainThumbnailImage = imageStore.getThumbnailImageByte(news.getMainImage());
                     return NewsListResponse.of(news, mainThumbnailImage);})
                 .collect(Collectors.toList());
     }
@@ -92,10 +97,13 @@ public class NewsService {
         News news = findNewsByIdAndDeletedFalse(newsId);
         validateAuthorization(user, news);
 
-        List<Image> updateImages = imageStore.updateImages(news.getImages(), newsRequest.getImages());
-        byte[] mainThumbnailImage = imageStore.getMainThumbnailImage(updateImages.get(0));
+        Images updateImages = imageStore.updateImages(news.getImages(), newsRequest.getImages());
+        byte[] mainThumbnailImage = imageStore.getThumbnailImageByte(updateImages.getMainImage());
 
-        news.update(newsRequest.toNews(), updateImages);
+        News updateNews = newsRequest.toNews();
+        updateNews.updateImages(updateImages);
+        news.update(updateNews);
+
         return NewsResponse.of(news, mainThumbnailImage);
     }
 
@@ -126,7 +134,7 @@ public class NewsService {
     public List<News> findByReleaseDate(long dDay) {
         LocalDateTime targetDate = LocalDateTime.now().plusDays(dDay);
         LocalDateTime nextDate = targetDate.plusDays(1);
-        return newsRepository.findAllByReleaseDateBetweenAndDeletedFalse(targetDate, nextDate);
+        return newsRepository.findAllByCatalogReleaseDateBetweenAndPostDeletedFalse(targetDate, nextDate);
     }
 
     public void subscribe(User user, Long newsId) {

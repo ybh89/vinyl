@@ -167,9 +167,6 @@ public class NewsControllerTest extends ControllerTest {
 
     private NewsResponse buildNewsResponse() {
         ImageResponse imageResponse = ImageResponse.builder()
-                .id(1L)
-                .newsId(1L)
-                .seq(1)
                 .storeOriginalImageName("original-store-image.png")
                 .storeThumbnailImageName("thumbnail-store-image.png")
                 .uploadName("testImage.png")

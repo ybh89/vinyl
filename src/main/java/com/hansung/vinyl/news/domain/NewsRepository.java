@@ -9,9 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface NewsRepository extends JpaRepository<News, Long> {
-    Slice<News> findAllByDeletedFalse(Pageable pageable);
-
-    Optional<News> findByIdAndDeletedFalse(Long newsId);
-
-    List<News> findAllByReleaseDateBetweenAndDeletedFalse(LocalDateTime targetDate, LocalDateTime nextDate);
+    Slice<News> findAllByPostDeletedFalse(Pageable pageable);
+    Optional<News> findByIdAndPostDeletedFalse(Long newsId);
+    List<News> findAllByCatalogReleaseDateBetweenAndPostDeletedFalse(LocalDateTime targetDate, LocalDateTime nextDate);
 }

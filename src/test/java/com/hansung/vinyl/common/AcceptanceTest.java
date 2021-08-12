@@ -11,15 +11,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.io.File;
+import java.util.*;
 
 import static com.hansung.vinyl.account.acceptance.AccountAcceptanceTest.로그인_되어있음;
 import static com.hansung.vinyl.account.acceptance.AccountAcceptanceTest.회원가입_되어있음;
+import static io.restassured.RestAssured.*;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -130,6 +128,36 @@ public class AcceptanceTest {
 
     public static ExtractableResponse<Response> delete(String path) {
         return delete(path, null);
+    }
+
+    public static ExtractableResponse<Response> postWithMultipart(String path, File file, String controlName,
+                                                                  Map<String, String> params, String token) {
+        return given()
+                        .log().all()
+                        .auth().oauth2(token)
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                        .multiPart(controlName, file)
+                        .formParams(params)
+                .when()
+                        .post(path)
+                .then()
+                        .log().all()
+                        .extract();
+        }
+
+    public static ExtractableResponse<Response> putWithMultipart(String path, File file, String controlName,
+                                                                  Map<String, String> params, String token) {
+        return given()
+                        .log().all()
+                        .auth().oauth2(token)
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                        .multiPart(controlName, file)
+                        .formParams(params)
+                .when()
+                        .put(path)
+                .then()
+                        .log().all()
+                        .extract();
     }
 
     public static void assertHttpStatus(ExtractableResponse<Response> response, HttpStatus httpStatus) {

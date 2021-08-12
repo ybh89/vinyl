@@ -1,7 +1,9 @@
 package com.hansung.vinyl.news.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hansung.vinyl.news.domain.Catalog;
 import com.hansung.vinyl.news.domain.News;
+import com.hansung.vinyl.news.domain.Post;
 import com.hansung.vinyl.news.domain.PriceType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,13 +40,16 @@ public class NewsResponse {
     private List<ImageResponse> images = new ArrayList<>();
 
     public static NewsResponse of(News news, byte[] mainThumbnailImage) {
-        List<ImageResponse> images = news.getImages().stream()
+        List<ImageResponse> images = news.getImages().value().stream()
                 .map(ImageResponse::of)
                 .collect(Collectors.toList());
 
-        return new NewsResponse(news.getId(), news.getTitle(), news.getContent(), news.getBrand(),
-                news.getSourceUrl(), news.getReleaseDate(), news.getPrice().getPrice(), news.getPrice().getPriceType(),
-                news.getCreatedAt(), news.getUpdatedAt(), news.getCreatedBy(), news.getUpdatedBy(), news.getTopic(),
-                mainThumbnailImage, images);
+        Post post = news.getPost();
+        Catalog catalog = news.getCatalog();
+
+        return new NewsResponse(news.getId(), post.getTitle(), post.getContent(), catalog.getBrand(),
+                catalog.getSourceUrl().value(), catalog.getReleaseDate(), catalog.getPrice().value(),
+                catalog.getPrice().getPriceType(), news.getCreatedAt(), news.getUpdatedAt(), news.getCreatedBy(),
+                news.getUpdatedBy(), post.getTopic(), mainThumbnailImage, images);
     }
 }

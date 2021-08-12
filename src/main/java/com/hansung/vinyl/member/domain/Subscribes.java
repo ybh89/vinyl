@@ -18,10 +18,6 @@ public class Subscribes {
     @CollectionTable(name = "subscribe", joinColumns = @JoinColumn(name = "member_id"))
     private List<Subscribe> subscribes = new ArrayList<>();
 
-    public Subscribes(List<Subscribe> subscribes) {
-        this.subscribes = subscribes;
-    }
-
     public void subscribe(Long newsId) {
         Subscribe subscribe = new Subscribe(newsId);
         if (!subscribes.contains(subscribe)) {

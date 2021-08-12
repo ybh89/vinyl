@@ -14,16 +14,12 @@ import static com.hansung.vinyl.news.domain.service.ImageStore.THUMBNAIL_IMAGE_P
 @NoArgsConstructor
 @Data
 public class ImageResponse {
-    private Long id;
     private String storeOriginalImageName;
     private String storeThumbnailImageName;
     private String uploadName;
-    private int seq;
-    private Long newsId;
 
     public static ImageResponse of(Image image) {
-        return new ImageResponse(image.getId(), ORIGINAL_IMAGE_PREFIX + image.getStoreName(),
-                THUMBNAIL_IMAGE_PREFIX + image.getStoreName(), image.getUploadName(),
-                image.getSeq(), image.getNews().getId());
+        return new ImageResponse(ORIGINAL_IMAGE_PREFIX + image.getStoreName(),
+                THUMBNAIL_IMAGE_PREFIX + image.getStoreName(), image.getUploadName());
     }
 }

@@ -1,6 +1,8 @@
 package com.hansung.vinyl.news.dto;
 
+import com.hansung.vinyl.news.domain.Catalog;
 import com.hansung.vinyl.news.domain.News;
+import com.hansung.vinyl.news.domain.Post;
 import com.hansung.vinyl.news.domain.PriceType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +27,9 @@ public class NewsListResponse {
     private String topic;
 
     public static NewsListResponse of(News news, byte[] mainThumbnailImage) {
-        return new NewsListResponse(news.getId(), news.getTitle(), news.getReleaseDate(), news.getPrice().getPrice(),
-                news.getPrice().getPriceType(), mainThumbnailImage, news.getTopic());
+        Post post = news.getPost();
+        Catalog catalog = news.getCatalog();
+        return new NewsListResponse(news.getId(), post.getTitle(), catalog.getReleaseDate(), catalog.getPrice().value(),
+                catalog.getPrice().getPriceType(), mainThumbnailImage, post.getTopic());
     }
 }

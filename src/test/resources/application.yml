@@ -33,4 +33,4 @@ vinyl:
       path: /**
     roles: ROLE_ADMIN,ROLE_MANAGER,ROLE_USER,ROLE_ANONYMOUS
   file:
-    directory: src/test/resources/static
+    directory: /Users/ybh/Pictures/test/

@@ -49,12 +49,9 @@ public class NewsApiDocumentDefinition extends ApiDocumentDefinition {
                         fieldWithPath("updatedBy").description("수정자"),
                         fieldWithPath("topic").description("토픽"),
                         fieldWithPath("mainThumbnailImage").description("메인 이미지"),
-                        fieldWithPath("images.[].id").description("이미지 유니크 아이디"),
                         fieldWithPath("images.[].storeOriginalImageName").description("저장된 원본 이미지명"),
                         fieldWithPath("images.[].storeThumbnailImageName").description("저장된 섬네일 이미지명"),
-                        fieldWithPath("images.[].uploadName").description("업로드한 이미지명"),
-                        fieldWithPath("images.[].seq").description("이미지 순번"),
-                        fieldWithPath("images.[].newsId").description("소식 유니크 아이디"))
+                        fieldWithPath("images.[].uploadName").description("업로드한 이미지명"))
         );
     }
 
@@ -94,12 +91,9 @@ public class NewsApiDocumentDefinition extends ApiDocumentDefinition {
                         fieldWithPath("updatedBy").description("수정자"),
                         fieldWithPath("topic").description("토픽"),
                         fieldWithPath("mainThumbnailImage").description("메인 이미지"),
-                        fieldWithPath("images.[].id").description("이미지 유니크 아이디"),
                         fieldWithPath("images.[].storeOriginalImageName").description("저장된 원본 이미지명"),
                         fieldWithPath("images.[].storeThumbnailImageName").description("저장된 섬네일 이미지명"),
-                        fieldWithPath("images.[].uploadName").description("업로드한 이미지명"),
-                        fieldWithPath("images.[].seq").description("이미지 순번"),
-                        fieldWithPath("images.[].newsId").description("소식 유니크 아이디"))
+                        fieldWithPath("images.[].uploadName").description("업로드한 이미지명"))
         );
     }
 
@@ -151,12 +145,9 @@ public class NewsApiDocumentDefinition extends ApiDocumentDefinition {
                         fieldWithPath("updatedBy").description("수정자"),
                         fieldWithPath("topic").description("토픽"),
                         fieldWithPath("mainThumbnailImage").description("메인 이미지"),
-                        fieldWithPath("images.[].id").description("이미지 유니크 아이디"),
                         fieldWithPath("images.[].storeOriginalImageName").description("저장된 원본 이미지명"),
                         fieldWithPath("images.[].storeThumbnailImageName").description("저장된 섬네일 이미지명"),
-                        fieldWithPath("images.[].uploadName").description("업로드한 이미지명"),
-                        fieldWithPath("images.[].seq").description("이미지 순번"),
-                        fieldWithPath("images.[].newsId").description("소식 유니크 아이디"))
+                        fieldWithPath("images.[].uploadName").description("업로드한 이미지명"))
         );
     }
 

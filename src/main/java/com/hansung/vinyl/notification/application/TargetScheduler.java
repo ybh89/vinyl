@@ -40,7 +40,7 @@ public class TargetScheduler {
         targets.forEach(news -> {
                 try {
                     notificationService.sendMessageByTopic(NotificationRequest.builder()
-                        .title(news.getTitle())
+                        .title(news.getPost().getTitle())
                         .body("여기에 뭐라고 적을까")
                         .imageURL("https://cdn.pixabay.com/photo/2014/06/03/19/38/road-sign-361514_960_720.png")
                         .build());
