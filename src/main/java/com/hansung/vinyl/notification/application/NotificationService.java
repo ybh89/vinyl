@@ -12,8 +12,12 @@ import com.hansung.vinyl.notification.domain.FcmTokenRepository;
 import com.hansung.vinyl.notification.dto.NotificationRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import javax.annotation.PostConstruct;
@@ -62,7 +66,8 @@ public class NotificationService {
                 .build();
     }
 
-    @TransactionalEventListener
+    @Async
+    @EventListener
     public void createFcmToken(AccountCreatedEvent accountCreatedEvent) {
         FcmToken fcmToken = new FcmToken(accountCreatedEvent.getAccountId(), accountCreatedEvent.getFcmToken());
         fcmTokenRepository.save(fcmToken);

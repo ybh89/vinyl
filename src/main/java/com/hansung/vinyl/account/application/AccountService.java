@@ -30,9 +30,8 @@ public class AccountService implements UserDetailsService {
     private final ApplicationEventPublisher publisher;
 
     public JoinResponse join(JoinRequest joinRequest) {
-        validateEmail(joinRequest.getEmail());
+        validateCreatable(joinRequest);
         List<Authority> authorities = findAuthoritiesById(joinRequest.getAuthorityIds());
-        System.out.println("authorities = " + authorities);
         Account account = buildAccount(joinRequest, authorities);
         Account savedAccount = accountRepository.save(account);
         savedAccount.publishEvent(publisher, buildAccountCreatedEvent(joinRequest, savedAccount));
@@ -114,8 +113,8 @@ public class AccountService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다. id=" + accountId));
     }
 
-    private void validateEmail(String email) {
-        if (accountRepository.existsByEmail(Email.of(email))) {
+    private void validateCreatable(JoinRequest joinRequest) {
+        if (accountRepository.existsByEmail(Email.of(joinRequest.getEmail()))) {
             throw new IllegalArgumentException("해당 아이디로 가입된 계정이 이미 존재합니다.");
         }
     }

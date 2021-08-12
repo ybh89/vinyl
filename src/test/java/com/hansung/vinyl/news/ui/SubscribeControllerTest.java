@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("구독 컨트롤러 테스트")
 @UnsecuredWebMvcTest(SubscribeController.class)
 public class SubscribeControllerTest extends ControllerTest {
     private SubscribeApiDocumentDefinition subscribeApiDocumentDefinition;

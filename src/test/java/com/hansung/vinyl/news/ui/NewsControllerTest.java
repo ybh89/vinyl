@@ -33,6 +33,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("소식 컨트롤러 테스트")
 @UnsecuredWebMvcTest(NewsController.class)
 public class NewsControllerTest extends ControllerTest {
     private static final String TEST_IMAGE_PATH = "src/test/resources/static/testImage.png";

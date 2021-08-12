@@ -24,6 +24,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
+@DisplayName("계정 컨트롤러 테스트")
 @UnsecuredWebMvcTest(AccountController.class)
 public class AccountControllerTest extends ControllerTest {
     public static final String EMAIL = "test@test.com";

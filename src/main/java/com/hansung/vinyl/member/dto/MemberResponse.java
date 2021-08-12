@@ -27,7 +27,7 @@ public class MemberResponse {
         if (Objects.isNull(member)) {
             return new MemberResponse();
         }
-        return new MemberResponse(member.getId(), member.getEmail(), member.getName(), member.getPhone(),
+        return new MemberResponse(member.getId(), member.getEmailValue(), member.getNameValue(), member.getPhoneValue(),
                 member.getGender(), member.getCreatedAt(), member.getUpdatedAt());
     }
 }

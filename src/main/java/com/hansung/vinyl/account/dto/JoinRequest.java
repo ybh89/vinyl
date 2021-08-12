@@ -26,6 +26,7 @@ public class JoinRequest {
     private List<Long> authorityIds;
     @NotBlank
     private String name;
+    @Pattern(regexp = "^01(?:0|1|[6-9])[.-]?(\\d{3}|\\d{4})[.-]?(\\d{4})$")
     private String phone;
     private Gender gender;
     @NotBlank

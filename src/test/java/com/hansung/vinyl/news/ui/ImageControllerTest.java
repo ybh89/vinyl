@@ -14,6 +14,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("이미지 컨트롤러 테스트")
 @UnsecuredWebMvcTest(ImageController.class)
 public class ImageControllerTest extends ControllerTest {
     private ImageApiDocumentDefinition imageApiDocumentDefinition;

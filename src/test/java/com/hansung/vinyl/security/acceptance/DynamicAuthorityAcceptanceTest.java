@@ -1,4 +1,4 @@
-package com.hansung.vinyl.authority.acceptance;
+package com.hansung.vinyl.security.acceptance;
 
 import com.hansung.vinyl.common.AcceptanceTest;
 import com.hansung.vinyl.account.application.AccountService;
@@ -13,6 +13,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -43,7 +44,6 @@ public class DynamicAuthorityAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        // 어플리케이션은 초기에 관리자 계정, 관리자 권한 데이터를 가지고 시작한다.
         setUpAdmin();
     }
 
@@ -52,7 +52,7 @@ public class DynamicAuthorityAcceptanceTest extends AcceptanceTest {
     public void dynamicAuthorityManager() throws Exception {
         String 관리자_토큰 = 로그인_되어있음(ADMIN_EMAIL, ADMIN_PASSWORD).get(0);
 
-        List<ResourceRequest> 매니저권한자원 = createResourceRequestWithAllHttpMethod("/accounts/**");
+        List<ResourceRequest> 매니저권한자원 = createResourceRequestWithAllHttpMethod("/members/**");
         List<ResourceRequest> 사용자권한자원 = createResourceRequestWithAllHttpMethod("/authorities/**");
 
         ExtractableResponse<Response> 매니저권한 = 권한_등록_되어있음("ROLE_MANAGER", "", 매니저권한자원, 관리자_토큰);
@@ -69,7 +69,7 @@ public class DynamicAuthorityAcceptanceTest extends AcceptanceTest {
         //매니저 권한 테스트
         ExtractableResponse<Response> response = 권한_목록_조회_요청(매니저_토큰);
         권한_목록_조회_실패됨(response);
-        계정_목록_조회됨(매니저_토큰);
+        //회원_목록_조회됨(매니저_토큰);
 
         //매니저 권한 변경 테스트
         ResourceRequest 권한_목록_조회_권한 = new ResourceRequest("/authorities", GET);
@@ -80,11 +80,11 @@ public class DynamicAuthorityAcceptanceTest extends AcceptanceTest {
 
         //사용자 권한으로 변경
         계정_권한_변경됨(매니저, Arrays.asList(사용자권한.as(AuthorityResponse.class).getId()), 관리자_토큰);
-        ExtractableResponse<Response> accountsResponse = 계정_목록_조회_요청(매니저_토큰);
-        계정_목록_조회_실패됨(accountsResponse);
+        //ExtractableResponse<Response> accountsResponse = 회원_목록_조회_요청(매니저_토큰);
+        //회원_목록_조회_실패됨(accountsResponse);
     }
 
-    private void 계정_목록_조회_실패됨(ExtractableResponse<Response> accountsResponse) {
+    private void 회원_목록_조회_실패됨(ExtractableResponse<Response> accountsResponse) {
         assertHttpStatus(accountsResponse, FORBIDDEN);
     }
 

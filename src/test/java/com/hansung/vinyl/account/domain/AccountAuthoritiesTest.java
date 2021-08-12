@@ -14,10 +14,10 @@ public class AccountAuthoritiesTest {
     @Test
     public void 계정권한그룹_수정_확인() throws Exception {
         //given
-        AccountAuthority accountAuthority1 = new AccountAuthority(1L, new Account(), 1L);
-        AccountAuthority accountAuthority2 = new AccountAuthority(2L, new Account(), 2L);
-        AccountAuthority accountAuthority3 = new AccountAuthority(3L, new Account(), 3L);
-        AccountAuthority accountAuthority4 = new AccountAuthority(4L, new Account(), 4L);
+        AccountAuthority accountAuthority1 = new AccountAuthority(1L);
+        AccountAuthority accountAuthority2 = new AccountAuthority(2L);
+        AccountAuthority accountAuthority3 = new AccountAuthority(3L);
+        AccountAuthority accountAuthority4 = new AccountAuthority(4L);
         AccountAuthorities accountAuthorities = new AccountAuthorities(Arrays.asList(accountAuthority1, accountAuthority2));
 
         //when
@@ -31,9 +31,9 @@ public class AccountAuthoritiesTest {
     @Test
     public void 계정권한그룹_권한아이디목록_확인() throws Exception {
         // given
-        AccountAuthority accountAuthority1 = new AccountAuthority(1L, new Account(), 1L);
-        AccountAuthority accountAuthority2 = new AccountAuthority(2L, new Account(), 2L);
-        AccountAuthority accountAuthority3 = new AccountAuthority(3L, new Account(), 3L);
+        AccountAuthority accountAuthority1 = new AccountAuthority(1L);
+        AccountAuthority accountAuthority2 = new AccountAuthority(2L);
+        AccountAuthority accountAuthority3 = new AccountAuthority(3L);
         AccountAuthorities accountAuthorities = new AccountAuthorities(Arrays.asList(accountAuthority1,
                 accountAuthority2, accountAuthority3));
 

@@ -4,6 +4,7 @@ import com.hansung.vinyl.account.domain.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,8 @@ public class CustomAuditorAware implements AuditorAware<Long> {
     @Override
     public Optional<Long> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (null == authentication || !authentication.isAuthenticated()) {
+        if (null == authentication || !authentication.isAuthenticated() ||
+                authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))) {
             return null;
         }
         Long accountId = ((User) authentication.getPrincipal()).getAccountId();

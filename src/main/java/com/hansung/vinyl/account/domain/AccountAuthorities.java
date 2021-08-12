@@ -2,23 +2,20 @@ package com.hansung.vinyl.account.domain;
 
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static javax.persistence.CascadeType.*;
-import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.AccessType.*;
 import static lombok.AccessLevel.PROTECTED;
 
 @NoArgsConstructor(access = PROTECTED)
-@Access(AccessType.FIELD)
+@Access(FIELD)
 @Embeddable
 public class AccountAuthorities {
-    @OneToMany(mappedBy = "account", cascade = {PERSIST, MERGE, REMOVE}, orphanRemoval = true, fetch = EAGER)
+    @ElementCollection
+    @CollectionTable(name = "account_authority", joinColumns = @JoinColumn(name = "account_id"))
     private List<AccountAuthority> accountAuthorities = new ArrayList<>();
 
     public AccountAuthorities(List<AccountAuthority> accountAuthorities) {

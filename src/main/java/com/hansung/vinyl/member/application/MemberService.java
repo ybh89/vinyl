@@ -5,19 +5,20 @@ import com.hansung.vinyl.account.domain.User;
 import com.hansung.vinyl.common.exception.data.NoSuchDataException;
 import com.hansung.vinyl.member.domain.Member;
 import com.hansung.vinyl.member.domain.MemberRepository;
-import com.hansung.vinyl.member.domain.Subscribe;
 import com.hansung.vinyl.member.dto.MemberResponse;
 import com.hansung.vinyl.news.application.NewsService;
 import com.hansung.vinyl.news.dto.NewsListResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -27,9 +28,12 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final NewsService newsService;
 
-    @TransactionalEventListener
+
+    @Async
+    @EventListener
     public void create(AccountCreatedEvent accountCreatedEvent) {
-        System.out.println(accountCreatedEvent);
+        System.out.println("AccountCreatedEvent = " + accountCreatedEvent);
+
         Member member = Member.builder()
                 .accountId(accountCreatedEvent.getAccountId())
                 .email(accountCreatedEvent.getEmail())
@@ -61,9 +65,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public List<NewsListResponse> subscribes(User user) {
         Member member = findMemberById(user.getAccountId());
-        List<Long> newsIds = member.getSubscribes().stream()
-                .map(Subscribe::getNewsId)
-                .collect(Collectors.toList());
+        List<Long> newsIds = member.getSubscribes();
         return newsService.list(newsIds);
     }
 

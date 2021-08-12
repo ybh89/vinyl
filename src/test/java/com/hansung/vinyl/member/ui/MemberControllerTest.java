@@ -30,6 +30,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("회원 컨트롤러 테스트")
 @UnsecuredWebMvcTest(MemberController.class)
 public class MemberControllerTest extends ControllerTest {
     @MockBean
@@ -141,7 +142,7 @@ public class MemberControllerTest extends ControllerTest {
                 .email(EMAIL)
                 .name("testName")
                 .gender(Gender.MALE)
-                .phone("010-1111-1111")
+                .phone("01011111111")
                 .build();
     }
 }

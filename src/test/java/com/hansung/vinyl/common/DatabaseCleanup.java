@@ -41,6 +41,8 @@ public class DatabaseCleanup implements InitializingBean {
         }
 
         entityManager.createNativeQuery("TRUNCATE TABLE authority_resource").executeUpdate();
+        entityManager.createNativeQuery("TRUNCATE TABLE account_authority").executeUpdate();
+        entityManager.createNativeQuery("TRUNCATE TABLE subscribe").executeUpdate();
 
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
     }

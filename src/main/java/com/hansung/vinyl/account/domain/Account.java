@@ -18,6 +18,10 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @Access(AccessType.FIELD)
 @Table(uniqueConstraints={ @UniqueConstraint(name = "uk_account_email", columnNames = "email") })
+@SecondaryTable(
+        name = "account_authority",
+        pkJoinColumns = @PrimaryKeyJoinColumn(name = "account_id")
+)
 @Entity
 public class Account {
     @GeneratedValue(strategy = IDENTITY)
@@ -52,10 +56,7 @@ public class Account {
 
     private List<AccountAuthority> createAccountAuthorities(List<Authority> authorities) {
         return authorities.stream()
-                .map(authority -> AccountAuthority.builder()
-                        .account(this)
-                        .authorityId(authority.getId())
-                        .build())
+                .map(authority -> new AccountAuthority(authority.getId()))
                 .collect(Collectors.toList());
     }
 
@@ -73,6 +74,7 @@ public class Account {
 
     public void publishEvent(ApplicationEventPublisher publisher, Object event) {
         if (Objects.nonNull(publisher)) {
+            System.out.println("publishEvent = " + event);
             publisher.publishEvent(event);
         }
     }

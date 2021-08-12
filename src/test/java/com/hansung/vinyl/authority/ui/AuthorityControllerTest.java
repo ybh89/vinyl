@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("권한 컨트롤러 테스트")
 @UnsecuredWebMvcTest(AuthorityController.class)
 public class AuthorityControllerTest extends ControllerTest {
     @MockBean

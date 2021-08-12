@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 @Service
 public class AuthorityService {
     private final AuthorityRepository authorityRepository;
-    private final AccountAuthorityRepository accountAuthorityRepository;
     private final ApplicationEventPublisher publisher;
 
     public AuthorityResponse create(AuthorityRequest authorityRequest) {
@@ -58,16 +57,9 @@ public class AuthorityService {
     }
 
     public void delete(Long authorityId) {
-        validateDeletable(authorityId);
         Authority authority = findAuthorityById(authorityId);
         authority.publishEvent(publisher, new AuthorityCommandedEvent(authority, "delete"));
         authorityRepository.delete(authority);
-    }
-
-    private void validateDeletable(Long authorityId) {
-        if (accountAuthorityRepository.existsByAuthorityId(authorityId)) {
-            throw new IllegalArgumentException("권한에 매핑된 계정이 존재합니다.");
-        }
     }
 
     private Authority findAuthorityById(Long authorityId) {
