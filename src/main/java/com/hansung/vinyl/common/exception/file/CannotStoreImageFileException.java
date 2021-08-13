@@ -8,6 +8,6 @@ public class CannotStoreImageFileException extends FileException {
     public static final String MESSAGE = "이미지 파일 저장에 실패했습니다.";
 
     public CannotStoreImageFileException(Throwable throwable, String fileName, String path) {
-        super(MESSAGE, throwable, fileName, path);
+        super(MESSAGE + "(" + path + fileName + ")", throwable, fileName, path);
     }
 }

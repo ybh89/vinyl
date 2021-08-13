@@ -94,19 +94,6 @@ public class Authority extends AbstractAggregateRoot<Authority> implements Grant
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Authority authority = (Authority) o;
-        return Objects.equals(getId(), authority.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId());
-    }
-
-    @Override
     public String getAuthority() {
         return role.value();
     }

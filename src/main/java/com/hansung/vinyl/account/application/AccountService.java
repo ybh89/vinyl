@@ -6,6 +6,8 @@ import com.hansung.vinyl.account.dto.JoinRequest;
 import com.hansung.vinyl.account.dto.JoinResponse;
 import com.hansung.vinyl.authority.domain.Authority;
 import com.hansung.vinyl.authority.domain.AuthorityRepository;
+import com.hansung.vinyl.common.exception.data.DuplicateDataException;
+import com.hansung.vinyl.common.exception.data.NoSuchDataException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -95,7 +97,7 @@ public class AccountService implements UserDetailsService {
 
     public Account findAccountByEmail(Email email) {
         return accountRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다. email=" + email));
+                .orElseThrow(() -> new NoSuchDataException("email", email, getClass().getName()));
     }
 
     public void delete(User user) {
@@ -105,12 +107,12 @@ public class AccountService implements UserDetailsService {
 
     private Account findAccountById(Long accountId) {
         return accountRepository.findById(accountId)
-                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다. id=" + accountId));
+                .orElseThrow(() -> new NoSuchDataException("accountId", accountId, getClass().getName()));
     }
 
     private void validateCreatable(JoinRequest joinRequest) {
         if (accountRepository.existsByEmail(Email.of(joinRequest.getEmail()))) {
-            throw new IllegalArgumentException("해당 아이디로 가입된 계정이 이미 존재합니다.");
+            throw new DuplicateDataException("email", joinRequest.getEmail(), getClass().getName());
         }
     }
 
