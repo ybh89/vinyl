@@ -28,18 +28,17 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final NewsService newsService;
 
-
     @Async
     @EventListener
     public void create(AccountCreatedEvent accountCreatedEvent) {
         System.out.println("AccountCreatedEvent = " + accountCreatedEvent);
 
         Member member = Member.builder()
-                .accountId(accountCreatedEvent.getAccountId())
-                .email(accountCreatedEvent.getEmail())
-                .name(accountCreatedEvent.getName())
-                .phone(accountCreatedEvent.getPhone())
-                .gender(accountCreatedEvent.getGender())
+                .accountId(accountCreatedEvent.getAccount().getId())
+                .email(accountCreatedEvent.getAccount().getEmailValue())
+                .name(accountCreatedEvent.getMemberInfo().getName())
+                .phone(accountCreatedEvent.getMemberInfo().getPhone())
+                .gender(accountCreatedEvent.getMemberInfo().getGender())
                 .build();
         memberRepository.save(member);
     }

@@ -69,7 +69,8 @@ public class NotificationService {
     @Async
     @EventListener
     public void createFcmToken(AccountCreatedEvent accountCreatedEvent) {
-        FcmToken fcmToken = new FcmToken(accountCreatedEvent.getAccountId(), accountCreatedEvent.getFcmToken());
+        FcmToken fcmToken = new FcmToken(accountCreatedEvent.getAccount().getId(),
+                accountCreatedEvent.getMemberInfo().getFcmToken());
         fcmTokenRepository.save(fcmToken);
     }
 }

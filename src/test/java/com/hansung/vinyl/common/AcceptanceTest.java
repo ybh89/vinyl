@@ -25,6 +25,7 @@ public class AcceptanceTest {
     public static final String TEST_EMAIL = "test@test.com";
     public static final String TEST_PASSWORD = "test-password123";
     public static final String TEST_NAME = "test-name";
+    public static final String TEST_FCM_TOKEN = "test-fcm-token";
 
     @Autowired
     private AuthorityRepository authorityRepository;
@@ -171,7 +172,7 @@ public class AcceptanceTest {
     }
 
     public String setTestAccount(Authority authority) {
-        회원가입_되어있음(TEST_EMAIL, TEST_PASSWORD, Arrays.asList(authority.getId()), TEST_NAME);
+        회원가입_되어있음(TEST_EMAIL, TEST_PASSWORD, Arrays.asList(authority.getId()), TEST_NAME, TEST_FCM_TOKEN);
         return 로그인_되어있음(TEST_EMAIL, TEST_PASSWORD).get(0);
     }
 

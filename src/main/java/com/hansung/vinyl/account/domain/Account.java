@@ -1,29 +1,31 @@
 package com.hansung.vinyl.account.domain;
 
 import com.hansung.vinyl.authority.domain.Authority;
+import com.hansung.vinyl.common.domain.DateTimeAuditor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static javax.persistence.AccessType.FIELD;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 @NoArgsConstructor(access = PROTECTED)
 @Getter
-@Access(AccessType.FIELD)
+@Access(FIELD)
 @Table(uniqueConstraints={ @UniqueConstraint(name = "uk_account_email", columnNames = "email") })
 @SecondaryTable(
         name = "account_authority",
         pkJoinColumns = @PrimaryKeyJoinColumn(name = "account_id")
 )
 @Entity
-public class Account {
+public class Account extends AbstractAggregateRoot<Account> {
     @GeneratedValue(strategy = IDENTITY)
     @Id
     private Long id;
@@ -42,12 +44,25 @@ public class Account {
     @Embedded
     private AccountAuthorities accountAuthorities;
 
+    @Embedded
+    private DateTimeAuditor dateTimeAuditor;
+
     @Builder
-    public Account(Long id, String email, String encryptedPassword, List<Authority> authorities) {
-        this.id = id;
+    private Account(String email, String encryptedPassword, List<Authority> authorities) {
         this.email = new Email(email);
         this.encryptedPassword = new EncryptedPassword(encryptedPassword);
         this.accountAuthorities = new AccountAuthorities(createAccountAuthorities(authorities));
+        this.dateTimeAuditor = new DateTimeAuditor();
+    }
+
+    public static Account create(AccountInfo accountInfo, MemberInfo memberInfo) {
+        Account account = Account.builder()
+                .email(accountInfo.getEmail())
+                .encryptedPassword(accountInfo.getEncryptedPassword())
+                .authorities(accountInfo.getAuthorities())
+                .build();
+        account.registerEvent(new AccountCreatedEvent(account, memberInfo));
+        return account;
     }
 
     public void delete() {
@@ -72,13 +87,6 @@ public class Account {
         return accountAuthorities.getAuthorityIds();
     }
 
-    public void publishEvent(ApplicationEventPublisher publisher, Object event) {
-        if (Objects.nonNull(publisher)) {
-            System.out.println("publishEvent = " + event);
-            publisher.publishEvent(event);
-        }
-    }
-
     public String getRefreshTokenValue() {
         if (Objects.isNull(refreshToken)) {
             return null;
@@ -99,5 +107,4 @@ public class Account {
         }
         return email.value();
     }
-
 }

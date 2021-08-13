@@ -26,16 +26,15 @@ public class AccountTest {
                 Arrays.asList(new Resource("/test", HttpMethod.POST)));
 
         //when
-        Account account = buildAccount(1L, EMAIL, PASSWORD, authority1, authority2);
+        Account account = buildAccount(EMAIL, PASSWORD, authority1, authority2);
 
         //then
         assertThat(account.getEmail()).isEqualTo(new Email(EMAIL));
         assertThat(account.getAuthorityIds()).containsExactly(1L, 2L);
     }
 
-    private Account buildAccount(Long id, String email, String password, Authority authority1, Authority authority2) {
+    private Account buildAccount(String email, String password, Authority authority1, Authority authority2) {
         return Account.builder()
-                .id(id)
                 .email(email)
                 .encryptedPassword(password)
                 .authorities(Arrays.asList(authority1, authority2))

@@ -7,7 +7,6 @@ import com.hansung.vinyl.account.dto.JoinResponse;
 import com.hansung.vinyl.authority.domain.Authority;
 import com.hansung.vinyl.authority.domain.AuthorityRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,34 +26,30 @@ public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
     private final AuthorityRepository authorityRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ApplicationEventPublisher publisher;
 
     public JoinResponse join(JoinRequest joinRequest) {
         validateCreatable(joinRequest);
         List<Authority> authorities = findAuthoritiesById(joinRequest.getAuthorityIds());
-        Account account = buildAccount(joinRequest, authorities);
+        Account account = createAccount(joinRequest, authorities);
         Account savedAccount = accountRepository.save(account);
-        savedAccount.publishEvent(publisher, buildAccountCreatedEvent(joinRequest, savedAccount));
         return JoinResponse.of(savedAccount);
     }
 
-    private AccountCreatedEvent buildAccountCreatedEvent(JoinRequest joinRequest, Account savedAccount) {
-        return AccountCreatedEvent.builder()
-                        .accountId(savedAccount.getId())
-                        .email(savedAccount.getEmail().value())
-                        .name(joinRequest.getName())
-                        .phone(joinRequest.getPhone())
-                        .gender(joinRequest.getGender())
-                        .fcmToken(joinRequest.getFcmToken())
-                .build();
-    }
-
-    private Account buildAccount(JoinRequest joinRequest, List<Authority> authorities) {
-        return Account.builder()
+    private Account createAccount(JoinRequest joinRequest, List<Authority> authorities) {
+        AccountInfo accountInfo = AccountInfo.builder()
                 .email(joinRequest.getEmail())
                 .encryptedPassword(passwordEncoder.encode(joinRequest.getPassword()))
                 .authorities(authorities)
                 .build();
+
+        MemberInfo memberInfo = MemberInfo.builder()
+                .name(joinRequest.getName())
+                .phone(joinRequest.getPhone())
+                .gender(joinRequest.getGender())
+                .fcmToken(joinRequest.getFcmToken())
+                .build();
+
+        return Account.create(accountInfo, memberInfo);
     }
 
     @Transactional(readOnly = true)

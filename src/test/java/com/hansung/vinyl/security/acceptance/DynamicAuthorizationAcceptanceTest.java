@@ -77,14 +77,6 @@ public class DynamicAuthorizationAcceptanceTest extends AcceptanceTest {
         권한_목록_조회됨(authorityListResponse4);
     }
 
-    private void 권한_목록_조회됨(ExtractableResponse<Response> authorityListResponse2) {
-        assertHttpStatus(authorityListResponse2, HttpStatus.OK);
-    }
-
-    private void 권한_목록_조회_실패됨(ExtractableResponse<Response> authorityListResponse) {
-        assertHttpStatus(authorityListResponse, HttpStatus.FORBIDDEN);
-    }
-
     @DisplayName("익명 사용자 인가 확인")
     @Test
     public void 익명사용자_인가_확인() throws Exception {
@@ -102,5 +94,13 @@ public class DynamicAuthorizationAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 인증없이_프로필_조회_요청() {
         return get("/members/me");
+    }
+
+    private void 권한_목록_조회됨(ExtractableResponse<Response> authorityListResponse2) {
+        assertHttpStatus(authorityListResponse2, HttpStatus.OK);
+    }
+
+    private void 권한_목록_조회_실패됨(ExtractableResponse<Response> authorityListResponse) {
+        assertHttpStatus(authorityListResponse, HttpStatus.FORBIDDEN);
     }
 }
