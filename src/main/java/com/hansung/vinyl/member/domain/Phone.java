@@ -1,6 +1,7 @@
 package com.hansung.vinyl.member.domain;
 
 import com.hansung.vinyl.common.exception.validate.FormatException;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.parameters.P;
 
@@ -13,6 +14,7 @@ import java.util.regex.Pattern;
 import static javax.persistence.AccessType.FIELD;
 import static lombok.AccessLevel.PROTECTED;
 
+@EqualsAndHashCode
 @Access(FIELD)
 @NoArgsConstructor(access = PROTECTED)
 @Embeddable
@@ -38,18 +40,5 @@ public class Phone {
 
     public String value() {
         return phone;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Phone phone1 = (Phone) o;
-        return Objects.equals(phone, phone1.phone);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(phone);
     }
 }

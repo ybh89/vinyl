@@ -1,8 +1,10 @@
 package com.hansung.vinyl.authority.domain;
 
 import com.hansung.vinyl.common.exception.validate.NullException;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -10,6 +12,8 @@ import java.util.Objects;
 import static javax.persistence.AccessType.FIELD;
 import static lombok.AccessLevel.PROTECTED;
 
+@ToString
+@EqualsAndHashCode
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Access(FIELD)
@@ -32,27 +36,6 @@ public class Resource {
         if (Objects.isNull(httpMethod)) {
             throw new NullException("httpMethod", getClass().getName());
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Resource resource = (Resource) o;
-        return Objects.equals(path, resource.path) && httpMethod == resource.httpMethod;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(path, httpMethod);
-    }
-
-    @Override
-    public String toString() {
-        return "Resource{" +
-                "path='" + path + '\'' +
-                ", httpMethod=" + httpMethod +
-                '}';
     }
 
     public String getPathValue() {

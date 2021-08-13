@@ -2,6 +2,7 @@ package com.hansung.vinyl.account.domain;
 
 import com.google.common.base.Strings;
 import com.hansung.vinyl.common.exception.validate.BlankException;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Access;
@@ -12,6 +13,7 @@ import java.util.Objects;
 
 import static lombok.AccessLevel.PROTECTED;
 
+@EqualsAndHashCode
 @NoArgsConstructor(access = PROTECTED)
 @Access(AccessType.FIELD)
 @Embeddable
@@ -32,18 +34,5 @@ public class EncryptedPassword {
 
     public String value() {
         return encryptedPassword;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        EncryptedPassword encryptedPassword1 = (EncryptedPassword) o;
-        return Objects.equals(encryptedPassword, encryptedPassword1.encryptedPassword);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(encryptedPassword);
     }
 }

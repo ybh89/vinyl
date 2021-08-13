@@ -12,6 +12,7 @@ import java.util.Objects;
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
+@EqualsAndHashCode(of = "id")
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @SecondaryTable(
@@ -31,9 +32,13 @@ public class News extends BaseEntity {
     @Embedded
     private Post post;
 
-    public News(Catalog catalog, Post post) {
+    private News(Catalog catalog, Post post) {
         this.catalog = catalog;
         this.post = post;
+    }
+
+    public static News create(Catalog catalog, Post post) {
+        return new News(catalog, post);
     }
 
     public void update(News updateNews) {

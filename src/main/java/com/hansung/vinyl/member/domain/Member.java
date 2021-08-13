@@ -2,10 +2,7 @@ package com.hansung.vinyl.member.domain;
 
 import com.hansung.vinyl.account.domain.Email;
 import com.hansung.vinyl.common.domain.BaseDateTimeEntity;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.domain.Persistable;
 import org.springframework.security.core.parameters.P;
 
@@ -16,6 +13,8 @@ import java.util.Objects;
 
 import static lombok.AccessLevel.*;
 
+@EqualsAndHashCode(of = "id")
+@ToString
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @SecondaryTable(
@@ -85,18 +84,6 @@ public class Member extends BaseDateTimeEntity implements Persistable<Long> {
             return null;
         }
         return phone.value();
-    }
-
-    @Override
-    public String toString() {
-        return "Member{" +
-                "id=" + id +
-                ", email=" + email +
-                ", name=" + name +
-                ", phone=" + phone +
-                ", gender=" + gender +
-                ", subscribes=" + subscribes +
-                '}';
     }
 
     @Override

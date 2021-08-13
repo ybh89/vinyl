@@ -36,7 +36,7 @@ public class NewsRequest {
     private List<MultipartFile> images;
 
     public News toNews() {
-        return new News(toCatalog(), toPost());
+        return News.create(toCatalog(), toPost());
     }
 
     public Post toPost() {

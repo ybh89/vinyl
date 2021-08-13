@@ -2,6 +2,7 @@ package com.hansung.vinyl.authority.domain;
 
 import com.google.common.base.Strings;
 import com.hansung.vinyl.common.exception.validate.BlankException;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Access;
@@ -12,6 +13,7 @@ import java.util.Objects;
 import static javax.persistence.AccessType.FIELD;
 import static lombok.AccessLevel.PROTECTED;
 
+@EqualsAndHashCode
 @Access(FIELD)
 @NoArgsConstructor(access = PROTECTED)
 @Embeddable
@@ -32,18 +34,5 @@ public class Path {
 
     public String value() {
         return path;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Path path1 = (Path) o;
-        return Objects.equals(path, path1.path);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(path);
     }
 }

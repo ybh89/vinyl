@@ -10,8 +10,11 @@ import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Objects;
 
+import static javax.persistence.AccessType.*;
 import static lombok.AccessLevel.*;
 
+@Access(FIELD)
+@EqualsAndHashCode
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Embeddable
@@ -53,18 +56,5 @@ public class Image {
     private String extractExtension(String imageName) {
         int pos = imageName.lastIndexOf(EXTENSION_DELIMITER);
         return imageName.substring(pos + 1);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Image image = (Image) o;
-        return Objects.equals(getStoreName(), image.getStoreName()) && Objects.equals(getUploadName(), image.getUploadName());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getStoreName(), getUploadName());
     }
 }

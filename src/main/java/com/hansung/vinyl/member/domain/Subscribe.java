@@ -7,6 +7,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Objects;
 
+@EqualsAndHashCode
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(uniqueConstraints={ @UniqueConstraint(name = "uk_subscribe", columnNames = {"member_id", "news_id"}) })
@@ -29,18 +30,5 @@ public class Subscribe {
         if (newsId < 1) {
             throw new FormatException("newsId", newsId, getClass().getName());
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Subscribe subscribe = (Subscribe) o;
-        return Objects.equals(getNewsId(), subscribe.getNewsId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getNewsId());
     }
 }

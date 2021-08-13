@@ -39,7 +39,7 @@ public class NewsService {
         byte[] mainThumbnailImage = imageStore.getThumbnailImageByte(images.getMainImage());
         Catalog catalog = buildCatalog(newsRequest);
         Post post = buildPost(newsRequest, images);
-        News saveNews = newsRepository.save(new News(catalog, post));
+        News saveNews = newsRepository.save(News.create(catalog, post));
         return NewsResponse.of(saveNews, mainThumbnailImage);
     }
 

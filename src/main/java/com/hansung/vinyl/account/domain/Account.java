@@ -3,6 +3,7 @@ package com.hansung.vinyl.account.domain;
 import com.hansung.vinyl.authority.domain.Authority;
 import com.hansung.vinyl.common.domain.DateTimeAuditor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.AbstractAggregateRoot;
@@ -17,6 +18,7 @@ import static javax.persistence.AccessType.FIELD;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
+@EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 @Access(FIELD)

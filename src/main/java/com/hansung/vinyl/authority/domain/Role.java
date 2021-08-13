@@ -1,6 +1,7 @@
 package com.hansung.vinyl.authority.domain;
 
 import com.hansung.vinyl.common.exception.validate.FormatException;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Access;
@@ -12,6 +13,7 @@ import java.util.Objects;
 
 import static lombok.AccessLevel.PROTECTED;
 
+@EqualsAndHashCode
 @NoArgsConstructor(access = PROTECTED)
 @Access(AccessType.FIELD)
 @Embeddable
@@ -38,18 +40,5 @@ public class Role {
 
     public static Role of(String role) {
         return new Role(role);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Role role1 = (Role) o;
-        return Objects.equals(role, role1.role);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(role);
     }
 }

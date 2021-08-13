@@ -3,6 +3,7 @@ package com.hansung.vinyl.account.domain;
 import com.google.common.base.Strings;
 import com.hansung.vinyl.common.exception.validate.BlankException;
 import com.hansung.vinyl.common.exception.validate.FormatException;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Access;
@@ -14,6 +15,7 @@ import java.util.regex.Pattern;
 
 import static lombok.AccessLevel.PROTECTED;
 
+@EqualsAndHashCode
 @NoArgsConstructor(access = PROTECTED)
 @Access(AccessType.FIELD)
 @Embeddable
@@ -44,18 +46,5 @@ public class Email {
 
     public String value() {
         return email;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Email email1 = (Email) o;
-        return Objects.equals(email, email1.email);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(email);
     }
 }

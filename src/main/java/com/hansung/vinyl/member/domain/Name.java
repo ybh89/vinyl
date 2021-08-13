@@ -3,6 +3,7 @@ package com.hansung.vinyl.member.domain;
 import com.google.common.base.Strings;
 import com.hansung.vinyl.common.exception.validate.BlankException;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Access;
@@ -14,6 +15,7 @@ import java.util.Objects;
 import static javax.persistence.AccessType.FIELD;
 import static lombok.AccessLevel.*;
 
+@EqualsAndHashCode
 @Access(FIELD)
 @NoArgsConstructor(access = PROTECTED)
 @Embeddable
@@ -34,18 +36,5 @@ public class Name {
 
     public String value() {
         return name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Name name1 = (Name) o;
-        return Objects.equals(name, name1.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name);
     }
 }
