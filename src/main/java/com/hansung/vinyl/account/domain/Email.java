@@ -1,5 +1,7 @@
 package com.hansung.vinyl.account.domain;
 
+import com.google.common.base.Strings;
+import com.hansung.vinyl.common.exception.validate.BlankException;
 import com.hansung.vinyl.common.exception.validate.FormatException;
 import lombok.NoArgsConstructor;
 
@@ -31,6 +33,10 @@ public class Email {
     }
 
     private void validate(String email) {
+        if (Strings.isNullOrEmpty(email) || email.isBlank()) {
+            throw new BlankException("email", email, getClass().getName());
+        }
+
         if (!pattern.matcher(email).matches()) {
             throw new FormatException("email", email, getClass().getName());
         }

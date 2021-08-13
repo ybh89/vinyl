@@ -42,12 +42,22 @@ public class Member extends BaseDateTimeEntity implements Persistable<Long> {
     private Subscribes subscribes;
 
     @Builder
-    public Member(Long accountId, String email, String name, String phone, Gender gender) {
+    private Member(Long accountId, Email email, Name name, Phone phone, Gender gender) {
         this.id = accountId;
-        this.email = new Email(email);
-        this.name = new Name(name);
-        this.phone = new Phone(phone);
+        this.email = email;
+        this.name = name;
+        this.phone = phone;
         this.gender = gender;
+    }
+
+    public static Member create(Long accountId, String email, String name, String phone, Gender gender) {
+        return Member.builder()
+                .accountId(accountId)
+                .email(new Email(email))
+                .name(new Name(name))
+                .phone(new Phone(phone))
+                .gender(gender)
+                .build();
     }
 
     public void subscribe(Long newsId) {

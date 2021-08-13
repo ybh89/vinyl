@@ -86,12 +86,8 @@ public class InitialDataService {
                 Account account = Account.create(accountInfo, memberInfo);
                 Account savedAccount = accountRepository.save(account);
 
-                Member member = Member.builder()
-                        .accountId(savedAccount.getId())
-                        .email(savedAccount.getEmail().value())
-                        .name("super")
-                        .gender(Gender.MALE)
-                        .build();
+                Member member = Member.create(savedAccount.getId(), savedAccount.getEmailValue(), "super",
+                        null, Gender.MALE);
                 memberRepository.save(member);
             }
         }

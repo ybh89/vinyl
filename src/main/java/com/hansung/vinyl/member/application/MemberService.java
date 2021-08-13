@@ -33,13 +33,11 @@ public class MemberService {
     public void create(AccountCreatedEvent accountCreatedEvent) {
         System.out.println("AccountCreatedEvent = " + accountCreatedEvent);
 
-        Member member = Member.builder()
-                .accountId(accountCreatedEvent.getAccount().getId())
-                .email(accountCreatedEvent.getAccount().getEmailValue())
-                .name(accountCreatedEvent.getMemberInfo().getName())
-                .phone(accountCreatedEvent.getMemberInfo().getPhone())
-                .gender(accountCreatedEvent.getMemberInfo().getGender())
-                .build();
+        Member member = Member.create(accountCreatedEvent.getAccount().getId(),
+                accountCreatedEvent.getAccount().getEmailValue(),
+                accountCreatedEvent.getMemberInfo().getName(),
+                accountCreatedEvent.getMemberInfo().getPhone(),
+                accountCreatedEvent.getMemberInfo().getGender());
         memberRepository.save(member);
     }
 
