@@ -3,6 +3,7 @@ package com.hansung.vinyl.account.domain;
 import com.hansung.vinyl.authority.domain.Authority;
 import com.hansung.vinyl.authority.domain.HttpMethod;
 import com.hansung.vinyl.authority.domain.Resource;
+import com.hansung.vinyl.member.domain.Gender;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,9 +21,9 @@ public class AccountTest {
     @Test
     public void 계정_생성_확인() throws Exception {
         //given
-        Authority authority1 = buildAuthority(1L, "ROLE_TEST1", "test",
+        Authority authority1 = buildAuthority("ROLE_TEST1", "test",
                 Arrays.asList(new Resource("/test", HttpMethod.GET)));
-        Authority authority2 = buildAuthority(2L, "ROLE_TEST2", "test",
+        Authority authority2 = buildAuthority("ROLE_TEST2", "test",
                 Arrays.asList(new Resource("/test", HttpMethod.POST)));
 
         //when
@@ -30,23 +31,24 @@ public class AccountTest {
 
         //then
         assertThat(account.getEmail()).isEqualTo(new Email(EMAIL));
-        assertThat(account.getAuthorityIds()).containsExactly(1L, 2L);
+        assertThat(account.getAuthorityIds()).hasSize(2);
     }
 
     private Account buildAccount(String email, String password, Authority authority1, Authority authority2) {
-        return Account.builder()
+        AccountInfo accountInfo = AccountInfo.builder()
                 .email(email)
                 .encryptedPassword(password)
                 .authorities(Arrays.asList(authority1, authority2))
                 .build();
+        MemberInfo memberInfo = MemberInfo.builder()
+                .name("test")
+                .fcmToken("test")
+                .gender(Gender.MALE)
+                .build();
+        return Account.create(accountInfo, memberInfo);
     }
 
-    private Authority buildAuthority(Long id, String name, String remark, List<Resource> resources) {
-        return Authority.builder()
-                .id(id)
-                .role(name)
-                .remark(remark)
-                .resources(resources)
-                .build();
+    private Authority buildAuthority(String role, String remark, List<Resource> resources) {
+        return Authority.create(role, remark, resources);
     }
 }

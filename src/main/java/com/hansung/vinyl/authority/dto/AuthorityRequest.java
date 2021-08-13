@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class AuthorityRequest {
-    private String name;
+    private String role;
     private String remark;
     private List<ResourceRequest> resources;
 }

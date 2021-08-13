@@ -20,7 +20,7 @@ public final class AuthorityApiDocumentDefinition extends ApiDocumentDefinition 
         return docResultHandler.document(
                 requestHeaders(headerWithName("Authorization").description("jwt access token")),
                 requestFields(
-                        fieldWithPath("name").description("권한 이름")
+                        fieldWithPath("role").description("권한 이름")
                                 .attributes(key("constraint").value("ROLE_ 로 시작해야한다.")),
                         fieldWithPath("remark").description("권한 설명").optional(),
                         fieldWithPath("resources.[].path").description("권한에 매핑된 자원의 경로").optional()
@@ -42,7 +42,7 @@ public final class AuthorityApiDocumentDefinition extends ApiDocumentDefinition 
                 pathParameters(
                         parameterWithName("authorityId").description("권한 유니크 아이디")),
                 requestFields(
-                        fieldWithPath("name").description("권한 이름")
+                        fieldWithPath("role").description("권한 이름")
                                 .attributes(key("constraint").value("ROLE_ 로 시작해야한다.")),
                         fieldWithPath("remark").description("변경할 권한 설명").optional(),
                         fieldWithPath("resources.[].path").description("권한에 매핑된 자원의 경로").optional()

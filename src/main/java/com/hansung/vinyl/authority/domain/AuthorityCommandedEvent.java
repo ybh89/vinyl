@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuthorityCommandedEvent {
     private Authority authority;
-    private String command;
+    private Command command;
 
     @Override
     public String toString() {

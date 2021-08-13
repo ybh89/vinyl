@@ -7,7 +7,6 @@ import com.hansung.vinyl.authority.dto.ResourceRoleDto;
 import com.hansung.vinyl.common.exception.data.DuplicateDataException;
 import com.hansung.vinyl.common.exception.data.NoSuchDataException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -26,10 +25,9 @@ import java.util.stream.Collectors;
 @Service
 public class AuthorityService {
     private final AuthorityRepository authorityRepository;
-    private final ApplicationEventPublisher publisher;
 
     public AuthorityResponse create(AuthorityRequest authorityRequest) {
-        Authority authority = buildAuthority(authorityRequest);
+        Authority authority = createAuthority(authorityRequest);
         Authority savedAuthority = authorityRepository.save(authority);
         return AuthorityResponse.of(savedAuthority);
     }
@@ -45,21 +43,21 @@ public class AuthorityService {
     public AuthorityResponse update(Long authorityId, AuthorityRequest authorityRequest) {
         validateUpdatable(authorityId, authorityRequest);
         Authority authority = findAuthorityById(authorityId);
-        Authority updateAuthority = buildAuthority(authorityRequest);
-        authority.update(updateAuthority, publisher);
+        Authority updateAuthority = createAuthority(authorityRequest);
+        authority.update(updateAuthority);
+        authorityRepository.save(authority); // 이벤트 발행용
         return AuthorityResponse.of(authority);
-    }
-
-    private void validateUpdatable(Long authorityId, AuthorityRequest authorityRequest) {
-        if (authorityRepository.existsByIdNotAndRoleEquals(authorityId, Role.of(authorityRequest.getName()))) {
-            throw new DuplicateDataException("name", authorityRequest.getName(), getClass().getName());
-        }
     }
 
     public void delete(Long authorityId) {
         Authority authority = findAuthorityById(authorityId);
-        authority.publishEvent(publisher, new AuthorityCommandedEvent(authority, "delete"));
-        authorityRepository.delete(authority);
+        authorityRepository.delete(authority.delete());
+    }
+
+    private void validateUpdatable(Long authorityId, AuthorityRequest authorityRequest) {
+        if (authorityRepository.existsByIdNotAndRoleEquals(authorityId, Role.of(authorityRequest.getRole()))) {
+            throw new DuplicateDataException("role", authorityRequest.getRole(), getClass().getName());
+        }
     }
 
     private Authority findAuthorityById(Long authorityId) {
@@ -68,14 +66,9 @@ public class AuthorityService {
                         getClass().getName()));
     }
 
-    private Authority buildAuthority(AuthorityRequest authorityRequest) {
-        Authority authority = Authority.builder()
-                .role(authorityRequest.getName())
-                .remark(authorityRequest.getRemark())
-                .resources(createResources(authorityRequest))
-                .publisher(publisher)
-                .build();
-        return authority;
+    private Authority createAuthority(AuthorityRequest authorityRequest) {
+        return Authority.create(authorityRequest.getRole(), authorityRequest.getRemark(),
+                createResources(authorityRequest));
     }
 
     private List<Resource> createResources(AuthorityRequest authorityRequest) {

@@ -1,13 +1,11 @@
 package com.hansung.vinyl.account.domain;
 
-import com.hansung.vinyl.common.exception.validate.NullException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Objects;
 
-import static javax.persistence.AccessType.*;
+import static javax.persistence.AccessType.FIELD;
 import static lombok.AccessLevel.PROTECTED;
 
 @Getter
@@ -21,13 +19,6 @@ public class AccountAuthority {
     private Long authorityId;
 
     public AccountAuthority(Long authorityId) {
-        validate(authorityId);
         this.authorityId = authorityId;
-    }
-
-    private void validate(Long authorityId) {
-        if (Objects.isNull(authorityId)) {
-            throw new NullException("authorityId", getClass().getName());
-        }
     }
 }

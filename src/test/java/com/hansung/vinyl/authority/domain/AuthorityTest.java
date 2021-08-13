@@ -15,7 +15,7 @@ public class AuthorityTest {
     @Test
     public void 권한경로목록_조회_확인() throws Exception {
         //given
-        Authority authority = 권한_생성(1L, "ROLE_TEST", "test",
+        Authority authority = 권한_생성("ROLE_TEST", "test",
                 Arrays.asList(new Resource("/*", POST), new Resource("/*", GET)));
 
         //when
@@ -30,11 +30,11 @@ public class AuthorityTest {
     @Test
     public void 권한_변경_확인() throws Exception {
         //given
-        Authority authority1 = 권한_생성(1L, "ROLE_TEST1", "test1", Arrays.asList(new Resource("/*", GET)));
-        Authority authority2 = 권한_생성(2L, "ROLE_TEST2", "test2", Arrays.asList(new Resource("/**", GET)));
+        Authority authority1 = 권한_생성("ROLE_TEST1", "test1", Arrays.asList(new Resource("/*", GET)));
+        Authority authority2 = 권한_생성("ROLE_TEST2", "test2", Arrays.asList(new Resource("/**", GET)));
 
         //when
-        authority1.update(authority2, null);
+        authority1.update(authority2);
 
         //then
         assertThat(authority1.getRoleValue()).isEqualTo("ROLE_TEST2");
@@ -42,12 +42,7 @@ public class AuthorityTest {
         assertThat(authority1.getResources()).containsExactly(new Resource("/**", GET));
     }
 
-    private Authority 권한_생성(Long id, String name, String remark, List<Resource> resources) {
-        return Authority.builder()
-                .id(id)
-                .role(name)
-                .remark(remark)
-                .resources(resources)
-                .build();
+    private Authority 권한_생성(String role, String remark, List<Resource> resources) {
+        return Authority.create(role, remark, resources);
     }
 }

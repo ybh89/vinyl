@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -48,18 +49,18 @@ public class Account extends AbstractAggregateRoot<Account> {
     private DateTimeAuditor dateTimeAuditor;
 
     @Builder
-    private Account(String email, String encryptedPassword, List<Authority> authorities) {
-        this.email = new Email(email);
-        this.encryptedPassword = new EncryptedPassword(encryptedPassword);
-        this.accountAuthorities = new AccountAuthorities(createAccountAuthorities(authorities));
+    private Account(Email email, EncryptedPassword encryptedPassword, AccountAuthorities accountAuthorities) {
+        this.email = email;
+        this.encryptedPassword = encryptedPassword;
+        this.accountAuthorities = accountAuthorities;
         this.dateTimeAuditor = new DateTimeAuditor();
     }
 
     public static Account create(AccountInfo accountInfo, MemberInfo memberInfo) {
         Account account = Account.builder()
-                .email(accountInfo.getEmail())
-                .encryptedPassword(accountInfo.getEncryptedPassword())
-                .authorities(accountInfo.getAuthorities())
+                .email(new Email(accountInfo.getEmail()))
+                .encryptedPassword(new EncryptedPassword(accountInfo.getEncryptedPassword()))
+                .accountAuthorities(new AccountAuthorities(createAccountAuthorities(accountInfo.getAuthorities())))
                 .build();
         account.registerEvent(new AccountCreatedEvent(account, memberInfo));
         return account;
@@ -69,7 +70,10 @@ public class Account extends AbstractAggregateRoot<Account> {
         deleted = true;
     }
 
-    private List<AccountAuthority> createAccountAuthorities(List<Authority> authorities) {
+    private static List<AccountAuthority> createAccountAuthorities(List<Authority> authorities) {
+        if (Objects.isNull(authorities)) {
+            return Arrays.asList();
+        }
         return authorities.stream()
                 .map(authority -> new AccountAuthority(authority.getId()))
                 .collect(Collectors.toList());

@@ -1,8 +1,6 @@
 package com.hansung.vinyl.authority.application;
 
-import com.hansung.vinyl.account.domain.Account;
-import com.hansung.vinyl.account.domain.AccountRepository;
-import com.hansung.vinyl.account.domain.Email;
+import com.hansung.vinyl.account.domain.*;
 import com.hansung.vinyl.authority.domain.*;
 import com.hansung.vinyl.member.domain.Gender;
 import com.hansung.vinyl.member.domain.Member;
@@ -53,17 +51,13 @@ public class InitialDataService {
         private final AuthorityRepository authorityRepository;
         private final AccountRepository accountRepository;
         private final MemberRepository memberRepository;
-        private final ApplicationEventPublisher publisher;
 
         @Transactional
         public void initAuthority() {
             roles.stream()
                 .filter(roleName -> !authorityRepository.existsByRole(Role.of(roleName)))
                 .forEach(roleName -> {
-                    Authority authority = Authority.builder()
-                            .role(roleName)
-                            .publisher(publisher)
-                            .build();
+                    Authority authority = Authority.create(roleName, "", null);
                     authorityRepository.save(authority);
                 });
         }
@@ -75,21 +69,21 @@ public class InitialDataService {
                 resources.add(new Resource(superPath, httpMethod));
             }
 
-            Authority authority = Authority.builder()
-                    .role(superRole)
-                    .resources(resources)
-                    .publisher(publisher)
-                    .build();
-
+            Authority authority = Authority.create(superRole, "", resources);
             authorityRepository.save(authority);
 
             if (!accountRepository.existsByEmail(Email.of(superEmail))) {
-                Account account = Account.builder()
+                AccountInfo accountInfo = AccountInfo.builder()
                         .email(superEmail)
                         .encryptedPassword(superPassword)
                         .authorities(Arrays.asList(authority))
                         .build();
-
+                MemberInfo memberInfo = MemberInfo.builder()
+                        .name("super")
+                        .fcmToken("fcm-token")
+                        .gender(Gender.MALE)
+                        .build();
+                Account account = Account.create(accountInfo, memberInfo);
                 Account savedAccount = accountRepository.save(account);
 
                 Member member = Member.builder()
@@ -98,7 +92,6 @@ public class InitialDataService {
                         .name("super")
                         .gender(Gender.MALE)
                         .build();
-
                 memberRepository.save(member);
             }
         }

@@ -75,6 +75,14 @@ public class DynamicAuthorizationAcceptanceTest extends AcceptanceTest {
         // 사용자가 자원에 접근 성공
         ExtractableResponse<Response> authorityListResponse4 = 권한_목록_조회_요청(userToken);
         권한_목록_조회됨(authorityListResponse4);
+
+        // 매니저 권한 삭제
+        ExtractableResponse<Response> deleteResponse = delete(mgrAuthorityResponse.header("Location"), testToken);
+        assertHttpStatus(deleteResponse, HttpStatus.NO_CONTENT);
+
+        // 사용자가 자원에 접근 실패
+        ExtractableResponse<Response> authorityListResponse5 = 권한_목록_조회_요청(userToken);
+        권한_목록_조회_실패됨(authorityListResponse5);
     }
 
     @DisplayName("익명 사용자 인가 확인")

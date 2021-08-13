@@ -28,10 +28,6 @@ public class AuthorityResourcesTest {
     }
 
     private Authority buildAuthority(long id, String role, List<Resource> resources) {
-        return Authority.builder()
-                .id(id)
-                .role(role)
-                .resources(resources)
-                .build();
+        return Authority.create(role, "", resources);
     }
 }

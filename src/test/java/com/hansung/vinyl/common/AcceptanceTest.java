@@ -192,9 +192,6 @@ public class AcceptanceTest {
     }
 
     private Authority buildAuthority(String role, String path) {
-        return Authority.builder()
-                .role(role)
-                .resources(createPermitAllResource(path))
-                .build();
+        return Authority.create(role, "", createPermitAllResource(path));
     }
 }

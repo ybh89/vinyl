@@ -118,9 +118,9 @@ public class AuthorityControllerTest extends ControllerTest {
         documentApi(resultActions, authorityApiDocumentDefinition.권한_변경_api_문서());
     }
 
-    private AuthorityRequest buildAuthorityRequest(String name, String remark, List<ResourceRequest> resourceRequests) {
+    private AuthorityRequest buildAuthorityRequest(String role, String remark, List<ResourceRequest> resourceRequests) {
         return AuthorityRequest.builder()
-                .name(name)
+                .role(role)
                 .remark(remark)
                 .resources(resourceRequests)
                 .build();

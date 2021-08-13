@@ -2,6 +2,7 @@ package com.hansung.vinyl.security.metadatasource;
 
 import com.hansung.vinyl.authority.application.AuthorityService;
 import com.hansung.vinyl.authority.domain.AuthorityCommandedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
@@ -48,7 +49,7 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
         return FilterInvocation.class.isAssignableFrom(clazz);
     }
 
-    @TransactionalEventListener
+    @EventListener
     public void reload(AuthorityCommandedEvent event) {
         System.out.println("AuthorityCommandedEvent!!");
         requestMap.clear();
