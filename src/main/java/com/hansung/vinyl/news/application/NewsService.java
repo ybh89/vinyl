@@ -12,7 +12,6 @@ import com.hansung.vinyl.news.dto.NewsListResponse;
 import com.hansung.vinyl.news.dto.NewsRequest;
 import com.hansung.vinyl.news.dto.NewsResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -31,16 +30,12 @@ public class NewsService {
     private final SubscribeManager subscribeManager;
     private final MemberRepository memberRepository;
 
-    @Value("${vinyl.init-data.super.role}")
-    private String superRole;
-
     public NewsResponse create(NewsRequest newsRequest) {
-        Images images = imageStore.storeImages(newsRequest.getImages());
-        byte[] mainThumbnailImage = imageStore.getThumbnailImageByte(images.getMainImage());
+        Images images = imageStore.uploadImages(newsRequest.getImages());
         Catalog catalog = buildCatalog(newsRequest);
         Post post = buildPost(newsRequest, images);
         News saveNews = newsRepository.save(News.create(catalog, post));
-        return NewsResponse.of(saveNews, mainThumbnailImage);
+        return NewsResponse.of(saveNews);
     }
 
     private Post buildPost(NewsRequest newsRequest, Images images) {
@@ -65,8 +60,7 @@ public class NewsService {
     @Transactional(readOnly = true)
     public NewsResponse find(Long newsId) {
         News news = findNewsByIdAndDeletedFalse(newsId);
-        byte[] mainThumbnailImage = imageStore.getThumbnailImageByte(news.getMainImage());
-        return NewsResponse.of(news, mainThumbnailImage);
+        return NewsResponse.of(news);
     }
 
     private News findNewsByIdAndDeletedFalse(Long newsId) {
@@ -77,58 +71,38 @@ public class NewsService {
     @Transactional(readOnly = true)
     public Slice<NewsListResponse> list(Pageable pageable) {
         Slice<News> newsPage = newsRepository.findAllByPostDeletedFalse(pageable);
-        return newsPage.map(news -> {
-            byte[] mainThumbnailImage = imageStore.getThumbnailImageByte(news.getMainImage());
-            return NewsListResponse.of(news, mainThumbnailImage);
-        });
+        return newsPage.map(NewsListResponse::of);
     }
 
     @Transactional(readOnly = true)
     public List<NewsListResponse> list(List<Long> newsIds) {
         List<News> newsList = newsRepository.findAllById(newsIds);
         return newsList.stream()
-                .map(news -> {
-                    byte[] mainThumbnailImage = imageStore.getThumbnailImageByte(news.getMainImage());
-                    return NewsListResponse.of(news, mainThumbnailImage);})
+                .map(NewsListResponse::of)
                 .collect(Collectors.toList());
     }
 
     public NewsResponse update(User user, Long newsId, NewsRequest newsRequest) {
         News news = findNewsByIdAndDeletedFalse(newsId);
-        validateAuthorization(user, news);
-
+        validateOwner(user, news);
         Images updateImages = imageStore.updateImages(news.getImages(), newsRequest.getImages());
-        byte[] mainThumbnailImage = imageStore.getThumbnailImageByte(updateImages.getMainImage());
-
         News updateNews = newsRequest.toNews();
         updateNews.updateImages(updateImages);
         news.update(updateNews);
-
-        return NewsResponse.of(news, mainThumbnailImage);
-    }
-
-    private void validateAuthorization(User user, News news) {
-        if (isNoneMatchRoleSuper(user)) {
-            validateWriter(user, news);
-        }
-    }
-
-    private boolean isNoneMatchRoleSuper(User user) {
-        return user.getAuthorities().stream().noneMatch(grantedAuthority ->
-                grantedAuthority.getAuthority().equals(superRole));
-    }
-
-    private void validateWriter(User user, News news) {
-        if (!news.getCreatedBy().equals(user.getAccountId())) {
-            throw new AuthorizationException();
-        }
+        return NewsResponse.of(news);
     }
 
     public void delete(User user, Long newsId) {
         News news = findNewsByIdAndDeletedFalse(newsId);
-        validateAuthorization(user, news);
+        validateOwner(user, news);
         imageStore.deleteImages(news.getImages());
         news.delete();
+    }
+
+    private void validateOwner(User user, News news) {
+        if (!news.isOwner(user)) {
+            throw new AuthorizationException();
+        }
     }
 
     public List<News> findByReleaseDate(long dDay) {

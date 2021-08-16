@@ -36,10 +36,9 @@ public class NewsResponse {
     private Long createdBy;
     private Long updatedBy;
     private String topic;
-    private byte[] mainThumbnailImage;
     private List<ImageResponse> images = new ArrayList<>();
 
-    public static NewsResponse of(News news, byte[] mainThumbnailImage) {
+    public static NewsResponse of(News news) {
         List<ImageResponse> images = news.getImages().value().stream()
                 .map(ImageResponse::of)
                 .collect(Collectors.toList());
@@ -50,6 +49,6 @@ public class NewsResponse {
         return new NewsResponse(news.getId(), post.getTitle(), post.getContent(), catalog.getBrand(),
                 catalog.getSourceUrl().value(), catalog.getReleaseDate(), catalog.getPrice().value(),
                 catalog.getPrice().getPriceType(), news.getCreatedAt(), news.getUpdatedAt(), news.getCreatedBy(),
-                news.getUpdatedBy(), post.getTopic(), mainThumbnailImage, images);
+                news.getUpdatedBy(), post.getTopic(), images);
     }
 }

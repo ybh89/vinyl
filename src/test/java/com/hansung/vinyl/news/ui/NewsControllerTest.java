@@ -148,7 +148,6 @@ public class NewsControllerTest extends ControllerTest {
                 .releaseDate(LocalDateTime.parse("2022-12-12T12:12:12",
                         DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")))
                 .topic("test topic")
-                .mainThumbnailImage(new byte[]{})
                 .build();
     }
 
@@ -183,7 +182,6 @@ public class NewsControllerTest extends ControllerTest {
                 .releaseDate(LocalDateTime.parse("2022-12-12T12:12:12",
                         DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")))
                 .topic("test topic")
-                .mainThumbnailImage(new byte[]{})
                 .images(Arrays.asList(imageResponse))
                 .build();
         return newsResponse;

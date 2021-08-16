@@ -131,7 +131,6 @@ public class MemberControllerTest extends ControllerTest {
                 .price("140")
                 .priceType(PriceType.USD)
                 .releaseDate(LocalDateTime.now())
-                .mainThumbnailImage(new byte[]{})
                 .title("testTitle")
                 .build();
     }

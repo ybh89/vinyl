@@ -72,4 +72,9 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return isEnabled;
     }
+
+    public boolean hasSuperRole() {
+        return authorities.stream().anyMatch(grantedAuthority ->
+                grantedAuthority.getAuthority().equals("ROLE_SUPER"));
+    }
 }

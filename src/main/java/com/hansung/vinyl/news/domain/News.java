@@ -1,5 +1,6 @@
 package com.hansung.vinyl.news.domain;
 
+import com.hansung.vinyl.account.domain.User;
 import com.hansung.vinyl.common.domain.BaseEntity;
 import lombok.*;
 
@@ -58,15 +59,18 @@ public class News extends BaseEntity {
         post.minusSubscribeCount();
     }
 
-    public Image getMainImage() {
-        return post.getMainImage();
-    }
-
     public Images getImages() {
         return post.getImages();
     }
 
     public void updateImages(Images images) {
         post.updateImages(images);
+    }
+
+    public boolean isOwner(User user) {
+        if (user.hasSuperRole()) {
+            return true;
+        }
+        return getCreatedBy().equals(user.getAccountId());
     }
 }

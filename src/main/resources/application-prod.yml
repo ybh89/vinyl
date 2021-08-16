@@ -1,17 +1,27 @@
 spring:
+  datasource:
+    url: jdbc:mariadb://vinyldb.cldtmjory069.ap-northeast-2.rds.amazonaws.com:3306/vinyldb?characterEncoding=UTF-8
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: root
+    password: rhkdro90
   profiles:
-    active: test
+    include:
+      - aws
 
   jpa:
     properties:
       hibernate:
         format_sql: true
+        default_batch_fetch_size: 1000
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
 
   messages:
     basename: messages,errors
     encoding: UTF-8
+
+#  flyway:
+#    baselineOnMigrate: true # 스키마 히스토리 테이블 초기화
 
 logging.level:
   org.hibernate.SQL: debug
@@ -28,8 +38,8 @@ vinyl:
   init-data:
     super:
       role: ROLE_SUPER
-      email: super@super.com
-      password: super-password123
+      email: super@vinyl.com
+      password: $2a$10$LYB3JRPboWY45HVnKJEWzugFXhi1Uqw37GODw71Fue3Uh42BrZmWy
       path: /**
     roles: ROLE_ADMIN,ROLE_MANAGER,ROLE_USER,ROLE_ANONYMOUS
   file:
@@ -44,6 +54,4 @@ cloud:
     stack:
       auto: false
     credentials:
-      accessKey:
-      secretKey:
       instance-profile: true

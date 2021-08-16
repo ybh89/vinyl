@@ -26,23 +26,4 @@ public class ImagesTest {
         // then
         assertThat(images.value()).containsExactly(image1, image2, image3);
     }
-
-    @DisplayName("메인 이미지 조회 확인")
-    @Test
-    public void 메인이미지_조회_확인() throws Exception {
-        // given
-        Images images = new Images();
-        Image image1 = new Image("test1.png", "test1.png");
-        Image image2 = new Image("test2.jpg", "test2.jpg");
-        Image image3 = new Image("test3.jpeg", "test3.jpeg");
-        images.add(image1);
-        images.add(image2);
-        images.add(image3);
-
-        // when
-        Image mainImage = images.getMainImage();
-
-        // then
-        assertThat(mainImage).isEqualTo(new Image("test1.png", "test1.png"));
-    }
 }

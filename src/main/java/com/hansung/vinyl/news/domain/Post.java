@@ -71,10 +71,6 @@ public class Post {
         }
     }
 
-    public Image getMainImage() {
-        return images.getMainImage();
-    }
-
     public void updateImages(Images images) {
         this.images = images;
     }

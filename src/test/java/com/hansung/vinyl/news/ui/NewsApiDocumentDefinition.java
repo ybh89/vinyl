@@ -48,7 +48,6 @@ public class NewsApiDocumentDefinition extends ApiDocumentDefinition {
                         fieldWithPath("createdBy").description("생성자"),
                         fieldWithPath("updatedBy").description("수정자"),
                         fieldWithPath("topic").description("토픽"),
-                        fieldWithPath("mainThumbnailImage").description("메인 이미지"),
                         fieldWithPath("images.[].storeOriginalImageName").description("저장된 원본 이미지명"),
                         fieldWithPath("images.[].storeThumbnailImageName").description("저장된 섬네일 이미지명"),
                         fieldWithPath("images.[].uploadName").description("업로드한 이미지명"))
@@ -90,7 +89,6 @@ public class NewsApiDocumentDefinition extends ApiDocumentDefinition {
                         fieldWithPath("createdBy").description("생성자"),
                         fieldWithPath("updatedBy").description("수정자"),
                         fieldWithPath("topic").description("토픽"),
-                        fieldWithPath("mainThumbnailImage").description("메인 이미지"),
                         fieldWithPath("images.[].storeOriginalImageName").description("저장된 원본 이미지명"),
                         fieldWithPath("images.[].storeThumbnailImageName").description("저장된 섬네일 이미지명"),
                         fieldWithPath("images.[].uploadName").description("업로드한 이미지명"))
@@ -112,7 +110,6 @@ public class NewsApiDocumentDefinition extends ApiDocumentDefinition {
                         fieldWithPath("content.[].price").description("가격"),
                         fieldWithPath("content.[].priceType").description("화폐 단위"),
                         fieldWithPath("content.[].topic").description("토픽"),
-                        fieldWithPath("content.[].mainThumbnailImage").description("메인 이미지"),
                         fieldWithPath("pageable").description(""),
                         fieldWithPath("numberOfElements").description("현 페이지의 요소의 수"),
                         fieldWithPath("number").description(""),
@@ -144,7 +141,6 @@ public class NewsApiDocumentDefinition extends ApiDocumentDefinition {
                         fieldWithPath("createdBy").description("생성자"),
                         fieldWithPath("updatedBy").description("수정자"),
                         fieldWithPath("topic").description("토픽"),
-                        fieldWithPath("mainThumbnailImage").description("메인 이미지"),
                         fieldWithPath("images.[].storeOriginalImageName").description("저장된 원본 이미지명"),
                         fieldWithPath("images.[].storeThumbnailImageName").description("저장된 섬네일 이미지명"),
                         fieldWithPath("images.[].uploadName").description("업로드한 이미지명"))

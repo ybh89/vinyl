@@ -1,7 +1,7 @@
 package com.hansung.vinyl.news.ui;
 
 import com.hansung.vinyl.common.exception.file.NoSuchFileException;
-import com.hansung.vinyl.news.domain.service.ImageStore;
+import com.hansung.vinyl.news.domain.service.LocalImageStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -16,14 +16,14 @@ import java.net.MalformedURLException;
 @RequiredArgsConstructor
 @RestController
 public class ImageController {
-    private final ImageStore imageStore;
+    private final LocalImageStore localImageStore;
 
     @GetMapping("/{imageName}")
     public Resource image(@PathVariable String imageName) {
         try {
-            return new UrlResource("file:" + imageStore.getFullPath(imageName));
+            return new UrlResource("file:" + localImageStore.getImageUrl(imageName));
         } catch (MalformedURLException e) {
-            throw new NoSuchFileException(imageName, imageStore.getFileDirectory());
+            throw new NoSuchFileException(imageName, localImageStore.getFileDirectory());
         }
     }
 }

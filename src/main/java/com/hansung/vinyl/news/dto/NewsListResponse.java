@@ -23,13 +23,12 @@ public class NewsListResponse {
     private LocalDateTime releaseDate;
     private String price;
     private PriceType priceType;
-    private byte[] mainThumbnailImage;
     private String topic;
 
-    public static NewsListResponse of(News news, byte[] mainThumbnailImage) {
+    public static NewsListResponse of(News news) {
         Post post = news.getPost();
         Catalog catalog = news.getCatalog();
         return new NewsListResponse(news.getId(), post.getTitle(), catalog.getReleaseDate(), catalog.getPrice().value(),
-                catalog.getPrice().getPriceType(), mainThumbnailImage, post.getTopic());
+                catalog.getPrice().getPriceType(), post.getTopic());
     }
 }

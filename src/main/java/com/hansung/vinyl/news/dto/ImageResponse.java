@@ -6,8 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import static com.hansung.vinyl.news.domain.service.ImageStore.ORIGINAL_IMAGE_PREFIX;
-import static com.hansung.vinyl.news.domain.service.ImageStore.THUMBNAIL_IMAGE_PREFIX;
+import static com.hansung.vinyl.news.domain.service.LocalImageStore.ORIGINAL_IMAGE_PREFIX;
+import static com.hansung.vinyl.news.domain.service.LocalImageStore.THUMBNAIL_IMAGE_PREFIX;
 
 @Builder
 @AllArgsConstructor
