@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 import static com.hansung.vinyl.news.domain.service.LocalImageStore.ORIGINAL_IMAGE_PREFIX;
 import static com.hansung.vinyl.news.domain.service.LocalImageStore.THUMBNAIL_IMAGE_PREFIX;
 
@@ -19,6 +21,9 @@ public class ImageResponse {
     private String uploadName;
 
     public static ImageResponse of(Image image) {
+        if (Objects.isNull(image)) {
+            return null;
+        }
         return new ImageResponse(ORIGINAL_IMAGE_PREFIX + image.getStoreName(),
                 THUMBNAIL_IMAGE_PREFIX + image.getStoreName(), image.getUploadName());
     }

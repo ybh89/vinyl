@@ -16,6 +16,8 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 @Embeddable
 public class Post {
+    private static final int MAIN_IMAGE_SEQ = 0;
+
     @Column(nullable = false, length = 50)
     private String title;
 
@@ -73,5 +75,9 @@ public class Post {
 
     public void updateImages(Images images) {
         this.images = images;
+    }
+
+    public Image getMainImage() {
+        return images.getImage(MAIN_IMAGE_SEQ);
     }
 }

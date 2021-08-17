@@ -24,11 +24,12 @@ public class NewsListResponse {
     private String price;
     private PriceType priceType;
     private String topic;
+    private ImageResponse mainImage;
 
     public static NewsListResponse of(News news) {
         Post post = news.getPost();
         Catalog catalog = news.getCatalog();
         return new NewsListResponse(news.getId(), post.getTitle(), catalog.getReleaseDate(), catalog.getPrice().value(),
-                catalog.getPrice().getPriceType(), post.getTopic());
+                catalog.getPrice().getPriceType(), post.getTopic(), ImageResponse.of(post.getMainImage()));
     }
 }

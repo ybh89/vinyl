@@ -27,4 +27,8 @@ public class Images {
     public List<Image> value() {
         return images;
     }
+
+    public Image getImage(int seq) {
+        return images.get(seq);
+    }
 }

@@ -39,7 +39,8 @@ public class MemberApiDocumentDefinition extends ApiDocumentDefinition {
                         fieldWithPath("[].releaseDate").description("발매일"),
                         fieldWithPath("[].price").description("가격"),
                         fieldWithPath("[].priceType").description("화폐단위"),
-                        fieldWithPath("[].topic").description("토픽"))
+                        fieldWithPath("[].topic").description("토픽"),
+                        fieldWithPath("[].mainImage").description("메인 이미지"))
         );
     }
 

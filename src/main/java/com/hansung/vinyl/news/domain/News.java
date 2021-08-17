@@ -73,4 +73,8 @@ public class News extends BaseEntity {
         }
         return getCreatedBy().equals(user.getAccountId());
     }
+
+    public Image getMainImage() {
+        return post.getMainImage();
+    }
 }

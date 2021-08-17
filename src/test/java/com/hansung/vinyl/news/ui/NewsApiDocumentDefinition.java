@@ -110,6 +110,7 @@ public class NewsApiDocumentDefinition extends ApiDocumentDefinition {
                         fieldWithPath("content.[].price").description("가격"),
                         fieldWithPath("content.[].priceType").description("화폐 단위"),
                         fieldWithPath("content.[].topic").description("토픽"),
+                        fieldWithPath("content.[].mainImage").description("메인 이미지"),
                         fieldWithPath("pageable").description(""),
                         fieldWithPath("numberOfElements").description("현 페이지의 요소의 수"),
                         fieldWithPath("number").description(""),
