@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -28,6 +29,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = "vinyl.o-r.kr")
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class ControllerTest {
     public static final String APPLICATION_JSON_UTF8 = "application/json;charset=UTF-8";
@@ -43,11 +45,15 @@ public class ControllerTest {
 
     @BeforeEach
     public void setUp(RestDocumentationContextProvider restDocumentation) {
-        this.docResultHandler = document(DOCUMENT_IDENTIFIER, preprocessRequest(prettyPrint()),
+        this.docResultHandler = document(DOCUMENT_IDENTIFIER,
+                preprocessRequest(modifyUris().scheme("https").host("vinyl.o-r.kr").removePort(), prettyPrint()),
                 preprocessResponse(prettyPrint()));
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .apply(documentationConfiguration(restDocumentation))
+                .apply(documentationConfiguration(restDocumentation).uris()
+                        .withScheme("https")
+                        .withHost("vinyl.o-r.kr")
+                        .withPort(443))
                 .alwaysDo(docResultHandler)
                 .build();
     }

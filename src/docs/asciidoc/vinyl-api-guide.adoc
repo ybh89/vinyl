@@ -1,4 +1,4 @@
-= Rest Docs Sample API Document
+= Rest Docs API Document
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
@@ -6,6 +6,9 @@
 :toclevels: 3
 :sectlinks:
 
+== 공지사항
+* 모든 요청은 https 로 요청해야 합니다.
+* api 추가, 수정 등 요청은 따로 문의주세요.
 
 == 권한 생성
 === Request http message
