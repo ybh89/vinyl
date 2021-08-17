@@ -35,7 +35,7 @@ public class NewsService {
         Catalog catalog = buildCatalog(newsRequest);
         Post post = buildPost(newsRequest, images);
         News saveNews = newsRepository.save(News.create(catalog, post));
-        return NewsResponse.of(saveNews);
+        return NewsResponse.of(saveNews, imageStore);
     }
 
     private Post buildPost(NewsRequest newsRequest, Images images) {
@@ -60,7 +60,7 @@ public class NewsService {
     @Transactional(readOnly = true)
     public NewsResponse find(Long newsId) {
         News news = findNewsByIdAndDeletedFalse(newsId);
-        return NewsResponse.of(news);
+        return NewsResponse.of(news, imageStore);
     }
 
     private News findNewsByIdAndDeletedFalse(Long newsId) {
@@ -71,14 +71,14 @@ public class NewsService {
     @Transactional(readOnly = true)
     public Slice<NewsListResponse> list(Pageable pageable) {
         Slice<News> newsPage = newsRepository.findAllByPostDeletedFalse(pageable);
-        return newsPage.map(NewsListResponse::of);
+        return newsPage.map(news -> NewsListResponse.of(news, imageStore));
     }
 
     @Transactional(readOnly = true)
     public List<NewsListResponse> list(List<Long> newsIds) {
         List<News> newsList = newsRepository.findAllById(newsIds);
         return newsList.stream()
-                .map(NewsListResponse::of)
+                .map(news -> NewsListResponse.of(news, imageStore))
                 .collect(Collectors.toList());
     }
 
@@ -89,7 +89,7 @@ public class NewsService {
         News updateNews = newsRequest.toNews();
         updateNews.updateImages(updateImages);
         news.update(updateNews);
-        return NewsResponse.of(news);
+        return NewsResponse.of(news, imageStore);
     }
 
     public void delete(User user, Long newsId) {

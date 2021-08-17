@@ -1,6 +1,7 @@
 package com.hansung.vinyl.news.dto;
 
 import com.hansung.vinyl.news.domain.Image;
+import com.hansung.vinyl.news.domain.service.ImageStore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,15 +17,15 @@ import static com.hansung.vinyl.news.domain.service.LocalImageStore.THUMBNAIL_IM
 @NoArgsConstructor
 @Data
 public class ImageResponse {
-    private String storeOriginalImageName;
-    private String storeThumbnailImageName;
+    private String storeOriginalImageUrl;
+    private String storeThumbnailImageUrl;
     private String uploadName;
 
-    public static ImageResponse of(Image image) {
+    public static ImageResponse of(Image image, ImageStore imageStore) {
         if (Objects.isNull(image)) {
             return null;
         }
-        return new ImageResponse(ORIGINAL_IMAGE_PREFIX + image.getStoreName(),
-                THUMBNAIL_IMAGE_PREFIX + image.getStoreName(), image.getUploadName());
+        return new ImageResponse(imageStore.getImageUrl(ORIGINAL_IMAGE_PREFIX + image.getStoreName()),
+                imageStore.getImageUrl(THUMBNAIL_IMAGE_PREFIX + image.getStoreName()), image.getUploadName());
     }
 }

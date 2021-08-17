@@ -19,8 +19,7 @@ public class PermitAllResourceGroup {
         Resource joinResource = new Resource("/accounts", POST);
         Resource catalogResource = new Resource("/news/**", GET);
         Resource imageResource = new Resource("/images/*", GET);
-        Resource docsResource = new Resource("/docs/**", GET);
-        permitAllResources.addAll(Arrays.asList(loginResource, joinResource, catalogResource, imageResource, docsResource));
+        permitAllResources.addAll(Arrays.asList(loginResource, joinResource, catalogResource, imageResource));
     }
 
     public static List<Resource> values() {

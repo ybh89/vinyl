@@ -48,8 +48,8 @@ public class NewsApiDocumentDefinition extends ApiDocumentDefinition {
                         fieldWithPath("createdBy").description("생성자"),
                         fieldWithPath("updatedBy").description("수정자"),
                         fieldWithPath("topic").description("토픽"),
-                        fieldWithPath("images.[].storeOriginalImageName").description("저장된 원본 이미지명"),
-                        fieldWithPath("images.[].storeThumbnailImageName").description("저장된 섬네일 이미지명"),
+                        fieldWithPath("images.[].storeOriginalImageUrl").description("저장된 원본 이미지 Url"),
+                        fieldWithPath("images.[].storeThumbnailImageUrl").description("저장된 섬네일 이미지 Url"),
                         fieldWithPath("images.[].uploadName").description("업로드한 이미지명"))
         );
     }
@@ -89,8 +89,8 @@ public class NewsApiDocumentDefinition extends ApiDocumentDefinition {
                         fieldWithPath("createdBy").description("생성자"),
                         fieldWithPath("updatedBy").description("수정자"),
                         fieldWithPath("topic").description("토픽"),
-                        fieldWithPath("images.[].storeOriginalImageName").description("저장된 원본 이미지명"),
-                        fieldWithPath("images.[].storeThumbnailImageName").description("저장된 섬네일 이미지명"),
+                        fieldWithPath("images.[].storeOriginalImageUrl").description("저장된 원본 이미지 Url"),
+                        fieldWithPath("images.[].storeThumbnailImageUrl").description("저장된 섬네일 이미지 Url"),
                         fieldWithPath("images.[].uploadName").description("업로드한 이미지명"))
         );
     }
@@ -142,8 +142,8 @@ public class NewsApiDocumentDefinition extends ApiDocumentDefinition {
                         fieldWithPath("createdBy").description("생성자"),
                         fieldWithPath("updatedBy").description("수정자"),
                         fieldWithPath("topic").description("토픽"),
-                        fieldWithPath("images.[].storeOriginalImageName").description("저장된 원본 이미지명"),
-                        fieldWithPath("images.[].storeThumbnailImageName").description("저장된 섬네일 이미지명"),
+                        fieldWithPath("images.[].storeOriginalImageUrl").description("저장된 원본 이미지 Url"),
+                        fieldWithPath("images.[].storeThumbnailImageUrl").description("저장된 섬네일 이미지 Url"),
                         fieldWithPath("images.[].uploadName").description("업로드한 이미지명"))
         );
     }

@@ -5,6 +5,7 @@ import com.hansung.vinyl.news.domain.Catalog;
 import com.hansung.vinyl.news.domain.News;
 import com.hansung.vinyl.news.domain.Post;
 import com.hansung.vinyl.news.domain.PriceType;
+import com.hansung.vinyl.news.domain.service.ImageStore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,9 +39,9 @@ public class NewsResponse {
     private String topic;
     private List<ImageResponse> images = new ArrayList<>();
 
-    public static NewsResponse of(News news) {
+    public static NewsResponse of(News news, ImageStore imageStore) {
         List<ImageResponse> images = news.getImages().value().stream()
-                .map(ImageResponse::of)
+                .map(image -> ImageResponse.of(image, imageStore))
                 .collect(Collectors.toList());
 
         Post post = news.getPost();

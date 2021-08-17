@@ -4,6 +4,7 @@ import com.hansung.vinyl.news.domain.Catalog;
 import com.hansung.vinyl.news.domain.News;
 import com.hansung.vinyl.news.domain.Post;
 import com.hansung.vinyl.news.domain.PriceType;
+import com.hansung.vinyl.news.domain.service.ImageStore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,10 +27,10 @@ public class NewsListResponse {
     private String topic;
     private ImageResponse mainImage;
 
-    public static NewsListResponse of(News news) {
+    public static NewsListResponse of(News news, ImageStore imageStore) {
         Post post = news.getPost();
         Catalog catalog = news.getCatalog();
         return new NewsListResponse(news.getId(), post.getTitle(), catalog.getReleaseDate(), catalog.getPrice().value(),
-                catalog.getPrice().getPriceType(), post.getTopic(), ImageResponse.of(post.getMainImage()));
+                catalog.getPrice().getPriceType(), post.getTopic(), ImageResponse.of(post.getMainImage(), imageStore));
     }
 }

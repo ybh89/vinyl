@@ -15,11 +15,11 @@ endif::[]
 include::{snippets}/authority_create/http-request.adoc[]
 === Request Headers
 include::{snippets}/authority_create/request-headers.adoc[]
-=== Request parameter
+=== Request fields
 include::{snippets}/authority_create/request-fields.adoc[]
 === Response http message
 include::{snippets}/authority_create/http-response.adoc[]
-=== Response parameter
+=== Response fields
 include::{snippets}/authority_create/response-fields.adoc[]
 
 == 권한 목록 조회
@@ -29,7 +29,7 @@ include::{snippets}/authority_list/http-request.adoc[]
 include::{snippets}/authority_list/request-headers.adoc[]
 === Response http message
 include::{snippets}/authority_list/http-response.adoc[]
-=== Response parameter
+=== Response fields
 include::{snippets}/authority_list/response-fields.adoc[]
 
 == 권한 수정
@@ -37,13 +37,13 @@ include::{snippets}/authority_list/response-fields.adoc[]
 include::{snippets}/authority_update/http-request.adoc[]
 === Request Headers
 include::{snippets}/authority_update/request-headers.adoc[]
-=== Request parameter
+=== Request fields
 include::{snippets}/authority_update/request-fields.adoc[]
 === Request Path parameter
 include::{snippets}/authority_update/path-parameters.adoc[]
 === Response http message
 include::{snippets}/authority_update/http-response.adoc[]
-=== Response parameter
+=== Response fields
 include::{snippets}/authority_update/response-fields.adoc[]
 
 == 권한 삭제
@@ -59,11 +59,11 @@ include::{snippets}/authority_delete/http-response.adoc[]
 == 회원 가입
 === Request http message
 include::{snippets}/account_create/http-request.adoc[]
-=== Request parameter
+=== Request fields
 include::{snippets}/account_create/request-fields.adoc[]
 === Response http message
 include::{snippets}/account_create/http-response.adoc[]
-=== Response parameter
+=== Response fields
 include::{snippets}/account_create/response-fields.adoc[]
 
 == 회원 탈퇴
@@ -79,9 +79,9 @@ include::{snippets}/account_delete/http-response.adoc[]
 include::{snippets}/account_authority_update/http-request.adoc[]
 === Request Headers
 include::{snippets}/account_authority_update/request-headers.adoc[]
-=== Request Path parameter
+=== Request Path parameters
 include::{snippets}/account_authority_update/path-parameters.adoc[]
-=== Request parameter
+=== Request fields
 include::{snippets}/account_authority_update/request-fields.adoc[]
 === Response http message
 include::{snippets}/account_authority_update/http-response.adoc[]
@@ -127,3 +127,87 @@ include::{snippets}/member_list/request-headers.adoc[]
 include::{snippets}/member_list/http-response.adoc[]
 === Response parameter
 include::{snippets}/member_list/response-fields.adoc[]
+
+== 소식 생성
+=== Request http message
+include::{snippets}/news_create/http-request.adoc[]
+=== Request Headers
+include::{snippets}/news_create/request-headers.adoc[]
+=== Request parameters
+include::{snippets}/news_create/request-parameters.adoc[]
+=== Request parts
+include::{snippets}/news_create/request-parts.adoc[]
+=== Response http message
+include::{snippets}/news_create/http-response.adoc[]
+=== Response fields
+include::{snippets}/news_create/response-fields.adoc[]
+
+== 소식 수정
+=== Request http message
+include::{snippets}/news_update/http-request.adoc[]
+=== Request Headers
+include::{snippets}/news_update/request-headers.adoc[]
+=== Request parameters
+include::{snippets}/news_update/request-parameters.adoc[]
+=== Request parts
+include::{snippets}/news_update/request-parts.adoc[]
+=== Response http message
+include::{snippets}/news_update/http-response.adoc[]
+=== Response fields
+include::{snippets}/news_update/response-fields.adoc[]
+
+== 소식 목록 조회
+=== Request http message
+include::{snippets}/news_list/http-request.adoc[]
+=== Request parameters
+include::{snippets}/news_list/request-parameters.adoc[]
+=== Response http message
+include::{snippets}/news_list/http-response.adoc[]
+=== Response parameter
+include::{snippets}/news_list/response-fields.adoc[]
+
+== 소식 상세 조회
+=== Request http message
+include::{snippets}/news_detail/http-request.adoc[]
+=== Request Path parameters
+include::{snippets}/news_detail/path-parameters.adoc[]
+=== Response http message
+include::{snippets}/news_detail/http-response.adoc[]
+=== Response parameter
+include::{snippets}/news_detail/response-fields.adoc[]
+
+== 소식 삭제
+=== Request http message
+include::{snippets}/news_delete/http-request.adoc[]
+=== Request Path parameters
+include::{snippets}/news_delete/path-parameters.adoc[]
+=== Response http message
+include::{snippets}/news_delete/http-response.adoc[]
+
+== 소식 구독
+=== Request http message
+include::{snippets}/subscribe/http-request.adoc[]
+=== Request Headers
+include::{snippets}/subscribe/request-headers.adoc[]
+=== Request Path parameters
+include::{snippets}/subscribe/path-parameters.adoc[]
+=== Response http message
+include::{snippets}/subscribe/http-response.adoc[]
+
+== 소식 구독 취소
+=== Request http message
+include::{snippets}/unsubscribe/http-request.adoc[]
+=== Request Headers
+include::{snippets}/unsubscribe/request-headers.adoc[]
+=== Request Path parameters
+include::{snippets}/unsubscribe/path-parameters.adoc[]
+=== Response http message
+include::{snippets}/unsubscribe/http-response.adoc[]
+
+== 소식 이미지 조회
+=== Request http message
+include::{snippets}/image/http-request.adoc[]
+=== Request Path parameters
+include::{snippets}/image/path-parameters.adoc[]
+=== Response http message
+include::{snippets}/image/http-response.adoc[]
