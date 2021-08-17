@@ -37,4 +37,7 @@ out/
 .vscode/
 
 application-aws.yml
-/src/main/resources/
+application.yml
+application-local.yml
+application-prod.yml
+vinyl-fcm-firebase-adminsdk.json
