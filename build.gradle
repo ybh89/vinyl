@@ -32,8 +32,8 @@ dependencies {
 	implementation 'net.coobird:thumbnailator:0.4.1'
 	implementation 'com.google.firebase:firebase-admin:8.0.0'
 
-	implementation 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.5.RELEASE'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.5.RELEASE'
+	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 
 	compileOnly 'org.projectlombok:lombok'
 
@@ -48,32 +48,18 @@ dependencies {
 }
 
 ext {
-	snippetsDir = file('build/generated-snippets')
+	snippetsDir = "${buildDir}/generated-snippets"
 }
 
 asciidoctor {
+	configurations "asciidoctorExtensions"
 	inputs.dir snippetsDir
 	dependsOn test
 }
 
-asciidoctor.doFirst {
-	println "=====start asciidoctor"
-	//asciidoctor 실행전 기존에 생성된 API 문서 삭제
-	delete file('src/main/resources/static/docs')
-}
-asciidoctor.doLast {
-	println "=====finish asciidoctor"
-}
-task copyDocument(type: Copy) {
-	dependsOn asciidoctor
-	from file("build/asciidoc/html5")
-	// resources/static/docs 로 복사하여 서버가 돌아가고 있을때 /docs/index.html 로 접속하면 볼수 있음
-	into file("src/main/resources/static/docs")
-}
-
 test {
-	useJUnitPlatform()
 	outputs.dir snippetsDir
+	useJUnitPlatform()
 }
 
 bootJar {

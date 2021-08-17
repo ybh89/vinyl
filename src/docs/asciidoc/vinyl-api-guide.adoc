@@ -1,13 +1,10 @@
-ifndef::snippets[]
-:snippets: ../../../build/generated-snippets
-endif::[]
+= Rest Docs Sample API Document
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
 :toc: left
-:toclevels: 4
+:toclevels: 3
 :sectlinks:
-:site-url: /build/asciidoc/html5/
 
 
 == 권한 생성
