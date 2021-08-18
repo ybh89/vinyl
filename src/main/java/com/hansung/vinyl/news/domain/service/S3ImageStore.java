@@ -86,14 +86,21 @@ public class S3ImageStore implements ImageStore {
             BufferedImage thumbnailBufferedImage = makeThumbnailBufferedImage(multipartFile);
             ByteArrayOutputStream thumbnailByteArrayOutputStream = new ByteArrayOutputStream();
             ImageIO.write(thumbnailBufferedImage, extractExtension(storeImageName), thumbnailByteArrayOutputStream);
-            ObjectMetadata objectMetadata = setObjectMetadata(multipartFile);
+            ObjectMetadata objectMetadata = setThumbnailObjectMetadata(multipartFile, thumbnailByteArrayOutputStream);
             InputStream thumbnailImageInputStream = new ByteArrayInputStream(thumbnailByteArrayOutputStream.toByteArray());
-
             amazonS3.putObject(new PutObjectRequest(bucket, thumbnailImageName, thumbnailImageInputStream,
                     objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException ioException) {
             throw new CannotStoreImageFileException(ioException, thumbnailImageName, "");
         }
+    }
+
+    private ObjectMetadata setThumbnailObjectMetadata(MultipartFile multipartFile,
+                                                      ByteArrayOutputStream thumbnailByteArrayOutputStream) {
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(multipartFile.getContentType());
+        objectMetadata.setContentLength(thumbnailByteArrayOutputStream.size());
+        return objectMetadata;
     }
 
     private BufferedImage makeThumbnailBufferedImage(MultipartFile multipartFile) throws IOException {
@@ -109,7 +116,7 @@ public class S3ImageStore implements ImageStore {
     private void storeOriginalImage(MultipartFile multipartFile, String storeImageName) {
         String originalImageName = ORIGINAL_IMAGE_PREFIX + storeImageName;
         try {
-            ObjectMetadata objectMetadata = setObjectMetadata(multipartFile);
+            ObjectMetadata objectMetadata = setOriginalObjectMetadata(multipartFile);
             amazonS3.putObject(new PutObjectRequest(bucket, originalImageName, multipartFile.getInputStream(),
                     objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException ioException) {
@@ -117,7 +124,7 @@ public class S3ImageStore implements ImageStore {
         }
     }
 
-    private ObjectMetadata setObjectMetadata(MultipartFile multipartFile) throws IOException {
+    private ObjectMetadata setOriginalObjectMetadata(MultipartFile multipartFile) throws IOException {
         byte[] imageBytes = IOUtils.toByteArray(multipartFile.getInputStream());
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(multipartFile.getContentType());
