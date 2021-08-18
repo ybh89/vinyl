@@ -36,7 +36,7 @@ public class S3ImageStore implements ImageStore {
     public static final double THUMBNAIL_RATIO = 3;
 
     private final AmazonS3 amazonS3;
-    @Value("${cloud.aws.s3.bucket")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
     @Override
