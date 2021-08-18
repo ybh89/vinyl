@@ -203,11 +203,3 @@ include::{snippets}/unsubscribe/request-headers.adoc[]
 include::{snippets}/unsubscribe/path-parameters.adoc[]
 === Response http message
 include::{snippets}/unsubscribe/http-response.adoc[]
-
-== 소식 이미지 조회
-=== Request http message
-include::{snippets}/image/http-request.adoc[]
-=== Request Path parameters
-include::{snippets}/image/path-parameters.adoc[]
-=== Response http message
-include::{snippets}/image/http-response.adoc[]
