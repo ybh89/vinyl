@@ -14,7 +14,6 @@ import java.util.Objects;
 import static lombok.AccessLevel.*;
 
 @EqualsAndHashCode(of = "id")
-@ToString
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @SecondaryTable(
