@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<included>
+    <springProfile name="test">
+        <property resource="logback-local.properties"/>
+    </springProfile>
+    <springProfile name="local">
+        <property resource="logback-local.properties"/>
+    </springProfile>
+    <springProfile name="prod">
+        <property resource="logback-prod.properties"/>
+    </springProfile>
+
+    <property name="path" value="${log.err.path}"/>
+    <property name="name" value="${log.err.filename}"/>
+
+    <appender name="err" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${path}${name}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${path}${name}-%d{yyyyMMdd}-%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>15MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <charset>utf8</charset>
+            <Pattern>
+                [%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5level][%thread][%C][%M][%L] - %m%n
+            </Pattern>
+        </encoder>
+    </appender>
+</included>

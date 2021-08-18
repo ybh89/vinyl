@@ -1,0 +1,32 @@
+<configuration>
+
+    <include resource="org/springframework/boot/logging/logback/base.xml" />
+    <include resource="app-appender.xml" />
+    <include resource="err-appender.xml" />
+    <include resource="console-appender.xml" />
+
+    <springProfile name="prod">
+        <logger name="app" level="INFO" >
+            <appender-ref ref="app" />
+        </logger>
+        <logger name="err" level="ERROR" >
+            <appender-ref ref="err" />
+        </logger>
+        <root level="INFO">
+            <appender-ref ref="console" />
+        </root>
+    </springProfile>
+
+    <springProfile name="!prod">
+        <logger name="app" level="DEBUG" >
+            <appender-ref ref="app" />
+        </logger>
+        <logger name="err" level="ERROR" >
+            <appender-ref ref="err" />
+        </logger>
+        <root level="DEBUG">
+            <appender-ref ref="console" />
+        </root>
+    </springProfile>
+
+</configuration>
