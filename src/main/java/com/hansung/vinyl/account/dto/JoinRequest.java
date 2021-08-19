@@ -31,4 +31,6 @@ public class JoinRequest {
     private Gender gender;
     @NotBlank
     private String fcmToken;
+
+
 }

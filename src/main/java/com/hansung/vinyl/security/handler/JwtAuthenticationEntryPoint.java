@@ -7,6 +7,8 @@ import com.hansung.vinyl.common.exception.jwt.IllegalRefreshTokenException;
 import com.hansung.vinyl.common.exception.jwt.NoRefreshTokenException;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
@@ -22,6 +24,8 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Slf4j
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+    private static final Logger errLogger = LoggerFactory.getLogger("err");
+
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
@@ -37,15 +41,13 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             exception = authException;
         }
 
-        log.error("인증 에러 발생", exception);
-
         Error error = Error.builder()
                 .httpStatus(UNAUTHORIZED)
                 .message(message)
                 .exceptionType(exception.getClass().getTypeName())
                 .build();
-
         setResponse(response, error);
+        errLogger.error(error.toString());
     }
 
     private void setResponse(HttpServletResponse response, Error error) throws IOException {

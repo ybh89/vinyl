@@ -3,7 +3,7 @@
 <included>
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5level][%thread][%C][%M][%L] - %m%n</pattern>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5level][%thread][%X{trace.id}] - %m%n</pattern>
         </encoder>
     </appender>
 </included>

@@ -35,4 +35,16 @@ public class Error implements Serializable {
         this.exception = exception;
         this.dateTime = dateTime;
     }
+
+    @Override
+    public String toString() {
+        return "Error{" +
+                "field='" + field + '\'' +
+                ", rejectedValue=" + rejectedValue +
+                ", objectName='" + objectName + '\'' +
+                ", message='" + message + '\'' +
+                ", httpStatus=" + httpStatus +
+                ", exceptionType='" + exceptionType + '\'' +
+                '}';
+    }
 }

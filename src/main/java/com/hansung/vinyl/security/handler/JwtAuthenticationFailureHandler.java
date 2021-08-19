@@ -3,6 +3,8 @@ package com.hansung.vinyl.security.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hansung.vinyl.common.exception.handler.Error;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,6 +22,8 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Slf4j
 public class JwtAuthenticationFailureHandler implements AuthenticationFailureHandler {
+    private static final Logger errLogger = LoggerFactory.getLogger("err");
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
@@ -27,13 +31,14 @@ public class JwtAuthenticationFailureHandler implements AuthenticationFailureHan
         Error error = Error.builder()
                 .httpStatus(UNAUTHORIZED)
                 .message(message)
+                .exceptionType(exception.getClass().getTypeName())
                 .build();
-        log.error(message, exception);
 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setCharacterEncoding("UTF-8");
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getWriter(), error);
+        errLogger.error(error.toString());
     }
 
     private String getAuthenticationErrorMessage(AuthenticationException exception) {

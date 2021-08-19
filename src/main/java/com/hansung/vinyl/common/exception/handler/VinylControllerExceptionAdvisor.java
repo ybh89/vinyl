@@ -5,6 +5,8 @@ import com.hansung.vinyl.common.exception.data.DataException;
 import com.hansung.vinyl.common.exception.file.FileException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -52,7 +54,6 @@ public class VinylControllerExceptionAdvisor {
                         .dateTime(LocalDateTime.now())
                         .build())
                 .collect(Collectors.toList());
-
         return ResponseEntity.status(BAD_REQUEST).body(errors);
     }
 
@@ -93,7 +94,6 @@ public class VinylControllerExceptionAdvisor {
                 .exceptionType(exception.getClass().getTypeName())
                 .dateTime(LocalDateTime.now())
                 .build();
-
         return ResponseEntity.status(BAD_REQUEST).body(error);
     }
 }
