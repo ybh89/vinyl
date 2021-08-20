@@ -11,31 +11,30 @@ import java.net.URI;
 import java.util.List;
 
 @RequiredArgsConstructor
-@RequestMapping("/authorities")
 @RestController
 public class AuthorityController {
     private final AuthorityService authorityService;
 
-    @PostMapping
+    @PostMapping("/v1/authorities")
     public ResponseEntity<AuthorityResponse> create(@RequestBody AuthorityRequest authorityRequest) {
         AuthorityResponse authorityResponse = authorityService.create(authorityRequest);
-        return ResponseEntity.created(URI.create("/authorities/" + authorityResponse.getId())).body(authorityResponse);
+        return ResponseEntity.created(URI.create("v1/authorities/" + authorityResponse.getId())).body(authorityResponse);
     }
 
-    @GetMapping
+    @GetMapping("/v1/authorities")
     public ResponseEntity<List<AuthorityResponse>> list() {
         List<AuthorityResponse> authorityResponses = authorityService.list();
         return ResponseEntity.ok(authorityResponses);
     }
 
-    @PutMapping("/{authorityId}")
+    @PutMapping("/v1/authorities/{authorityId}")
     public ResponseEntity<AuthorityResponse> update(@PathVariable Long authorityId,
                                                     @RequestBody AuthorityRequest authorityRequest) {
         AuthorityResponse authorityResponse = authorityService.update(authorityId, authorityRequest);
         return ResponseEntity.ok(authorityResponse);
     }
 
-    @DeleteMapping("/{authorityId}")
+    @DeleteMapping("/v1/authorities/{authorityId}")
     public ResponseEntity delete(@PathVariable Long authorityId) {
         authorityService.delete(authorityId);
         return ResponseEntity.noContent().build();

@@ -52,7 +52,7 @@ public class MemberControllerTest extends ControllerTest {
         when(memberService.me(any())).thenReturn(memberResponse);
 
         // when
-        ResultActions resultActions = get("/members/me", null, null,true);
+        ResultActions resultActions = get("/v1/members/me", null, null,true);
 
         // then
         resultActions.andExpect(status().isOk())
@@ -72,7 +72,7 @@ public class MemberControllerTest extends ControllerTest {
         when(memberService.subscribes(any())).thenReturn(Arrays.asList(newsListResponse));
 
         //when
-        ResultActions resultActions = get("/members/subscribes", null,null,true);
+        ResultActions resultActions = get("/v1/members/subscribes", null,null,true);
 
         //then
         resultActions.andExpect(status().isOk())
@@ -91,7 +91,7 @@ public class MemberControllerTest extends ControllerTest {
         when(memberService.member(anyLong())).thenReturn(memberResponse);
         
         //when
-        ResultActions resultActions = get("/members/{memberId}", 1L, null,true);
+        ResultActions resultActions = get("/v1/members/{memberId}", 1L, null,true);
 
         //then
         resultActions.andExpect(status().isOk())
@@ -114,7 +114,7 @@ public class MemberControllerTest extends ControllerTest {
         params.set("sort", "id,desc");
 
         //when
-        ResultActions resultActions = get("/members", null, params,true);
+        ResultActions resultActions = get("/v1/members", null, params,true);
 
         //then
         resultActions.andExpect(status().isOk())

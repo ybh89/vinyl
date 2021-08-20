@@ -64,7 +64,7 @@ public class NewsAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 소식_조회됨() {
-        ExtractableResponse<Response> response = get("/news");
+        ExtractableResponse<Response> response = get("/v1/news");
         소식_목록_조회됨(response);
     }
 
@@ -104,7 +104,7 @@ public class NewsAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 소식_목록_조회_요청() {
-        return get("/news", testToken);
+        return get("/v1/news", testToken);
     }
 
     private void 소식_조회됨(ExtractableResponse<Response> newsResponse) {
@@ -120,7 +120,7 @@ public class NewsAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 소식_생성_요청(Map<String, String> params, File file) {
-        return postWithMultipart("/news", file, "images", params, testToken);
+        return postWithMultipart("/v1/news", file, "images", params, testToken);
     }
 
     private Map<String, String> 소식_생성_파라미터() {

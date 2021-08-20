@@ -83,7 +83,7 @@ public class AccountAcceptanceTest extends AcceptanceTest {
                 .fcmToken(fcmToken)
                 .build();
 
-        ExtractableResponse<Response> postResponse = post("/accounts", joinRequest);
+        ExtractableResponse<Response> postResponse = post("/v1/accounts", joinRequest);
         return postResponse;
     }
 
@@ -92,6 +92,6 @@ public class AccountAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 회원탈퇴_요청(String 토큰) {
-        return delete("/accounts", 토큰);
+        return delete("/v1/accounts", 토큰);
     }
 }

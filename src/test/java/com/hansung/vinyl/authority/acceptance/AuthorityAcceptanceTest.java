@@ -23,7 +23,7 @@ public class AuthorityAcceptanceTest extends AcceptanceTest {
     @Test
     public void authorityManager() throws Exception {
         // 권한 생성
-        ResourceRequest resourceRequest = new ResourceRequest("/test/**", HttpMethod.GET);
+        ResourceRequest resourceRequest = new ResourceRequest("/*/test/**", HttpMethod.GET);
         ExtractableResponse<Response> postAuthorityResponse = 권한_생성_요청("ROLE_CREATE", null,
                 Arrays.asList(resourceRequest), testToken);
         권한_생성됨(postAuthorityResponse);
@@ -33,13 +33,13 @@ public class AuthorityAcceptanceTest extends AcceptanceTest {
         권한_목록_조회됨(getListResponse);
 
         // 권한 수정
-        ResourceRequest updateResourceRequest = new ResourceRequest("/test/*", HttpMethod.POST);
+        ResourceRequest updateResourceRequest = new ResourceRequest("/*/test/*", HttpMethod.POST);
         ExtractableResponse<Response> putResponse = 권한_수정_요청(postAuthorityResponse, testToken, "ROLE_UPDATE",
                 "UPDATE-TEST", Arrays.asList(updateResourceRequest));
         권한_수정됨(putResponse);
 
         // 계정 권한 변경
-        ResourceRequest newResourceRequest = new ResourceRequest("/new/**", HttpMethod.POST);
+        ResourceRequest newResourceRequest = new ResourceRequest("/*/new/**", HttpMethod.POST);
         ExtractableResponse<Response> newAuthorityResponse = 권한_생성_요청("ROLE_NEW", "NEW",
                 Arrays.asList(newResourceRequest), testToken);
         권한_생성됨(newAuthorityResponse);
@@ -112,7 +112,7 @@ public class AuthorityAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 권한_목록_조회_요청(String token) {
-        return get("/authorities", token);
+        return get("/v1/authorities", token);
     }
 
     private static void 권한_생성됨(ExtractableResponse<Response> postResponse) {
@@ -122,7 +122,7 @@ public class AuthorityAcceptanceTest extends AcceptanceTest {
     private static ExtractableResponse<Response> 권한_생성_요청(String name, String desc,
                                                           List<ResourceRequest> resourceRequests, String token) {
         AuthorityRequest authorityRequest = new AuthorityRequest(name, desc, resourceRequests);
-        ExtractableResponse<Response> postResponse = post("/authorities", authorityRequest, token);
+        ExtractableResponse<Response> postResponse = post("/v1/authorities", authorityRequest, token);
         return postResponse;
     }
 }

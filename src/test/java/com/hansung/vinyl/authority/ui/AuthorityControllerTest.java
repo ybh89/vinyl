@@ -51,7 +51,7 @@ public class AuthorityControllerTest extends ControllerTest {
         when(authorityService.create(any())).thenReturn(authorityResponse);
 
         // when
-        ResultActions resultActions = post("/authorities", authorityRequest, true);
+        ResultActions resultActions = post("/v1/authorities", authorityRequest, true);
 
         // then
         resultActions.andExpect(status().isCreated())
@@ -73,7 +73,7 @@ public class AuthorityControllerTest extends ControllerTest {
         when(authorityService.list()).thenReturn(asList(authorityResponse1, authorityResponse2));
 
         // when
-        ResultActions resultActions = get("/authorities", null, null, true);
+        ResultActions resultActions = get("/v1/authorities", null, null, true);
 
         // then
         resultActions.andExpect(status().isOk())
@@ -87,7 +87,7 @@ public class AuthorityControllerTest extends ControllerTest {
     @Test
     public void authority_delete() throws Exception {
         // when
-        ResultActions resultActions = delete("/authorities/{authorityId}", 1);
+        ResultActions resultActions = delete("/v1/authorities/{authorityId}", 1);
 
         // then
         resultActions.andExpect(status().isNoContent());
@@ -101,13 +101,13 @@ public class AuthorityControllerTest extends ControllerTest {
     public void authority_update() throws Exception {
         // given
         AuthorityRequest authorityRequest = buildAuthorityRequest("ROLE_UPDATE", "변경할 테스트 권한입니다.",
-                asList(new ResourceRequest("/accounts/*", GET)));
+                asList(new ResourceRequest("/*/accounts/*", GET)));
         AuthorityResponse authorityResponse = buildAuthorityResponse(1L,"ROLE_UPDATE", "변경할 테스트 권한입니다.",
-                asList(new ResourceResponse("/accounts/*", GET)));
+                asList(new ResourceResponse("/*/accounts/*", GET)));
         when(authorityService.update(anyLong(), any())).thenReturn(authorityResponse);
 
         // when
-        ResultActions resultActions = put("/authorities/{authorityId}", 1, authorityRequest);
+        ResultActions resultActions = put("/v1/authorities/{authorityId}", 1, authorityRequest);
 
         // then
         resultActions.andExpect(status().isOk())

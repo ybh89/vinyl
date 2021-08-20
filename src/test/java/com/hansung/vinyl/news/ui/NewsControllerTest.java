@@ -58,7 +58,7 @@ public class NewsControllerTest extends ControllerTest {
         when(newsService.create(any())).thenReturn(newsResponse);
 
         // when
-        ResultActions resultActions = postWithMultipart("/news", null, params, file);
+        ResultActions resultActions = postWithMultipart("/v1/news", null, params, file);
 
         // then
         resultActions.andExpect(status().isCreated())
@@ -79,7 +79,7 @@ public class NewsControllerTest extends ControllerTest {
         when(newsService.update(any(), any(), any())).thenReturn(newsResponse);
 
         // when
-        ResultActions resultActions = putWithMultipart("/news/{newsId}", 1L, params, file);
+        ResultActions resultActions = putWithMultipart("/v1/news/{newsId}", 1L, params, file);
 
         // then
         resultActions.andExpect(status().isOk());
@@ -97,7 +97,7 @@ public class NewsControllerTest extends ControllerTest {
         when(newsService.list(any(Pageable.class))).thenReturn(new SliceImpl<>(Arrays.asList(newsListResponse)));
 
         // when
-        ResultActions resultActions = get("/news", null, params, false);
+        ResultActions resultActions = get("/v1/news", null, params, false);
 
         // then
         resultActions.andExpect(status().isOk())
@@ -115,7 +115,7 @@ public class NewsControllerTest extends ControllerTest {
         when(newsService.find(any())).thenReturn(newsResponse);
 
         //when
-        ResultActions resultActions = get("/news/{newsId}", 1L, null, false);
+        ResultActions resultActions = get("/v1/news/{newsId}", 1L, null, false);
 
         //then
         resultActions.andExpect(status().isOk())
@@ -130,7 +130,7 @@ public class NewsControllerTest extends ControllerTest {
     @Test
     public void news_delete() throws Exception {
         //when
-        ResultActions resultActions = delete("/news/{newsId}", 1L);
+        ResultActions resultActions = delete("/v1/news/{newsId}", 1L);
 
         //then
         resultActions.andExpect(status().isNoContent());

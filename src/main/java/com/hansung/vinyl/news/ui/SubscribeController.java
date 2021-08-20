@@ -8,18 +8,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@RequestMapping("/subscribes/{newsId}")
 @RestController
 public class SubscribeController {
     private final NewsService newsService;
 
-    @PutMapping
+    @PutMapping("/v1/subscribes/{newsId}")
     public ResponseEntity subscribe(@AuthenticationPrincipal User user, @PathVariable Long newsId) {
         newsService.subscribe(user, newsId);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping
+    @DeleteMapping("/v1/subscribes/{newsId}")
     public ResponseEntity unsubscribe(@AuthenticationPrincipal User user, @PathVariable Long newsId) {
         newsService.unsubscribe(user, newsId);
         return ResponseEntity.noContent().build();

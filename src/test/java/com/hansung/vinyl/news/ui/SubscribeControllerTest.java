@@ -31,7 +31,7 @@ public class SubscribeControllerTest extends ControllerTest {
     @Test
     public void subscribe() throws Exception {
         // when
-        ResultActions resultActions = put("/subscribes/{newsId}", 1L, null);
+        ResultActions resultActions = put("/v1/subscribes/{newsId}", 1L, null);
 
         // then
         resultActions.andExpect(status().isNoContent());
@@ -45,7 +45,7 @@ public class SubscribeControllerTest extends ControllerTest {
     @Test
     public void unsubscribe() throws Exception {
         // when
-        ResultActions resultActions = delete("/subscribes/{newsId}", 1L);
+        ResultActions resultActions = delete("/v1/subscribes/{newsId}", 1L);
 
         // then
         resultActions.andExpect(status().isNoContent());

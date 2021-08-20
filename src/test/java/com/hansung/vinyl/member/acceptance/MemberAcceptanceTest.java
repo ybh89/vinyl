@@ -30,15 +30,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 회원_목록_조회_요청() {
-        return get("/members", testToken);
+        return get("/v1/members", testToken);
     }
 
     private ExtractableResponse<Response> 회원_조회_요청() {
-        return get("/members/1", testToken);
+        return get("/v1/members/1", testToken);
     }
 
     private ExtractableResponse<Response> 구독_목록_조회_요청() {
-        return get("/members/subscribes", testToken);
+        return get("/v1/members/subscribes", testToken);
     }
 
     private void 조회됨(ExtractableResponse<Response> profileResponse) {
@@ -46,6 +46,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 프로필_조회_요청() {
-        return get("/members/me", testToken);
+        return get("/v1/members/me", testToken);
     }
 }

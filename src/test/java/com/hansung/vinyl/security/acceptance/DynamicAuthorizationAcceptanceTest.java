@@ -28,7 +28,7 @@ public class DynamicAuthorizationAcceptanceTest extends AcceptanceTest {
     @Test
     public void 동적_인가_확인() throws Exception {
         // 사용자 권한 생성
-        ResourceRequest resourceRequest = new ResourceRequest("/members/**", HttpMethod.GET);
+        ResourceRequest resourceRequest = new ResourceRequest("/*/members/**", HttpMethod.GET);
         ExtractableResponse<Response> authorityResponse = 권한_등록_되어있음("ROLE_USER", "test user role",
                 Arrays.asList(resourceRequest), testToken);
 
@@ -44,8 +44,8 @@ public class DynamicAuthorizationAcceptanceTest extends AcceptanceTest {
         권한_목록_조회_실패됨(authorityListResponse);
 
         // 사용자 권한에 자원 접근 권한 부여
-        ResourceRequest updateResourceRequest1 = new ResourceRequest("/members/**", HttpMethod.GET);
-        ResourceRequest updateResourceRequest2 = new ResourceRequest("/authorities", HttpMethod.GET);
+        ResourceRequest updateResourceRequest1 = new ResourceRequest("/*/members/**", HttpMethod.GET);
+        ResourceRequest updateResourceRequest2 = new ResourceRequest("/*/authorities", HttpMethod.GET);
         ExtractableResponse<Response> updateAuthorityResponse = 권한_수정_요청(authorityResponse, testToken,
                 "ROLE_USER", "update test role user", Arrays.asList(updateResourceRequest1,
                         updateResourceRequest2));
@@ -65,7 +65,7 @@ public class DynamicAuthorizationAcceptanceTest extends AcceptanceTest {
         권한_목록_조회_실패됨(authorityListResponse3);
 
         // 매니저 권한 생성
-        ResourceRequest mgrResourceRequest = new ResourceRequest("/authorities/**", HttpMethod.GET);
+        ResourceRequest mgrResourceRequest = new ResourceRequest("/*/authorities/**", HttpMethod.GET);
         ExtractableResponse<Response> mgrAuthorityResponse = 권한_등록_되어있음("ROLE_MANAGER", "test manager role",
                 Arrays.asList(mgrResourceRequest), testToken);
 
@@ -101,7 +101,7 @@ public class DynamicAuthorizationAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 인증없이_프로필_조회_요청() {
-        return get("/members/me");
+        return get("v1/members/me");
     }
 
     private void 권한_목록_조회됨(ExtractableResponse<Response> authorityListResponse2) {

@@ -18,31 +18,30 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RequestMapping("/members")
 @RequiredArgsConstructor
 @RestController
 public class MemberController {
     private final MemberService memberService;
 
-    @GetMapping("/me")
+    @GetMapping("/v1/members/me")
     public ResponseEntity<MemberResponse> me(@AuthenticationPrincipal User user) {
         MemberResponse memberResponse = memberService.me(user);
         return ResponseEntity.ok(memberResponse);
     }
 
-    @GetMapping("/subscribes")
+    @GetMapping("/v1/members/subscribes")
     public ResponseEntity<List<NewsListResponse>> subscribes(@AuthenticationPrincipal User user) {
         List<NewsListResponse> newsListResponses = memberService.subscribes(user);
         return ResponseEntity.ok(newsListResponses);
     }
 
-    @GetMapping("/{memberId}")
+    @GetMapping("/v1/members/{memberId}")
     public ResponseEntity<MemberResponse> member(@PathVariable Long memberId) {
         MemberResponse memberResponse = memberService.member(memberId);
         return ResponseEntity.ok(memberResponse);
     }
 
-    @GetMapping
+    @GetMapping("/v1/members")
     public ResponseEntity<Page<MemberResponse>> list(@PageableDefault(size = 20, sort = "id",
             direction = Sort.Direction.DESC) Pageable pageable) {
         Page<MemberResponse> memberResponses = memberService.list(pageable);

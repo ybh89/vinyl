@@ -49,7 +49,7 @@ public class AccountControllerTest extends ControllerTest {
         when(accountService.join(any())).thenReturn(joinResponse);
 
         // when
-        ResultActions resultActions = post("/accounts", joinRequest, false);
+        ResultActions resultActions = post("/v1/accounts", joinRequest, false);
 
         // then
         resultActions.andExpect(status().isCreated())
@@ -65,7 +65,7 @@ public class AccountControllerTest extends ControllerTest {
     @Test
     public void account_delete() throws Exception {
         // when
-        ResultActions resultActions = delete("/accounts", null);
+        ResultActions resultActions = delete("/v1/accounts", null);
 
         // then
         resultActions.andExpect(status().isNoContent());
@@ -81,7 +81,7 @@ public class AccountControllerTest extends ControllerTest {
         AccountAuthorityRequest accountAuthorityRequest = new AccountAuthorityRequest(Arrays.asList(1L));
 
         //when
-        ResultActions resultActions = put("/accounts/{accountId}/authorities",
+        ResultActions resultActions = put("/v1/accounts/{accountId}/authorities",
                 1L, accountAuthorityRequest);
 
         //then

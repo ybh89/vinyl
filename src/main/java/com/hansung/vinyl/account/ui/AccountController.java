@@ -15,24 +15,23 @@ import java.net.URI;
 import java.util.List;
 
 @RequiredArgsConstructor
-@RequestMapping("/accounts")
 @RestController
 public class AccountController {
     private final AccountService accountService;
 
-    @PostMapping
+    @PostMapping("/v1/accounts")
     public ResponseEntity<JoinResponse> join(@Validated @RequestBody JoinRequest joinRequest) {
         JoinResponse joinResponse = accountService.join(joinRequest);
-        return ResponseEntity.created(URI.create("/accounts/" + joinResponse.getId())).body(joinResponse);
+        return ResponseEntity.created(URI.create("v1/accounts/" + joinResponse.getId())).body(joinResponse);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/v1/accounts")
     public ResponseEntity delete(@AuthenticationPrincipal User user) {
         accountService.delete(user);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{accountId}/authorities")
+    @PutMapping("/v1/accounts/{accountId}/authorities")
     public ResponseEntity updateAuthorities(@PathVariable Long accountId,
                                                           @RequestBody AccountAuthorityRequest accountAuthorityRequest) {
         accountService.updateAuthorities(accountId, accountAuthorityRequest);
