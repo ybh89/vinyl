@@ -98,7 +98,8 @@ public class AccountControllerTest extends ControllerTest {
     @Test
     public void account_email_check() throws Exception {
         // given
-        VerifyEmailResponse verifyEmailResponse = new VerifyEmailResponse("email-check@verify.com", false, "");
+        VerifyEmailResponse verifyEmailResponse = new VerifyEmailResponse("email-check@verify.com",
+                false, "해당 이메일로 회원 가입이 가능합니다.");
         when(accountService.verifyEmail(any())).thenReturn(verifyEmailResponse);
         MultiValueMap<String, String> params = new LinkedMultiValueMap();
         params.set("email", "email-check@verify.com");

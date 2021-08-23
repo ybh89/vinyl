@@ -240,3 +240,13 @@ include::{snippets}/identification_result/request-parameters.adoc[]
 include::{snippets}/identification_result/http-response.adoc[]
 === Response parameter
 include::{snippets}/identification_result/response-fields.adoc[]
+
+== 이메일 중복 확인 조회
+=== Request http message
+include::{snippets}/account_email_check/http-request.adoc[]
+=== Request parameters
+include::{snippets}/account_email_check/request-parameters.adoc[]
+=== Response http message
+include::{snippets}/account_email_check/http-response.adoc[]
+=== Response parameter
+include::{snippets}/account_email_check/response-fields.adoc[]
