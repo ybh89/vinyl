@@ -1,4 +1,4 @@
-package com.hansung.vinyl.account.domain;
+package com.hansung.vinyl.identification.domain;
 
 import com.hansung.vinyl.common.exception.validate.FormatException;
 import lombok.EqualsAndHashCode;

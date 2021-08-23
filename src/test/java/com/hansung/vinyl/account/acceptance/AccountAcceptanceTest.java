@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.hansung.vinyl.identification.acceptance.IdentificationAcceptanceTest.본인인증_되어있음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.*;
 
@@ -25,6 +26,9 @@ public class AccountAcceptanceTest extends AcceptanceTest {
     @DisplayName("계정을 관리한다.")
     @Test
     public void accountManager() throws Exception {
+        // given
+        본인인증_되어있음(EMAIL, testToken);
+
         ExtractableResponse<Response> joinResponse = 회원가입_요청(EMAIL, PASSWORD, NAME,
                 Arrays.asList(testAuthority.getId()), FCM_TOKEN);
         회원가입됨(joinResponse);
@@ -36,13 +40,15 @@ public class AccountAcceptanceTest extends AcceptanceTest {
         회원탈퇴됨(deleteResponse);
     }
 
-    public static ExtractableResponse<Response> 회원가입_되어있음(String email, String password, List<Long> authorityIds, String name) {
+    public static ExtractableResponse<Response> 회원가입_되어있음(String email, String password, List<Long> authorityIds, String name, String testToken) {
+        본인인증_되어있음(email, testToken);
         ExtractableResponse<Response> response = 회원가입_요청(email, password, name, authorityIds, FCM_TOKEN);
         회원가입됨(response);
         return response;
     }
 
-    public static ExtractableResponse<Response> 회원가입_되어있음(String email, String password, List<Long> authorityIds, String name, String fcmToken) {
+    public static ExtractableResponse<Response> 회원가입_되어있음(String email, String password, List<Long> authorityIds, String name, String fcmToken, String testToken) {
+        본인인증_되어있음(email, testToken);
         ExtractableResponse<Response> response = 회원가입_요청(email, password, name, authorityIds, fcmToken);
         회원가입됨(response);
         return response;

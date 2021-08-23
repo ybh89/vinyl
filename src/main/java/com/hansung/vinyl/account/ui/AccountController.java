@@ -6,6 +6,7 @@ import com.hansung.vinyl.account.domain.User;
 import com.hansung.vinyl.account.dto.AccountAuthorityRequest;
 import com.hansung.vinyl.account.dto.JoinRequest;
 import com.hansung.vinyl.account.dto.JoinResponse;
+import com.hansung.vinyl.account.dto.VerifyEmailResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -36,5 +37,11 @@ public class AccountController {
                                                           @RequestBody AccountAuthorityRequest accountAuthorityRequest) {
         accountService.updateAuthorities(accountId, accountAuthorityRequest);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/v1/accounts/verify-email")
+    public ResponseEntity<VerifyEmailResponse> verifyEmail(String email) {
+        VerifyEmailResponse verifyEmailResponse = accountService.verifyEmail(email);
+        return ResponseEntity.ok(verifyEmailResponse);
     }
 }

@@ -25,12 +25,16 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
         RefreshToken refreshToken = jwtProvider.createRefreshToken(user);
         jwtProvider.saveRefreshToken(accessToken, refreshToken);
 
+        Cookie refreshTokenCookie = setCookie(refreshToken);
+        response.addCookie(refreshTokenCookie);
+        response.addHeader("access-token", accessToken);
+    }
+
+    private Cookie setCookie(RefreshToken refreshToken) {
         Cookie refreshTokenCookie= new Cookie("refresh-token", refreshToken.value());
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setSecure(true);
         refreshTokenCookie.setPath("/");
-
-        response.addCookie(refreshTokenCookie);
-        response.addHeader("access-token", accessToken);
+        return refreshTokenCookie;
     }
 }

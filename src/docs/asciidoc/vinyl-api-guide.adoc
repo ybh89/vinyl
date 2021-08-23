@@ -14,6 +14,14 @@
 |===
 |날짜|api|내용
 
+|2021.08.23
+|본인 이메일 인증 요청
+|개발 완료. (회원가입시 이메일 인증이 필요)
+
+|2021.08.23
+|본인 이메일 인증 결과 조회
+|개발 완료. (회원가입시 이메일 인증이 필요)
+
 |2021.08.20
 |`*`
 |모든 api path에 prefix로 버전 정보 추가됨.(/login 제외)
@@ -212,3 +220,23 @@ include::{snippets}/unsubscribe/request-headers.adoc[]
 include::{snippets}/unsubscribe/path-parameters.adoc[]
 === Response http message
 include::{snippets}/unsubscribe/http-response.adoc[]
+
+== 본인 이메일 인증 요청
+=== Request http message
+include::{snippets}/identification_create/http-request.adoc[]
+=== Request fields
+include::{snippets}/identification_create/request-fields.adoc[]
+=== Response http message
+include::{snippets}/identification_create/http-response.adoc[]
+=== Response fields
+include::{snippets}/identification_create/response-fields.adoc[]
+
+== 본인 이메일 인증 결과 조회
+=== Request http message
+include::{snippets}/identification_result/http-request.adoc[]
+=== Request parameters
+include::{snippets}/identification_result/request-parameters.adoc[]
+=== Response http message
+include::{snippets}/identification_result/http-response.adoc[]
+=== Response parameter
+include::{snippets}/identification_result/response-fields.adoc[]

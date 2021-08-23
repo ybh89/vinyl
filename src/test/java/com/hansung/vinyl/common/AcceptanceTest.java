@@ -1,5 +1,6 @@
 package com.hansung.vinyl.common;
 
+import com.hansung.vinyl.account.domain.*;
 import com.hansung.vinyl.authority.domain.*;
 import com.hansung.vinyl.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import io.restassured.RestAssured;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.File;
 import java.util.*;
@@ -30,7 +32,11 @@ public class AcceptanceTest {
     @Autowired
     private AuthorityRepository authorityRepository;
     @Autowired
+    private AccountRepository accountRepository;
+    @Autowired
     private UrlFilterInvocationSecurityMetadataSource metadataSource;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @LocalServerPort
     int port;
     @Autowired
@@ -172,7 +178,19 @@ public class AcceptanceTest {
     }
 
     public String setTestAccount(Authority authority) {
-        회원가입_되어있음(TEST_EMAIL, TEST_PASSWORD, Arrays.asList(authority.getId()), TEST_NAME, TEST_FCM_TOKEN);
+        //회원가입_되어있음(TEST_EMAIL, TEST_PASSWORD, Arrays.asList(authority.getId()), TEST_NAME, TEST_FCM_TOKEN);
+        AccountInfo accountInfo = AccountInfo.builder()
+                .email(TEST_EMAIL)
+                .encryptedPassword(passwordEncoder.encode(TEST_PASSWORD))
+                .authorities(Arrays.asList(authority))
+                .build();
+
+        MemberInfo memberInfo = MemberInfo.builder()
+                .name(TEST_NAME)
+                .fcmToken(TEST_FCM_TOKEN)
+                .build();
+        Account account = Account.create(accountInfo, memberInfo);
+        accountRepository.save(account);
         return 로그인_되어있음(TEST_EMAIL, TEST_PASSWORD).get(0);
     }
 

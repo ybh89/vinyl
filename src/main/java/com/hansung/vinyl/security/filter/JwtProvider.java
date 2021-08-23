@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class JwtProvider {
     private static final String AUTHORITIES_KEY = "authorities";
-    public static final String JWT_EXCEPTION_KEY = "JwtException";
 
     private final AccountService accountService;
 

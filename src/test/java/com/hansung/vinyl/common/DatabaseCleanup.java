@@ -35,7 +35,7 @@ public class DatabaseCleanup implements InitializingBean {
 
         for (String tableName : tableNames) {
             entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
-            if (!tableName.equals("member") && !tableName.equals("fcm_token")) {
+            if (!tableName.equals("member") && !tableName.equals("fcm_token") && !tableName.equals("identification_token")) {
                 entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1").executeUpdate();
             }
         }

@@ -44,7 +44,7 @@ public class AuthorityAcceptanceTest extends AcceptanceTest {
                 Arrays.asList(newResourceRequest), testToken);
         권한_생성됨(newAuthorityResponse);
         ExtractableResponse<Response> response = 회원가입_되어있음("new@new.com", "new-password123",
-                Arrays.asList(postAuthorityResponse.as(AuthorityResponse.class).getId()), "new-name");
+                Arrays.asList(postAuthorityResponse.as(AuthorityResponse.class).getId()), "new-name", testToken);
 
         ExtractableResponse<Response> changeResponse = 계정_권한_변경_요청(response,
                 Arrays.asList(newAuthorityResponse.as(AuthorityResponse.class).getId()), testToken);

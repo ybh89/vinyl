@@ -4,6 +4,7 @@ import com.hansung.vinyl.account.application.AccountService;
 import com.hansung.vinyl.account.dto.AccountAuthorityRequest;
 import com.hansung.vinyl.account.dto.JoinRequest;
 import com.hansung.vinyl.account.dto.JoinResponse;
+import com.hansung.vinyl.account.dto.VerifyEmailResponse;
 import com.hansung.vinyl.common.ControllerTest;
 import com.hansung.vinyl.common.UnsecuredWebMvcTest;
 import com.hansung.vinyl.member.domain.Gender;
@@ -15,6 +16,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.Arrays;
 
@@ -89,6 +92,25 @@ public class AccountControllerTest extends ControllerTest {
 
         // api documentation
         documentApi(resultActions, accountApiDocumentDefinition.계정_권한_변경_api_문서());
+    }
+
+    @DisplayName("이메일 중복 확인")
+    @Test
+    public void account_email_check() throws Exception {
+        // given
+        VerifyEmailResponse verifyEmailResponse = new VerifyEmailResponse("email-check@verify.com", false, "");
+        when(accountService.verifyEmail(any())).thenReturn(verifyEmailResponse);
+        MultiValueMap<String, String> params = new LinkedMultiValueMap();
+        params.set("email", "email-check@verify.com");
+
+        // when
+        ResultActions resultActions = get("/v1/accounts/verify-email", null, params, false);
+
+        // then
+        resultActions.andExpect(status().isOk());
+
+        // api documentation
+        documentApi(resultActions, accountApiDocumentDefinition.이메일_중복_체크_api_문서());
     }
 
     private JoinResponse buildJoinResponse(Long id, String email) {

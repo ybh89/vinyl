@@ -4,11 +4,16 @@ import com.hansung.vinyl.account.domain.*;
 import com.hansung.vinyl.account.dto.AccountAuthorityRequest;
 import com.hansung.vinyl.account.dto.JoinRequest;
 import com.hansung.vinyl.account.dto.JoinResponse;
+import com.hansung.vinyl.account.dto.VerifyEmailResponse;
 import com.hansung.vinyl.authority.domain.Authority;
 import com.hansung.vinyl.authority.domain.AuthorityRepository;
+import com.hansung.vinyl.common.exception.AuthorizationException;
 import com.hansung.vinyl.common.exception.data.DuplicateDataException;
 import com.hansung.vinyl.common.exception.data.NoSuchDataException;
+import com.hansung.vinyl.identification.application.IdentificationService;
+import com.hansung.vinyl.identification.dto.IdentificationResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,13 +33,23 @@ public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
     private final AuthorityRepository authorityRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MessageSource messageSource;
+    private final IdentificationService identificationService;
 
     public JoinResponse join(JoinRequest joinRequest) {
-        validateCreatable(joinRequest);
+        validateEmail(joinRequest.getEmail());
         List<Authority> authorities = findAuthoritiesById(joinRequest.getAuthorityIds());
         Account account = createAccount(joinRequest, authorities);
         Account savedAccount = accountRepository.save(account);
         return JoinResponse.of(savedAccount);
+    }
+
+    private void validateEmail(String email) {
+        validateDuplicatedEmail(email);
+        IdentificationResponse result = identificationService.result(email);
+        if (!result.isApproved()) {
+            throw new AuthorizationException("이메일 본인 인증이 완료되지 않았습니다.");
+        }
     }
 
     private Account createAccount(JoinRequest joinRequest, List<Authority> authorities) {
@@ -110,9 +125,9 @@ public class AccountService implements UserDetailsService {
                 .orElseThrow(() -> new NoSuchDataException("accountId", accountId, getClass().getName()));
     }
 
-    private void validateCreatable(JoinRequest joinRequest) {
-        if (accountRepository.existsByEmail(Email.of(joinRequest.getEmail()))) {
-            throw new DuplicateDataException("email", joinRequest.getEmail(), getClass().getName());
+    private void validateDuplicatedEmail(String email) {
+        if (accountRepository.existsByEmail(Email.of(email))) {
+            throw new DuplicateDataException("email", email, getClass().getName());
         }
     }
 
@@ -132,5 +147,18 @@ public class AccountService implements UserDetailsService {
     public void updateRefreshToken(Long accountId, RefreshToken refreshToken) {
         Account account = findAccountById(accountId);
         account.updateRefreshToken(refreshToken);
+    }
+
+    public VerifyEmailResponse verifyEmail(String sEmail) {
+        Email email = Email.of(sEmail);
+        VerifyEmailResponse verifyEmailResponse = new VerifyEmailResponse(email.value(), false,
+                messageSource.getMessage("account.email.available", null, null));
+        try {
+            validateDuplicatedEmail(email.value());
+        } catch (DuplicateDataException exception) {
+            verifyEmailResponse.setDuplicated(true);
+            verifyEmailResponse.setMessage(messageSource.getMessage("account.email.duplicated", null, null));
+        }
+        return verifyEmailResponse;
     }
 }

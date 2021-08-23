@@ -34,7 +34,7 @@ public class DynamicAuthorizationAcceptanceTest extends AcceptanceTest {
 
         // 사용자 계정 생성
         ExtractableResponse<Response> userResponse = 회원가입_되어있음(USER_EMAIL, USER_PASSWORD,
-                Arrays.asList(authorityResponse.as(AuthorityResponse.class).getId()), USER_NAME, USER_FCM_TOKEN);
+                Arrays.asList(authorityResponse.as(AuthorityResponse.class).getId()), USER_NAME, USER_FCM_TOKEN, testToken);
 
         // 사용자 로그인
         String userToken = 로그인_되어있음(USER_EMAIL, USER_PASSWORD).get(0);

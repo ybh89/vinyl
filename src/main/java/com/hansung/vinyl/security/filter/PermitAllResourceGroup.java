@@ -17,9 +17,13 @@ public class PermitAllResourceGroup {
     static {
         Resource loginResource = new Resource("/login", POST);
         Resource joinResource = new Resource("/*/accounts", POST);
+        Resource emailResource = new Resource("/*/accounts/verify-email", GET);
         Resource catalogResource = new Resource("/*/news/**", GET);
         Resource docsResource = new Resource("/docs/**", GET);
-        permitAllResources.addAll(Arrays.asList(loginResource, joinResource, catalogResource, docsResource));
+        Resource identificationPostResource = new Resource("/*/identifications/**", POST);
+        Resource identificationGetResource = new Resource("/*/identifications/**", GET);
+        permitAllResources.addAll(Arrays.asList(loginResource, joinResource, catalogResource, docsResource,
+                emailResource, identificationGetResource, identificationPostResource));
     }
 
     public static List<Resource> values() {

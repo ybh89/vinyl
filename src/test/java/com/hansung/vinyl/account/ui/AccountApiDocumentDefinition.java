@@ -7,8 +7,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.snippet.Attributes.key;
 
 public final class AccountApiDocumentDefinition extends ApiDocumentDefinition {
@@ -48,6 +47,17 @@ public final class AccountApiDocumentDefinition extends ApiDocumentDefinition {
                 requestFields(
                         fieldWithPath("authorityIds").description("변경할 권한 아이디")
                 )
+        );
+    }
+
+    public RestDocumentationResultHandler 이메일_중복_체크_api_문서() {
+        return docResultHandler.document(
+                requestParameters(
+                        parameterWithName("email").description("중복 검사할 이메일")),
+                responseFields(
+                        fieldWithPath("email").description("이메일"),
+                        fieldWithPath("duplicated").description("이메일 중복 여부"),
+                        fieldWithPath("message").description("결과 메시지"))
         );
     }
 }
