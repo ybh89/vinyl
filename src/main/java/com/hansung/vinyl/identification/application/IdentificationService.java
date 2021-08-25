@@ -1,13 +1,11 @@
 package com.hansung.vinyl.identification.application;
 
 import com.hansung.vinyl.account.domain.AccountCreatedEvent;
-import com.hansung.vinyl.account.domain.AccountRepository;
 import com.hansung.vinyl.account.domain.Email;
-import com.hansung.vinyl.common.exception.data.DuplicateDataException;
 import com.hansung.vinyl.common.exception.data.NoSuchDataException;
 import com.hansung.vinyl.common.exception.validate.IllegalException;
-import com.hansung.vinyl.common.service.EmailService;
 import com.hansung.vinyl.common.service.EmailContentBuilder;
+import com.hansung.vinyl.common.service.EmailService;
 import com.hansung.vinyl.identification.domain.IdentificationToken;
 import com.hansung.vinyl.identification.domain.IdentificationTokenRepository;
 import com.hansung.vinyl.identification.dto.IdentificationRequest;
@@ -27,7 +25,6 @@ import java.util.UUID;
 @Service
 public class IdentificationService {
     private final IdentificationTokenRepository identificationTokenRepository;
-    private final AccountRepository accountRepository;
     private final EmailService emailService;
     private final EmailContentBuilder emailContentBuilder;
     private final MessageSource messageSource;
@@ -36,7 +33,7 @@ public class IdentificationService {
     private String serverUrl;
 
     public IdentificationResponse certify(IdentificationRequest identificationRequest) {
-        validateDuplicateEmail(identificationRequest);
+        identificationTokenRepository.deleteByEmail(com.hansung.vinyl.identification.domain.Email.of(identificationRequest.getEmail()));
         IdentificationToken identificationToken = IdentificationToken.create(identificationRequest.getEmail());
         identificationTokenRepository.save(identificationToken);
         sendEmail(identificationToken);
@@ -73,12 +70,6 @@ public class IdentificationService {
     private void sendEmail(IdentificationToken identificationToken) {
         SimpleMailMessage simpleMailMessage = createSimpleMailMessage(identificationToken);
         emailService.send(simpleMailMessage);
-    }
-
-    private void validateDuplicateEmail(IdentificationRequest identificationRequest) {
-        if (accountRepository.existsByEmail(Email.of(identificationRequest.getEmail()))) {
-            throw new DuplicateDataException("email", identificationRequest.getEmail(), getClass().getName());
-        }
     }
 
     private SimpleMailMessage createSimpleMailMessage(IdentificationToken identificationToken) {

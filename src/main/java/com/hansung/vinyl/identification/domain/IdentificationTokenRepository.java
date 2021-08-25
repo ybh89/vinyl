@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface IdentificationTokenRepository extends JpaRepository<IdentificationToken, UUID> {
     Optional<IdentificationToken> findByEmail(Email email);
+    void deleteByEmail(Email email);
 }

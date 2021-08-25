@@ -23,8 +23,9 @@ import java.util.Objects;
  * 토큰 검증 실패자는 익명 사용자 취급하여 request 에 exception 전달하고 entry point 에서 예외처리.
  *
  * case1: access token과 refresh token 모두가 만료된 경우 -> 에러 발생
- * case2: access token은 만료됐지만, refresh token은 유효한 경우 ->  access token 재발급(refresh token 검증 필요)
- * case3: access token은 유효하지만, refresh token은 만료된 경우 ->  refresh token 재발급
+ * case2: access token은 만료됐지만, refresh token은 유효한 경우 ->  access token 재발급(refresh token 검증 필요),
+ * refresh token 도 재발급 되는걸로 정책변경. 따라서 case3은 필요없음.
+ * case3: access token은 유효하지만, refresh token은 만료된 경우 ->  refresh token 재발급 -> 주석처리
  * case4: accesss token과 refresh token 모두가 유효한 경우 -> 다음 필더로
  */
 @Slf4j
@@ -62,10 +63,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
 
             accessToken = reissueAccessToken(response, refreshToken);
+            RefreshToken newRefreshToken = reissueRefreshToken(response, accessToken);
             log.info("[JwtAuthorizationFilter] new accessToken = {}", accessToken);
+            log.info("[JwtAuthorizationFilter] new refreshToken = {}",  newRefreshToken);
         }
 
-        if (!isExpiredAccessToken) {
+        /*if (!isExpiredAccessToken) {
             try {
                 if (Objects.nonNull(refreshToken) && !refreshToken.isEmpty()) {
                     jwtProvider.validateRefreshToken(refreshToken);
@@ -78,7 +81,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
                 return;
             }
-        }
+        }*/
 
         Authentication authentication = jwtProvider.getAuthentication(accessToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
