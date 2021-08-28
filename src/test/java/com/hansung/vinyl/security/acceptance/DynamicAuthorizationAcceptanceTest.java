@@ -66,7 +66,7 @@ public class DynamicAuthorizationAcceptanceTest extends AcceptanceTest {
 
         // 매니저 권한 생성
         ResourceRequest mgrResourceRequest = new ResourceRequest("/*/authorities/**", HttpMethod.GET);
-        ExtractableResponse<Response> mgrAuthorityResponse = 권한_등록_되어있음("ROLE_MANAGER", "test manager role",
+        ExtractableResponse<Response> mgrAuthorityResponse = 권한_등록_되어있음("ROLE_MGR", "test manager role",
                 Arrays.asList(mgrResourceRequest), testToken);
 
         // 사용자를 매니저 권한으로 변경

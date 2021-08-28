@@ -1,6 +1,8 @@
 package com.hansung.vinyl.authority.domain;
 
 import com.hansung.vinyl.common.domain.DateTimeAuditor;
+import com.hansung.vinyl.common.exception.validate.IllegalException;
+import com.hansung.vinyl.common.exception.validate.ValidateException;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -75,11 +77,21 @@ public class Authority extends AbstractAggregateRoot<Authority> implements Grant
         this.registerEvent(new AuthorityCommandedEvent(this, Command.UPDATE));
     }
 
+    private void verifyDefaultRole() {
+        try {
+            DefaultRole.valueOf(getRoleValue());
+        } catch (IllegalArgumentException exception) {
+            return;
+        }
+        throw new IllegalException("디폴트 권한입니다.", "role", getRole(), getClass().getName());
+    }
+
     public String getRoleValue() {
         return role.value();
     }
 
     public Authority delete() {
+        verifyDefaultRole();
         registerEvent(new AuthorityCommandedEvent(this, Command.DELETE));
         return this;
     }

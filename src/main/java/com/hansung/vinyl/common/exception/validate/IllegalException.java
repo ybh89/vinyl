@@ -6,4 +6,8 @@ public class IllegalException extends ValidateException {
     public IllegalException(String field, Object rejectedValue, String objectName) {
         super(MESSAGE  + "(" + field + " = " + rejectedValue + ")", field, rejectedValue, objectName);
     }
+
+    public IllegalException(String message, String field, Object rejectedValue, String objectName) {
+        super(message, field, rejectedValue, objectName);
+    }
 }
