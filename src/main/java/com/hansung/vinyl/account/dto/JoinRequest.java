@@ -23,7 +23,6 @@ public class JoinRequest {
     @NotBlank
     @Pattern(regexp="(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,20}")
     private String password;
-    private List<Long> authorityIds;
     @NotBlank
     private String name;
     @Pattern(regexp = "^01(?:0|1|[6-9])[.-]?(\\d{3}|\\d{4})[.-]?(\\d{4})$")

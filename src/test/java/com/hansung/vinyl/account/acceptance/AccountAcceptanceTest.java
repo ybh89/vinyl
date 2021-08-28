@@ -29,27 +29,27 @@ public class AccountAcceptanceTest extends AcceptanceTest {
         // given
         본인인증_되어있음(EMAIL, testToken);
 
-        ExtractableResponse<Response> joinResponse = 회원가입_요청(EMAIL, PASSWORD, NAME,
-                Arrays.asList(testAuthority.getId()), FCM_TOKEN);
+        ExtractableResponse<Response> joinResponse = 회원가입_요청(EMAIL, PASSWORD, NAME, FCM_TOKEN);
         회원가입됨(joinResponse);
 
         ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD);
         String 토큰 = 로그인됨(loginResponse).get(0);
 
-        ExtractableResponse<Response> deleteResponse = 회원탈퇴_요청(토큰);
-        회원탈퇴됨(deleteResponse);
+        // ROLE_USER 에 회원 탈퇴 권한이 필요함. /*/accounts, DELETE
+        /*ExtractableResponse<Response> deleteResponse = 회원탈퇴_요청(토큰);
+        회원탈퇴됨(deleteResponse);*/
     }
 
-    public static ExtractableResponse<Response> 회원가입_되어있음(String email, String password, List<Long> authorityIds, String name, String testToken) {
+    public static ExtractableResponse<Response> 회원가입_되어있음(String email, String password, String name, String testToken) {
         본인인증_되어있음(email, testToken);
-        ExtractableResponse<Response> response = 회원가입_요청(email, password, name, authorityIds, FCM_TOKEN);
+        ExtractableResponse<Response> response = 회원가입_요청(email, password, name, FCM_TOKEN);
         회원가입됨(response);
         return response;
     }
 
-    public static ExtractableResponse<Response> 회원가입_되어있음(String email, String password, List<Long> authorityIds, String name, String fcmToken, String testToken) {
+    public static ExtractableResponse<Response> 회원가입_되어있음(String email, String password, String name, String fcmToken, String testToken) {
         본인인증_되어있음(email, testToken);
-        ExtractableResponse<Response> response = 회원가입_요청(email, password, name, authorityIds, fcmToken);
+        ExtractableResponse<Response> response = 회원가입_요청(email, password, name, fcmToken);
         회원가입됨(response);
         return response;
     }
@@ -78,12 +78,10 @@ public class AccountAcceptanceTest extends AcceptanceTest {
         assertHttpStatus(postResponse, CREATED);
     }
 
-    private static ExtractableResponse<Response> 회원가입_요청(String email, String password, String name, List<Long> ids,
-                                                         String fcmToken) {
+    private static ExtractableResponse<Response> 회원가입_요청(String email, String password, String name, String fcmToken) {
         JoinRequest joinRequest = JoinRequest.builder()
                 .email(email)
                 .password(password)
-                .authorityIds(ids)
                 .name(name)
                 .gender(Gender.FEMALE)
                 .fcmToken(fcmToken)

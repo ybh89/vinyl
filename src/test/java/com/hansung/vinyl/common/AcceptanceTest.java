@@ -1,6 +1,7 @@
 package com.hansung.vinyl.common;
 
 import com.hansung.vinyl.account.domain.*;
+import com.hansung.vinyl.authority.application.InitialDataService;
 import com.hansung.vinyl.authority.domain.*;
 import com.hansung.vinyl.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import io.restassured.RestAssured;
@@ -195,8 +196,8 @@ public class AcceptanceTest {
     }
 
     protected Authority createAuthority() {
-        Authority testAuthority = buildAuthority("ROLE_TEST", "/**");
-        Authority saveAuthority = authorityRepository.save(testAuthority);
+        Authority saveAuthority = authorityRepository.save(buildAuthority("ROLE_TEST", "/**"));
+        authorityRepository.save(Authority.create("ROLE_USER", "", null));
         metadataSource.reload(new AuthorityCommandedEvent());
         return saveAuthority;
     }

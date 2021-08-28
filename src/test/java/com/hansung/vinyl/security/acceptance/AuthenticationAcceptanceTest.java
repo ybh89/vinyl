@@ -22,7 +22,7 @@ public class AuthenticationAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        회원가입_되어있음(EMAIL, PASSWORD, null, NAME, FCM_TOKEN, testToken);
+        회원가입_되어있음(EMAIL, PASSWORD, NAME, FCM_TOKEN, testToken);
     }
 
     @DisplayName("로그인 성공")

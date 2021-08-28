@@ -29,12 +29,15 @@ public class DynamicAuthorizationAcceptanceTest extends AcceptanceTest {
     public void 동적_인가_확인() throws Exception {
         // 사용자 권한 생성
         ResourceRequest resourceRequest = new ResourceRequest("/*/members/**", HttpMethod.GET);
-        ExtractableResponse<Response> authorityResponse = 권한_등록_되어있음("ROLE_USER", "test user role",
+        ExtractableResponse<Response> authorityResponse = 권한_등록_되어있음("ROLE_TEST_USER", "test user role",
                 Arrays.asList(resourceRequest), testToken);
 
         // 사용자 계정 생성
-        ExtractableResponse<Response> userResponse = 회원가입_되어있음(USER_EMAIL, USER_PASSWORD,
-                Arrays.asList(authorityResponse.as(AuthorityResponse.class).getId()), USER_NAME, USER_FCM_TOKEN, testToken);
+        ExtractableResponse<Response> userResponse = 회원가입_되어있음(USER_EMAIL, USER_PASSWORD, USER_NAME, USER_FCM_TOKEN,
+                testToken);
+
+        // 사용자를 테스트 권한으로 변경
+        계정_권한_변경됨(userResponse, Arrays.asList(authorityResponse.as(AuthorityResponse.class).getId()), testToken);
 
         // 사용자 로그인
         String userToken = 로그인_되어있음(USER_EMAIL, USER_PASSWORD).get(0);
@@ -47,7 +50,7 @@ public class DynamicAuthorizationAcceptanceTest extends AcceptanceTest {
         ResourceRequest updateResourceRequest1 = new ResourceRequest("/*/members/**", HttpMethod.GET);
         ResourceRequest updateResourceRequest2 = new ResourceRequest("/*/authorities", HttpMethod.GET);
         ExtractableResponse<Response> updateAuthorityResponse = 권한_수정_요청(authorityResponse, testToken,
-                "ROLE_USER", "update test role user", Arrays.asList(updateResourceRequest1,
+                "ROLE_TEST_USER", "update test role user", Arrays.asList(updateResourceRequest1,
                         updateResourceRequest2));
         assertHttpStatus(updateAuthorityResponse, HttpStatus.OK);
 
@@ -57,7 +60,7 @@ public class DynamicAuthorizationAcceptanceTest extends AcceptanceTest {
 
         // 사용자 권한에 자원 접근 권한 삭제
         ExtractableResponse<Response> updateAuthorityResponse2 = 권한_수정_요청(authorityResponse, testToken,
-                "ROLE_USER", "update test role user2", Arrays.asList(updateResourceRequest1));
+                "ROLE_TEST_USER", "update test role user2", Arrays.asList(updateResourceRequest1));
         assertHttpStatus(updateAuthorityResponse2, HttpStatus.OK);
 
         // 사용자가 자원에 접근 실패

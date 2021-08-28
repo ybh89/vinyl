@@ -24,7 +24,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             User user = (User) authentication.getPrincipal();
             return buildUser(user);
         }
-        return  authentication.getPrincipal();
+        return authentication.getPrincipal();
     }
 
     private com.hansung.vinyl.account.domain.User buildUser(User user) {

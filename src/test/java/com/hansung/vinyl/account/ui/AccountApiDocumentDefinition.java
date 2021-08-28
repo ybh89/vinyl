@@ -21,7 +21,6 @@ public final class AccountApiDocumentDefinition extends ApiDocumentDefinition {
                         fieldWithPath("email").description("이메일"),
                         fieldWithPath("password").description("패스워드")
                                 .attributes(key("constraint").value("영문과 숫자, 특수기호가 적어도 1개 이상씩 포함된 8자 ~ 20자")),
-                        fieldWithPath("authorityIds").description("계정에 매핑될 권한").optional(),
                         fieldWithPath("name").description("사용자 이름"),
                         fieldWithPath("phone").description("폰 번호").optional(),
                         fieldWithPath("gender").description("성별").optional()

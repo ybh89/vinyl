@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.hansung.vinyl.authority.domain.HttpMethod.GET;
-import static com.hansung.vinyl.authority.domain.HttpMethod.POST;
+import static com.hansung.vinyl.authority.domain.HttpMethod.*;
 
 @Getter
 public class PermitAllResourceGroup {

@@ -126,7 +126,6 @@ public class AccountControllerTest extends ControllerTest {
                 .email(email)
                 .password(password)
                 .name(name)
-                .authorityIds(Arrays.asList(1L, 2L))
                 .gender(Gender.FEMALE)
                 .phone("010-1111-1111")
                 .fcmToken("this is fcm token")

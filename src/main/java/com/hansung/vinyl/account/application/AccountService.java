@@ -7,6 +7,8 @@ import com.hansung.vinyl.account.dto.JoinResponse;
 import com.hansung.vinyl.account.dto.VerifyEmailResponse;
 import com.hansung.vinyl.authority.domain.Authority;
 import com.hansung.vinyl.authority.domain.AuthorityRepository;
+import com.hansung.vinyl.authority.domain.DefaultRole;
+import com.hansung.vinyl.authority.domain.Role;
 import com.hansung.vinyl.common.exception.AuthorizationException;
 import com.hansung.vinyl.common.exception.data.DuplicateDataException;
 import com.hansung.vinyl.common.exception.data.NoSuchDataException;
@@ -38,10 +40,14 @@ public class AccountService implements UserDetailsService {
 
     public JoinResponse join(JoinRequest joinRequest) {
         validateEmail(joinRequest.getEmail());
-        List<Authority> authorities = findAuthoritiesById(joinRequest.getAuthorityIds());
-        Account account = createAccount(joinRequest, authorities);
+        Account account = createAccount(joinRequest, Arrays.asList(findUserAuthority()));
         Account savedAccount = accountRepository.save(account);
         return JoinResponse.of(savedAccount);
+    }
+
+    private Authority findUserAuthority() {
+        return authorityRepository.findByRole(Role.of(DefaultRole.ROLE_USER.name()))
+                .orElseThrow(() -> new NoSuchDataException("role", DefaultRole.ROLE_USER, getClass().getName()));
     }
 
     private void validateEmail(String email) {
