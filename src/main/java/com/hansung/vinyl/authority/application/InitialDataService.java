@@ -58,7 +58,7 @@ public class InitialDataService {
             Arrays.stream(DefaultRole.values())
                     .filter(role -> !authorityRepository.existsByRole(Role.of(role.name())))
                     .forEach(role -> {
-                        Authority authority = Authority.create(role.name(), "디폴트 권한은 삭제를 할 수 없습니다.", null);
+                        Authority authority = Authority.create(role.name(), "", null);
                         authorityRepository.save(authority);
                     });
         }
