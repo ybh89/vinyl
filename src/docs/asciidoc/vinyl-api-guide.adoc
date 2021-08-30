@@ -288,10 +288,27 @@ include::{snippets}/account_email_check/response-fields.adoc[]
 |===
 === Response
 |===
-|header|cookie|status|remark
+|header|status|remark
 
-|access-token, accountId
+|Location
+|302
+|/login/oauth2/code/google 여기로 리다이렉트 됨.
+|===
+
+== oAuth2 로그인 리다이렉트
+=== Request
+|===
+|registration|path|method
+
+|google
+|/login/oauth2/code/google
+|GET
+|===
+=== Response
+|===
+|header|cookie|status
+
+|access-token
 |refresh-token
 |200
-|accountId는 fcm token 을 받기 위함
 |===
