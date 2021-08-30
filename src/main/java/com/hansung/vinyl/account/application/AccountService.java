@@ -87,33 +87,15 @@ public class AccountService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Account account = findAccountByEmail(Email.of(username));
-        return loadUser(account);
+        List<Authority> authorities = findAuthoritiesById(account.getAuthorityIds());
+        return new User(account, authorities);
     }
 
     @Transactional(readOnly = true)
     public UserDetails loadUserById(Long accountId) {
         Account account = findAccountById(accountId);
-        return loadUser(account);
-    }
-
-    private UserDetails loadUser(Account account) {
-        List<Long> authorityIds = account.getAuthorityIds();
-        List<Authority> authorities = authorityRepository.findAllById(authorityIds);
-        return buildUser(account, authorities);
-    }
-
-    private User buildUser(Account account, List<Authority> authorities) {
-        return User.builder()
-                .accountId(account.getId())
-                .username(account.getEmailValue())
-                .password(account.getEncryptedPasswordValue())
-                .refreshToken(account.getRefreshTokenValue())
-                .isEnabled(true)
-                .isAccountNonExpired(true)
-                .isAccountNonLocked(true)
-                .isCredentialsNonExpired(true)
-                .authorities(authorities)
-                .build();
+        List<Authority> authorities = findAuthoritiesById(account.getAuthorityIds());
+        return new User(account, authorities);
     }
 
     public Account findAccountByEmail(Email email) {

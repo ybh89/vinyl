@@ -1,80 +1,92 @@
 package com.hansung.vinyl.account.domain;
 
-import lombok.Builder;
+import com.hansung.vinyl.authority.domain.Authority;
+import com.hansung.vinyl.authority.domain.DefaultRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
-public class User implements UserDetails {
+public class User implements UserDetails, OAuth2User {
     private Long accountId;
-    private String username;
-    private String password;
-    private String refreshToken;
-    private boolean isEnabled;
-    private boolean isAccountNonExpired;
-    private boolean isAccountNonLocked;
-    private boolean isCredentialsNonExpired;
-    private Collection<? extends GrantedAuthority> authorities;
+    private RefreshToken refreshToken;
+    private org.springframework.security.core.userdetails.User user;
+    private Map<String, Object> attributes;
 
-    @Builder
-    public User(Long accountId, String username, String password, String refreshToken, boolean isEnabled,
-                boolean isAccountNonExpired, boolean isAccountNonLocked, boolean isCredentialsNonExpired,
-                Collection<? extends GrantedAuthority> authorities) {
-        this.accountId = accountId;
-        this.username = username;
-        this.password = password;
-        this.refreshToken = refreshToken;
-        this.isEnabled = isEnabled;
-        this.isAccountNonExpired = isAccountNonExpired;
-        this.isAccountNonLocked = isAccountNonLocked;
-        this.isCredentialsNonExpired = isCredentialsNonExpired;
-        this.authorities = authorities;
+    public User(org.springframework.security.core.userdetails.User user) {
+        this.user = user;
+    }
+
+    // 일반 로그인 사용자
+    public User(Account account, List<Authority> authorities) {
+        this.accountId = account.getId();
+        this.refreshToken = account.getRefreshToken();
+        this.user = new org.springframework.security.core.userdetails.User(account.getEmailValue(),
+                account.getEncryptedPasswordValue(), authorities);
+    }
+
+    // Oauth 로그인 사용자
+    public User(Account account, List<Authority> authorities, Map<String, Object> attributes) {
+        this(account, authorities);
+        this.attributes = attributes;
     }
 
     public Long getAccountId() {
         return accountId;
     }
 
-    public String getRefreshToken() { return refreshToken; }
+    public String getRefreshToken() { return refreshToken.value(); }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return user.getAuthorities();
     }
 
     @Override
     public String getPassword() {
-        return password;
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return user.getUsername();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return isAccountNonExpired;
+        return user.isAccountNonExpired();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return isAccountNonLocked;
+        return user.isAccountNonLocked();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return isCredentialsNonExpired;
+        return user.isCredentialsNonExpired();
     }
 
     @Override
     public boolean isEnabled() {
-        return isEnabled;
+        return user.isEnabled();
     }
 
     public boolean hasSuperRole() {
-        return authorities.stream().anyMatch(grantedAuthority ->
-                grantedAuthority.getAuthority().equals("ROLE_SUPER"));
+        return user.getAuthorities().stream().anyMatch(grantedAuthority ->
+                grantedAuthority.getAuthority().equals(DefaultRole.ROLE_SUPER.name()));
+    }
+
+    @Override
+    public String getName() {
+        return null;
     }
 }

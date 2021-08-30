@@ -50,8 +50,12 @@ public class Account extends AbstractAggregateRoot<Account> {
     @Embedded
     private DateTimeAuditor dateTimeAuditor;
 
+    @Embedded
+    private OauthProvider oauthProvider;
+
     @Builder
-    private Account(Email email, EncryptedPassword encryptedPassword, AccountAuthorities accountAuthorities) {
+    private Account(Email email, EncryptedPassword encryptedPassword, AccountAuthorities accountAuthorities,
+                    OauthProvider oauthProvider) {
         this.email = email;
         this.encryptedPassword = encryptedPassword;
         this.accountAuthorities = accountAuthorities;
@@ -63,6 +67,7 @@ public class Account extends AbstractAggregateRoot<Account> {
                 .email(new Email(accountInfo.getEmail()))
                 .encryptedPassword(new EncryptedPassword(accountInfo.getEncryptedPassword()))
                 .accountAuthorities(new AccountAuthorities(createAccountAuthorities(accountInfo.getAuthorities())))
+                .oauthProvider(new OauthProvider(accountInfo.getProvider(), accountInfo.getProviderId()))
                 .build();
         account.registerEvent(new AccountCreatedEvent(account, memberInfo));
         return account;

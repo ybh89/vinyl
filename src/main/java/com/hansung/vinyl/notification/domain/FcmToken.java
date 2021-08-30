@@ -1,6 +1,9 @@
 package com.hansung.vinyl.notification.domain;
 
+import com.google.common.base.Strings;
 import com.hansung.vinyl.common.domain.BaseDateTimeEntity;
+import com.hansung.vinyl.common.exception.validate.BlankException;
+import com.hansung.vinyl.common.exception.validate.NullException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,8 +25,19 @@ public class FcmToken extends BaseDateTimeEntity implements Persistable<Long> {
     private String token;
 
     public FcmToken(Long accountId, String token) {
+        validate(accountId, token);
         this.id = accountId;
         this.token = token;
+    }
+
+    private void validate(Long accountId, String token) {
+        if (Objects.isNull(accountId)) {
+            throw new NullException("accountId", getClass().getName());
+        }
+
+        if (Strings.isNullOrEmpty(token) || token.isBlank()) {
+            throw new BlankException("fcmToken", token, getClass().getName());
+        }
     }
 
     @Override

@@ -44,4 +44,12 @@ public class AccountController {
         VerifyEmailResponse verifyEmailResponse = accountService.verifyEmail(email);
         return ResponseEntity.ok(verifyEmailResponse);
     }
+
+    @GetMapping("/test/accounts")
+    public String test(@AuthenticationPrincipal User user) {
+        Long accountId = user.getAccountId();
+        String email = user.getUsername();
+        System.out.println("account test: accountId=" + accountId + ", email=" + email);
+        return "account test: accountId=" + accountId + ", email=" + email;
+    }
 }

@@ -22,19 +22,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof User) {
             User user = (User) authentication.getPrincipal();
-            return buildUser(user);
+            return new com.hansung.vinyl.account.domain.User(user);
         }
         return authentication.getPrincipal();
-    }
-
-    private com.hansung.vinyl.account.domain.User buildUser(User user) {
-        return com.hansung.vinyl.account.domain.User.builder()
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .authorities(user.getAuthorities())
-                .isAccountNonExpired(user.isAccountNonExpired())
-                .isAccountNonLocked(user.isAccountNonLocked())
-                .isCredentialsNonExpired(user.isCredentialsNonExpired())
-                .build();
     }
 }

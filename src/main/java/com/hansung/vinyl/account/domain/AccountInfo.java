@@ -12,4 +12,6 @@ public class AccountInfo {
     private String email;
     private String encryptedPassword;
     private List<Authority> authorities;
+    private String provider;
+    private String providerId;
 }

@@ -21,8 +21,11 @@ public class PermitAllResourceGroup {
         Resource docsResource = new Resource("/docs/**", GET);
         Resource identificationPostResource = new Resource("/*/identifications/**", POST);
         Resource identificationGetResource = new Resource("/*/identifications/**", GET);
+        Resource testResource = new Resource("/test/**", GET);
+        Resource faviconResource = new Resource("/favicon.ico", GET);
         permitAllResources.addAll(Arrays.asList(loginResource, joinResource, catalogResource, docsResource,
-                emailResource, identificationGetResource, identificationPostResource));
+                emailResource, identificationGetResource, identificationPostResource,
+                testResource, faviconResource));
     }
 
     public static List<Resource> values() {
