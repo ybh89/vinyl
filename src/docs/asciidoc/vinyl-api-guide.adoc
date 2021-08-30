@@ -10,9 +10,13 @@
 * 모든 요청은 https 로 요청해야 합니다.
 * api 추가, 수정 등 요청은 따로 문의주세요.
 
-== 변경 이력(2021.08.28)
+== 변경 이력(마지막 업데이트: 2021.08.30)
 |===
 |날짜|api|내용
+
+|2021.08.30
+|일반 로그인, oAuth2 로그인
+|로그인 api 문서 추가됨.
 
 |2021.08.28
 |회원 가입
@@ -254,3 +258,40 @@ include::{snippets}/account_email_check/request-parameters.adoc[]
 include::{snippets}/account_email_check/http-response.adoc[]
 === Response parameter
 include::{snippets}/account_email_check/response-fields.adoc[]
+
+== 일반 로그인
+=== Request
+|===
+|path|method|parameters
+
+|/login
+|POST
+|email, password
+|===
+=== Response
+|===
+|header|cookie|status
+
+|access-token
+|refresh-token
+|200
+|===
+
+== oAuth2 로그인
+=== Request
+|===
+|registration|path|method
+
+|google
+|/oauth2/authorization/google
+|GET
+|===
+=== Response
+|===
+|header|cookie|status|remark
+
+|access-token, accountId
+|refresh-token
+|200
+|accountId는 fcm token 을 받기 위함
+|===
